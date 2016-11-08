@@ -43,3 +43,50 @@
         (Num a, Num b) => a -> b -> b
         (Ord a, Num a) => a -> a -> Ordering
 
+
+# 5.4 - Currying
+
+- All Haskell functions take one argument and return one result.
+
+- Syntactic conventions conventions are used to construct _curried_ functions.
+
+- Each `->` in a type signature represents one argument and one result, with the final type being the final result.
+
+- Look at the type signature for addition:
+
+        (+) :: Num a => a -> a -> a
+
+  Since `->` is right-associative, this is equivalent to:
+
+        (+) :: Num a => a -> (a -> a)
+
+  i.e. `(+)` is a function which takes an `a` and returns (a function which takes an `a` and returns an `a`).
+
+- _Partial application_ allows us to take a function and apply some of its arguments to get another function, e.g.:
+
+        > let add10 = (+ 10)
+        > add10 5
+        15
+
+- It is possible to _uncurry_ functions, replacing the curried version with an uncurried version that takes a tuple parameter containing all the arguments:
+
+- _Sectioning_ refers to partial application of infix operators, with a special syntax:
+
+        > let x = 5
+        > let y = (2 ^)
+        > let z = (^ 2)
+        > y x
+        32
+        > z x
+        25
+
+- Sectioning also works with other non-arithmetic operators, but may need to use backticks to make prefix functions infix:
+
+        > elem 9 [1..10]
+        True
+        > 9 `elem` [1..10]
+        True
+        > (`elem` [1..10]) 9
+        True
+
+
