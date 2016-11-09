@@ -90,3 +90,55 @@
         True
 
 
+## 5.5 - Polymorphism
+
+- _Polymorphic_ type variables allow us to implement expressions that can accept arguments and return results of different types without having to write various implementations for each type.
+
+- Two categories of polymorhism in Haskell:
+    - _Parametric polymorphism_ - type variables are fully polymorphic - when unconstrained by a typeclass, their final concrete type can be anything.
+    - _Constrained polymorphism_ - puts typeclass constraints onto type variables, which decreases the number of concrete types that the variable could be, but increases what you can do with it.
+
+- `id :: a -> a` is maximally polymorphic, and can operate on any type.  However, it can only do one thing - i.e. return what it was passed.
+
+- `negate :: Num a => a -> a` constrains `a` to be an instance of the `Num` typeclass, which means it can apply to fewer concrete types, but more can be done with it.
+
+- Concrete types have even more flexibility in terms of computation, because typeclasses are _additive_.  For example, `Int` is an instance of many typeclasses (e.g. `Eq`, `Num`, `Ord` etc), so it can use methods from any of these.
+
+- A function is polymorphic when its type signature has type variables that are polymorphic.
+
+- Numeric literals are polymorphic and stay so until given a more concrete type:
+
+        > :t 6.3
+        6.3 :: Fractional a => a
+        > :t (-10)
+        (-10) :: Num a => a
+        > :t (-10) + 6.3
+        (-10) + 6.3 :: Fractional a => a
+
+
+## 5.6 - Type Inference
+
+- _Type inference_ is an algorithm for determining types of expressions.  Haskell's type inference is build on an extended version of the Damas-Hindley-Milner type system.
+
+- Haskell infers the most generally applicable (polymorphic) type that is still correct.
+
+
+## 5.7 - Asserting Types for Declarations
+
+- Adding type signatures to functions is much better than relying on type inference.
+
+- Declare type signature using `::` before function implementation:
+
+        triple :: Integer -> Integer
+        triple x = x * 3
+
+- It is possible to declare types locally using `let` or `where`, e.g.:
+
+        triple x = tripeItYo x
+            where tripleItYo :: Integer -> Integer
+                  tripleItYo y = y * 3
+
+        > :t triple
+        triple :: Integer -> Integer
+
+  Here, the assertion in the `where` clause narrowed the type of `triple` down from `Num a => a -> a` to `Integer -> Integer`.
