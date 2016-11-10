@@ -96,7 +96,7 @@
 
 - Two categories of polymorhism in Haskell:
     - _Parametric polymorphism_ - type variables are fully polymorphic - when unconstrained by a typeclass, their final concrete type can be anything.
-    - _Constrained polymorphism_ - puts typeclass constraints onto type variables, which decreases the number of concrete types that the variable could be, but increases what you can do with it.
+    - _Constrained polymorphism_, a.k.a. _ad-hoc polymorphism_ - puts typeclass constraints onto type variables, which decreases the number of concrete types that the variable could be, but increases what you can do with it.
 
 - `id :: a -> a` is maximally polymorphic, and can operate on any type.  However, it can only do one thing - i.e. return what it was passed.
 
@@ -120,7 +120,7 @@
 
 - _Type inference_ is an algorithm for determining types of expressions.  Haskell's type inference is build on an extended version of the Damas-Hindley-Milner type system.
 
-- Haskell infers the most generally applicable (polymorphic) type that is still correct.
+- Haskell infers the most generally applicable (polymorphic) type that is still correct - this is referred to as the _principal type_
 
 
 ## 5.7 - Asserting Types for Declarations
