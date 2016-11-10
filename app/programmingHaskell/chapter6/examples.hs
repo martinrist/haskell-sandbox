@@ -1,9 +1,52 @@
----------------------------
---  Chapter 6 - Typeclasses
----------------------------
+------------------------------
+--  Chapter 6 - Typeclasses --
+------------------------------
 
-bar :: Num a => a -> a -> a
-bar x y = x + y
+------------------------------------
+-- 6.5 - Writing typeclass instances
+------------------------------------
+
+-- With no `deriving` clause, we can't even write `Trivial == Trivial'...
+data Trivial = Trivial
+
+-- ... so, we have to write the typeclass instance.  For `Eq` we can either
+-- write an implementation for `==` or for `\=`
+instance Eq Trivial where
+    Trivial == Trivial = True
+
+-- A more complex example where we define equality for days of the week
+data DayOfWeek = Mon | Tue | Wed | Thu | Fri | Sat | Sun
+
+-- Note the final line, which is there to ensure the pattern is exhaustive
+-- If not, `==` would be a 'partial function'
+-- We can warn about these using `:set -Wall` in GHCI
+instance Eq DayOfWeek where
+    (==) Mon Mon = True
+    (==) Tue Tue = True
+    (==) Wed Wed = True
+    (==) Thu Thu = True
+    (==) Fri Fri = True
+    (==) Sat Sat = True
+    (==) Sun Sun = True
+    (==) _   _   = False
+
+data Date = Date DayOfWeek Int
+
+instance Eq Date where
+    (==) (Date weekDay monthNum) (Date weekDay' monthNum') =
+            weekDay == weekDay' && monthNum == monthNum'
+
+-- As an alternative to the above, we can just use `deriving Eq` on the type
+-- definition.  This defaults to requiring each comopnent to be equal
+data Date' = Date' DayOfWeek Int deriving Eq
+
+
+data Identity a = Identity a deriving Show
+
+-- This needs the `Eq a =>` constraint in order to be able to call `v == v'`
+instance Eq a => Eq (Identity a) where
+    (==) (Identity v) (Identity v') = v == v'
+
 
 ------------
 -- 6.5 - Num
@@ -73,46 +116,6 @@ sumNumberish a a' = fromNumber summed
 -- remaining arguments are also of type `Age`
 foo :: Age -> Age
 foo = sumNumberish (Age 10)
-
-
--------------------------------------------
--- 6.12 - Writing Instances for Typeclasses
--------------------------------------------
-
--- With no `deriving` clause, we can't even write `Trivial == Trivial'...
-data Trivial = Trivial
-
--- ... so, we have to write the typeclass instance.  For `Eq` we can either
--- write an implementation for `==` or for `\=`
-instance Eq Trivial where
-    Trivial == Trivial = True
-
--- A more complex example where we define equality for days of the week
-data DayOfWeek = Mon | Tue | Wed | Thu | Fri | Sat | Sun
-
--- Note the final line, which is there to ensure the pattern is exhaustive
--- If not, `==` would be a 'partial function'
--- We can warn about these using `:set -Wall` in GHCI
-instance Eq DayOfWeek where
-    (==) Mon Mon = True
-    (==) Tue Tue = True
-    (==) Wed Wed = True
-    (==) Thu Thu = True
-    (==) Fri Fri = True
-    (==) Sat Sat = True
-    (==) Sun Sun = True
-    (==) _   _   = False
-
-data Date = Date DayOfWeek Int
-
-instance Eq Date where
-    (==) (Date weekDay monthNum) (Date weekDay' monthNum') =
-            weekDay == weekDay' && monthNum == monthNum'
-
--- As an alternative to the above, we can just use `deriving Eq` on the type
--- definition.  This defaults to requiring each comopnent to be equal
-data Date' = Date' DayOfWeek Int deriving Eq
-
 
 
 -------------------------------

@@ -1,62 +1,50 @@
-module Exercises where
-
 import Data.List (sort)
 
--- Intermission
+------------------
+-- Eq instances --
+------------------
 
 -- Question 1
 data TisAnInteger = TisAn Integer
-
 instance Eq TisAnInteger where
-    (==) (TisAn x) (TisAn y) = x == y
-
+    (==) (TisAn i) (TisAn j) = i == j
 
 -- Question 2
 data TwoIntegers = Two Integer Integer
-
 instance Eq TwoIntegers where
-    (==) (Two x y) (Two x' y') = x == x' && y == y'
-
+    (==) (Two a b) (Two a' b') = a == a' && b == b'
 
 -- Question 3
 data StringOrInt = TisAnInt Int | TisAString String
-
 instance Eq StringOrInt where
-    (==) (TisAnInt x) (TisAnInt y) = x == y
-    (==) (TisAString x) (TisAString y) = x == y
+    (==) (TisAnInt i) (TisAnInt j) = i == j
+    (==) (TisAString s) (TisAString t) = s == t
     (==) _ _ = False
 
-
 -- Question 4
-data Pair a = Pair a a deriving Show
-
+data Pair a = Pair a a
 instance Eq a => Eq (Pair a) where
-     (==) (Pair x y) (Pair x' y') = x == x' && y == y'
-
+    (==) (Pair x y) (Pair x' y') = x == x' && y == y'
 
 -- Question 5
 data Tuple a b = Tuple a b
-
 instance (Eq a, Eq b) => Eq (Tuple a b) where
     (==) (Tuple x y) (Tuple x' y') = x == x' && y == y'
 
-
 -- Question 6
 data Which a = ThisOne a | ThatOne a
-
 instance Eq a => Eq (Which a) where
-    (==) (ThisOne x) (ThisOne x') = x == x'
-    (==) (ThatOne x) (ThatOne x') = x == x'
+    (==) (ThisOne a) (ThisOne a') = a == a'
+    (==) (ThatOne a) (ThatOne a') = a == a'
     (==) _ _ = False
-
 
 -- Question 7
 data EitherOr a b = Hello a | Goodbye b
-
 instance (Eq a, Eq b) => Eq (EitherOr a b) where
-    (==) (Hello x) (Hello x') = x == x'
-    (==) (Goodbye y) (Goodbye y') = y == y'
+    (==) (Hello a) (Hello a') = a == a'
+    (==) (Goodbye b) (Goodbye b') = b == b'
     (==) _ _ = False
+
 
 
 --------------------

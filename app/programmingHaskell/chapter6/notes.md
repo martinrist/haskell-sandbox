@@ -12,7 +12,7 @@
     - If a type is an _instance_ of a typeclass, the type has an implementation for all of the operations defined in the typeclass.
 
 
-## 6.3 - `Bool` and some common Typeclasses
+## 6.3 - `Bool` and some common typeclasses
 
 - Can see the typeclasses that a type instantiates using `:i` in GHCI:
 
@@ -39,7 +39,7 @@
         class Num a => Fractional a where ...
 
 
-## 6.4 - The `Eq` Typeclass
+## 6.4 - The `Eq` typeclass
 
 - `Eq` is the typeclass that allows types to define a notion of equality:
 
@@ -56,8 +56,33 @@
         > :t (/=)
         (/=) :: Eq a => a -> a -> Bool
 
+
+## 6.5 - Writing typeclass instances
+
 - To avoid manually writing instances of common typeclasses, they can be _derived_:
 
         > data Foo = Bar | Blort deriving Eq
         > Bar == Foo
         False
+
+- To define an `Eq` instance, you just need to implement _either_ `(==)` or `(/=)`:
+
+        data Trivial = Trivial
+        instance Eq Trivial where
+            Trivial == Trivial = True
+
+- Recommended to keep the typeclass instances for a type in the same file as that type.
+
+- When writing cases for a function, be careful to make sure we don't end up with a _partial function_ - one that doesn't handle all cases
+    - Set GHCi's `Wall` flag to show warning for partial functions: `:set -Wall`.
+
+- Sometimes we need the type variable to have certain typeclass instances:
+
+        data Identity a = Identity a
+        instance Eq (Identity a) where
+            (==) (Identity v) (Identity v') = v == v'
+
+  This won't work - we can't guarantee to be able to call `v == v'` since the type variable `a` is not constrained to have an instance of `Eq`.  Instead we use a typeclass constraint:
+
+        instance Eq a => Eq (Identity a) where
+            (==) (Identity v) (Identity v') = v == v'
