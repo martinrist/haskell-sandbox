@@ -2,9 +2,6 @@
 --  Chapter 6 - Typeclasses
 ---------------------------
 
-module Chapter6 where
-
-
 bar :: Num a => a -> a -> a
 bar x y = x + y
 
