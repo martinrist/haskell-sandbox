@@ -16,6 +16,7 @@
 
 - Can see the typeclasses that a type instantiates using `:i` in GHCI:
 
+        ```haskell
         > :i Bool
         data Bool = False | True        -- Defined in ‘GHC.Types'
         instance Bounded Bool -- Defined in ‘GHC.Enum’
@@ -24,6 +25,7 @@
         instance Ord Bool -- Defined in ‘GHC.Classes’
         instance Read Bool -- Defined in ‘GHC.Read’
         instance Show Bool -- Defined in ‘GHC.Show’
+        ```
 
 - Shows some common typeclasses:
     - `Bounded` - for types that have an upper and lower bound.
