@@ -45,33 +45,41 @@
 
 - `Eq` is the typeclass that allows types to define a notion of equality:
 
-        > :info Eq
-        class Eq a where
-        (==) :: a -> a -> Bool
-        (/=) :: a -> a -> Bool
-        ...
+    ```haskell
+    > :info Eq
+    class Eq a where
+    (==) :: a -> a -> Bool
+    (/=) :: a -> a -> Bool
+    ...
+    ```
 
 - The types of these two functions show the constrained type variable:
 
-        > :t (==)
-        (==) :: Eq a => a -> a -> Bool
-        > :t (/=)
-        (/=) :: Eq a => a -> a -> Bool
+    ```haskell
+    > :t (==)
+    (==) :: Eq a => a -> a -> Bool
+    > :t (/=)
+    (/=) :: Eq a => a -> a -> Bool
+    ```
 
 
 ## 6.5 - Writing typeclass instances
 
 - To avoid manually writing instances of common typeclasses, they can be _derived_:
 
-        > data Foo = Bar | Blort deriving Eq
-        > Bar == Foo
-        False
+    ```haskell
+    > data Foo = Bar | Blort deriving Eq
+    > Bar == Foo
+    False
+    ```
 
 - To define an `Eq` instance, you just need to implement _either_ `(==)` or `(/=)`:
 
-        data Trivial = Trivial
-        instance Eq Trivial where
-            Trivial == Trivial = True
+    ```haskell
+    data Trivial = Trivial
+    instance Eq Trivial where
+        Trivial == Trivial = True
+    ```
 
 - Recommended to keep the typeclass instances for a type in the same file as that type.
 
@@ -80,11 +88,15 @@
 
 - Sometimes we need the type variable to have certain typeclass instances:
 
-        data Identity a = Identity a
-        instance Eq (Identity a) where
-            (==) (Identity v) (Identity v') = v == v'
+    ```haskell
+    data Identity a = Identity a
+    instance Eq (Identity a) where
+        (==) (Identity v) (Identity v') = v == v'
+    ```
 
   This won't work - we can't guarantee to be able to call `v == v'` since the type variable `a` is not constrained to have an instance of `Eq`.  Instead we use a typeclass constraint:
 
-        instance Eq a => Eq (Identity a) where
-            (==) (Identity v) (Identity v') = v == v'
+    ```haskell
+    instance Eq a => Eq (Identity a) where
+        (==) (Identity v) (Identity v') = v == v'
+    ```
