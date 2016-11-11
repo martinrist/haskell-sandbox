@@ -37,8 +37,10 @@
 
 - Typeclasses can have a hierarchy, e.g. all `Fractional` numbers implement `Num`
 
-        > :i Fractional 
-        class Num a => Fractional a where ...
+    ```haskell
+    > :i Fractional 
+    class Num a => Fractional a where ...
+    ```
 
 
 ## 6.4 - The `Eq` typeclass
@@ -100,3 +102,111 @@
     instance Eq a => Eq (Identity a) where
         (==) (Identity v) (Identity v') = v == v'
     ```
+
+# 6.6 - The `Num` typeclass
+
+- `Num` is implemented by most numeric types, and defines common arithmetic operations:
+
+    ```haskell
+    > :i Num
+    class Num a where
+      (+) :: a -> a -> a
+      (-) :: a -> a -> a
+      (*) :: a -> a -> a
+      negate :: a -> a
+      abs :: a -> a
+      signum :: a -> a
+      fromInteger :: Integer -> a
+    ```
+
+- `Integral` has the following definition:
+
+    ```haskell
+    > :i Integral
+    class (Real a, Enum a) => Integral a where
+      quot :: a -> a -> a
+      rem :: a -> a -> a
+      div :: a -> a -> a
+      mod :: a -> a -> a
+      quotRem :: a -> a -> (a, a)
+      divMod :: a -> a -> (a, a)
+      toInteger :: a -> Integer
+    ```
+
+- `(Real a, Enum a)` means that any type that implements `Integral` must also have instances for `Real` _and_ `Enum`:
+    - In turn, `Real` has a constraint of `(Num a, Ord a)`.
+    - `Real` cannot override methods in `Num`, this type inheritance is additive only - i.e. new methods.
+    - This avoids ambiguity problems caused by traditional multiple inheritance.
+
+- `Fractional` is another subclass of `Num`:
+
+    ```haskell
+    class Num a => Fractional a where
+      (/) :: a -> a -> a
+      recip :: a -> a
+      fromRational :: Rational -> a
+    ```
+
+
+# 6.7 - Type-defaulting typeclasses
+
+- When evaluating a type-class constrained polymorphic value, the polymorphism must be resolved to a specific concrete type.
+
+- In some cases, especailly in GHCi, it's possible to not have specified a concrete type for a polymorphic value, and for one not to be able to be inferred (e.g. through funciton type signatures).
+
+- In these , the following defaults are specified for numerical computations:
+
+    ```haskell
+    default Num Integer
+    default Real Integer
+    default Enum Integer
+    default Integral Integer
+    default Fractional Double
+    default RealFrac Double
+    default Floating Double
+    default RealFloat Double
+    ```
+
+- So, for example, the defaulting for `Fractional` means that:
+
+    ```haskell
+    (/) :: Fractional a => a -> a -> a
+    ```
+
+  defaults to the following if you don't specify the concrete type desired for `(/)`:
+
+    ```haskell
+    (/) :: Double -> Double -> Double
+    ```
+
+# 6.8 - The `Ord` typeclass
+
+
+- `Ord` covers things that have a notion of ordering and can be compared:
+
+    ```haskell
+    > :i Ord
+    class Eq a => Ord a where
+      compare :: a -> a -> Ordering
+      (<) :: a -> a -> Bool
+      (<=) :: a -> a -> Bool
+      (>) :: a -> a -> Bool
+      (>=) :: a -> a -> Bool
+      max :: a -> a -> a
+      min :: a -> a -> a
+    ```
+
+- `compare` returns an `Ordering`, a sum type consisting of `LT`, `EQ` or `GT`:
+
+    ```haskell
+    > compare 7 8
+    LT
+    > compare True False
+    GT
+    > compare "Foo" "Foo"
+    EQ
+    ```
+
+- If we have a simple datatype, we can derive `Ord`, but we must also derive (or provide) `Eq`
+
+
