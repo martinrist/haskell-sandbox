@@ -2,6 +2,10 @@
 --  Chapter 6 - Typeclasses --
 ------------------------------
 
+main :: IO ()
+main = undefined
+
+
 ------------------------------------
 -- 6.5 - Writing typeclass instances
 ------------------------------------
@@ -15,7 +19,7 @@ instance Eq Trivial where
     Trivial == Trivial = True
 
 -- A more complex example where we define equality for days of the week
-data DayOfWeek = Mon | Tue | Wed | Thu | Fri | Sat | Sun
+data DayOfWeek = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving Show
 
 -- Note the final line, which is there to ensure the pattern is exhaustive
 -- If not, `==` would be a 'partial function'
@@ -49,23 +53,23 @@ instance Eq a => Eq (Identity a) where
 
 
 ------------
--- 6.5 - Num
+-- 6.6 - Num
 ------------
 
 -- This won't work, because we can't deduce that `x` is an instance
 -- of `Fractional` which is what's needed for `/`
---divideThenAdd :: Num a => a -> a -> a
+-- divideThenAdd :: Num a => a -> a -> a
 
 -- However by applying the type class constraint `Fractional a`
 -- everything compiles
---divideThenAdd :: Fractional a => a -> a -> a
+divideThenAdd :: Fractional a => a -> a -> a
 divideThenAdd x y = (x / y ) + 1
 
 
 
--------------
--- 6.9 - Show
--------------
+--------------
+-- 6.11 - Show
+--------------
 
 -- We could declare `Mood` as an instance of `Show`
 -- and provide an implementation for `show`
@@ -81,7 +85,7 @@ data Mood' = Meh deriving Show
 
 
 -------------------------------------
--- 6.11 - Typeclass Instance Dispatch
+-- 6.12 - Typeclass Instance Dispatch
 -------------------------------------
 
 -- A typeclass defines a set of functions and / or values

@@ -207,6 +207,95 @@
     EQ
     ```
 
-- If we have a simple datatype, we can derive `Ord`, but we must also derive (or provide) `Eq`
+- If we have a simple datatype, we can derive `Ord`, but we must also derive (or provide) an instance for `Eq`.
+
+- If we have a datatype declaration that declares a sum type, we can derive `Ord` and the ordering is defined by the order of the data constructors in the type declaration:
+
+    ```haskell
+    data DayOfWeek = 
+        Mon | Tue | Wed | Thu | Fri | Sat | Sun
+        deriving (Eq, Ord, Show)
+    > Mon > Tue
+    False
+    > Sun > Mon
+    True
+    > compare Tue Wed
+    LT
+    ```
+
+- Since `Ord` extends `Eq`, this means that any type with an `Ord` instance must also have an `Eq` instance.  So if we apply a typeclass constraint of `Ord a` we can also use methods declared in `Eq`:
+
+    ```haskell
+    check :: Ord a => a -> a -> Bool
+    check a a' = a == a'
+    ```
+
+## 6.9 - The `Enum` typeclass
+
+- `Enum` covers types that are enumerable, having a concept of predecessors and successors:
+
+    ```haskell
+    > :i Enum
+    class Enum a where
+      succ :: a -> a
+      pred :: a -> a
+      toEnum :: Int -> a
+      fromEnum :: a -> Int
+      enumFrom :: a -> [a]
+      enumFromThen :: a -> a -> [a]
+      enumFromTo :: a -> a -> [a]
+      enumFromThenTo :: a -> a -> a -> [a]
+    ```
+
+- The various `enumFrom...` functions allow us to create ranges:
+
+    > enumFromTo 10 15
+    [10, 11, 12, 13, 14, 15]
+    > enumFromThenTo 10 12 20
+    [10, 12, 14, 16, 18, 20]
+
+
+## 6.10 - The `Show` typeclass
+
+- `Show` allow the creation of a human-readable string representation of structured data (e.g. for GHCi to print values in terminal):
+
+    ```haskell
+    > :i Show
+    class Show a where
+      showsPrec :: Int -> a -> ShowS
+      show :: a -> String
+      showList :: [a] -> ShowS
+    ```
+
+- The type signature of `print` shows us that it outputs the value of a printable type:
+
+    ```haskell
+    > :t print
+    print :: Show a => a -> IO ()
+    ```
+
+- Here, `IO ()` denotes that the result of `print` is an I/O action that returns a value of the type `()`:
+    - `()` is the empty tuple, also referred to as _unit_.
+    - Represents 'nothing' - similar to `void` types in other languaes.
+
+
+## 6.11 - The `Read` typeclass
+
+- `Read` is essentially the opposite of `Show` - takes strings and turns them into things:
+
+    ```haskell
+    > :i Read
+    class Read a where
+      readsPrec :: Int -> ReadS a
+      readList :: ReadS [a]
+      -- And more...
+    ```
+
+- `read` has a problem, in that it is a _partial function_, since an exception might occur if given an unparseable value:
+
+    ```haskell
+    > read "foo" :: Integer
+    *** Exception: Prelude.read: no parse
+    ```
 
 
