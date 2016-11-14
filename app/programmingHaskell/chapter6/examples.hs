@@ -159,5 +159,3 @@ addWeird x y = if x > 1
 -- `Ord`, since `Eq` is a superclass of `Ord`
 check' :: Ord a => a -> a -> Bool
 check' a a' = a == a'
-
-

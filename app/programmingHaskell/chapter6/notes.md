@@ -299,3 +299,33 @@
     ```
 
 
+## 6.12 - Instances are dispatched by type
+
+- _Typeclass instances_ are the unqiue pairing of a typeclass and a type.  They define the way to implement the typeclass methods for that type.
+
+- Haskell uses the type of the thing on which the method is called to dispatch the actual method call.
+
+
+## 6.13 - Using more operations
+
+- If we want our function implementations to use more operations, we need to add further typeclass constraints to the type signature of the function.
+
+- This means that our function is applicable to fewer concrete types, but the function itself is potentially more powerful.
+
+- Concrete types imply all the typeclasses they provide:
+
+    ```haskell
+    add :: Int -> Int -> Int
+    add x y = x + y
+
+    addWeird :: Int -> Int -> Int
+    addWeird x y =
+        if x > 1
+        then x + y
+        else x
+
+    check :: Int -> Int -> Bool
+    check a a' = a == a'
+    ```
+
+  In the above, the `Int` type has the typeclasses `Num`, `Eq` and `Ord` so all the above are type-valid.  We don't need to say, for example, `Ord Int => Int -> Int -> Int` here - the typeclass constraint `Ord Int` is redundant.
