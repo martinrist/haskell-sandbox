@@ -333,6 +333,4 @@
 
 ## 6.16 - Partial typeclass inheritance
 
-- Partial typeclass hierarchy for common typeclasses:
-
 ![Typeclass Hierarchy (partial)](typeclass-hierarchy.png)
