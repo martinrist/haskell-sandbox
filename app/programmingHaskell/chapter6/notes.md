@@ -329,3 +329,10 @@
     ```
 
   In the above, the `Int` type has the typeclasses `Num`, `Eq` and `Ord` so all the above are type-valid.  We don't need to say, for example, `Ord Int => Int -> Int -> Int` here - the typeclass constraint `Ord Int` is redundant.
+
+
+## 6.16 - Partial typeclass inheritance
+
+- Partial typeclass hierarchy for common typeclasses:
+
+![Typeclass Hierarchy (partial)](typeclass-hierarchy.png)
