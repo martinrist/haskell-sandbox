@@ -1,7 +1,7 @@
 module Chapter7 where
 
 -------------------------
--- 7.5 - Pattern Matching
+-- 7.4 - Pattern Matching
 -------------------------
 
 -- We can pattern match on numbers, using _ to match anything unmatched
@@ -57,8 +57,16 @@ addEmUp2 (x, y) = x + y
 
 
 -------------------------
--- 7.6 - Case Expressions
+-- 7.5 - Case Expressions
 -------------------------
+
+data DayOfWeek = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Eq, Show, Enum)
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay d = case d == Sun of
+                 True  -> Mon
+                 False -> succ d
+
 
 -- `case` expressions give an alternative way to write `if-then-else` expressions
 funcZ :: (Num a, Eq a) => a -> String
@@ -75,3 +83,42 @@ pal :: Eq a => [a] -> String
 pal xs = case xs == reverse xs of
               True  -> "yes"
               False -> "no"
+
+
+-------------------------------
+-- 7.6 - Higher-order Functions
+-------------------------------
+
+data Employee = Coder | Manager | Veep | CEO deriving (Eq, Ord, Show)
+
+reportBoss :: Employee -> Employee -> IO ()
+reportBoss e e' =
+    putStrLn $ show e ++ " is the boss of " ++ show e'
+
+employeeRank :: Employee -> Employee -> IO ()
+employeeRank e e' =
+    case compare e e' of
+         GT -> reportBoss e e'
+         EQ -> putStrLn "Neither employee is the boss"
+         LT -> (flip reportBoss) e e'
+
+-- This version allows us to supply a 'comparator':
+employeeRank' :: (Employee -> Employee -> Ordering)
+                -> Employee
+                -> Employee
+                -> IO ()
+employeeRank' f e e' =
+    case f e e' of
+         GT -> reportBoss e e'
+         EQ -> putStrLn "Neither employee is the boss"
+         LT -> (flip reportBoss) e e'
+
+
+
+---------------
+-- 7.7 - Guards
+---------------
+myAbs :: Integer -> Integer
+myAbs x
+    | x < 0     = (-x)
+    | otherwise = x
