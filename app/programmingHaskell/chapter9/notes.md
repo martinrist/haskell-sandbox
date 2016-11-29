@@ -46,7 +46,7 @@
     ```haskell
     > [1..10]
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    
+
     > [1,3..10]
     [1, 3, 5, 7, 9]
     ```
@@ -56,3 +56,63 @@
     ```haskell
     > ['t'..'z']
     "tuvwxyz"
+    ```
+
+
+## 9.6 - Extracting portions of lists
+
+- `take` and `drop` take or drop elements from the start of a list
+
+    ```haskell
+    take :: Int -> [a] -> [a]
+    drop :: Int -> [a] -> [a]
+
+    > take 7 ['a'..'z']
+    "abcdefg"
+
+    > take 3 []
+    []
+
+    > drop 5 [1..10]
+    [6, 7, 8, 9, 10]
+
+    > drop 4 []
+    []
+    ```
+
+- `take` can operate on infinite lists:
+
+    ```haskell
+    > take 3 (enumFrom 1)
+    [1, 2, 3]
+    ```
+
+- `splitAt` cuts a list into two parts at the element specified, and makes a tuple of two lists:
+
+    ```haskell
+    splitAt :: Int -> [a] -> ([a], [a])
+
+    > splitAt 5 [1..10]
+    ([1, 2, 3, 4, 5], [6, 7, 8, 9, 10])
+    ```
+
+- Higher-order functions `takeWhile` and `dropWhile` take a predicate and take / drop items from a list that meet some conditions.  They stop at the first element that doesn't satisfy the condition:
+
+    ```haskell
+    takeWhile :: (a -> Bool) -> [a] -> [a]
+    dropWhile :: (a -> Bool) -> [a] -> [a]
+
+    > takeWhile (<3) [1..10]
+    [1, 2]
+
+    > takeWhile (<8) (enumFromTo 5 15)
+    [5, 6, 7]
+
+    > takeWhile (>6) [1..10]
+    []
+
+    > dropWhile (<3) [1..10]
+    [3, 4, 5, 6, 7, 8, 9, 10]
+    ```
+
+
