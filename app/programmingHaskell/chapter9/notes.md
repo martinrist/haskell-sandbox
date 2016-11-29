@@ -12,3 +12,29 @@
     - The `[]` data constructor is a _nullary constructor_ because it takes no arguments.
     - The second data constructor uses the _cons_ infix operator `:`.
     - So, the `[]` data type is a _sum_ type, but the second data constructor is a _product_ type.
+
+
+## 9.3 - Pattern matching on lists
+
+- Pattern matching can be carried out on lists just like other data constructors:
+
+    ```haskell
+    > let myHead (x : _) = x
+    > myHead [1, 2, 3]
+    1
+    
+    > let myTail (_ : xs) = xs
+    > myTail [1, 2, 3]
+    [2, 3]
+    ```
+
+## 9.4 - `List`'s syntactic sugar
+
+- We can use list literal syntax instead of manually constructing cons cells:
+
+    ```haskell
+    > 1 : 2 : 3 : []
+    [1, 2, 3]
+    > ['a', 'b', 'c']
+    ['a', 'b', 'c']
+    ```
