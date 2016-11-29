@@ -38,3 +38,21 @@
     > ['a', 'b', 'c']
     ['a', 'b', 'c']
     ```
+
+## 9.5 - Using ranges to construct lists
+
+- Lists can also be constructed using _ranges_ (inclusive), e.g.:
+
+    ```haskell
+    > [1..10]
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    
+    > [1,3..10]
+    [1, 3, 5, 7, 9]
+    ```
+
+- The range syntax works with any datatype that has an instance of `Enum`:
+
+    ```haskell
+    > ['t'..'z']
+    "tuvwxyz"
