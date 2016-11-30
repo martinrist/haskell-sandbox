@@ -324,3 +324,59 @@
     > take 2 $ map (+1) [1, 2, undefined]
     [2, 3]
     ```
+
+
+## 9.10 - Filtering lists of values
+
+- `filter` allows us to remove values from a list that don't meet a predicate:
+
+    ```haskell
+    filter :: (a -> Bool) -> [a] -> [a]
+    filter _ []    = []
+    filter pred (x:xs)
+        | pred x    = x : filter pred xs
+        | otherwise = filter pred xs
+
+    > filter odd [1..10]
+    [1, 3, 5, 7, 9]
+
+    > filter (\x -> (rem x 2) == 0) [1..10]
+    [2, 4, 6, 8, 10]
+    ```
+
+
+## 9.11 - Zipping lists
+
+- Zipping lists together is a way to combine multiple lists into a single list:
+
+    ```haskell
+    > :t zip
+    zip :: [a] -> [b] -> [(a, b)]
+
+    > zip [1, 2, 3] ['a', 'b', 'c']
+    [(1, 'a'), (2, 'b'), (3, 'c')]
+    ```
+
+- `zip` stops as soon as one list runs out, which means that one list can be infinite:
+
+    ```haskell
+    > zip (enumFrom 1) ['a', 'b', 'c']
+    [(1, 'a'), (2, 'b'), (3, 'c')]
+    ```
+
+- `unzip` recovers the lists as they were originally:
+
+    ```haskell
+    > :t unzip
+    unzip :: [(a, b)] -> ([a], [b])
+
+    > unzip $ zip [1, 2, 3] ['a', 'b', 'c']
+    ([1, 2, 3], "abc")
+    ```
+
+- `zipWith` applies a function to zip the values together:
+
+    ```haskell
+    > zipWith (+) [1, 2, 3] [10, 11, 12]
+    [11, 13, 15]
+    ```
