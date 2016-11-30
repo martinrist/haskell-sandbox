@@ -116,3 +116,211 @@
     ```
 
 
+
+## 9.7 - List comprehensions
+
+- _List comprehensions_ allow us to generate a new list from one or more existing lists (called _generators_):
+
+    ```haskell
+    > [ x ^ 2 | x <- [1..10]]
+    [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+    ```
+
+- List comprehensions can optionally take _predicates_ that filter elemnets from the generator:
+
+    ```haskell
+    > [ x ^ 2 | x <- [1..10], rem x 2 == 0]
+    [4, 16, 36, 64, 100]
+    ```
+
+- List comprehensions can have multiple generators.  The last generator is exhausted first, then we go onto the next value from the first generator:
+
+    ```haskell
+    > [ x ^ y | x <- [1..5], y <- [2, 3]]
+    [1, 1, 4, 8, 9, 27, 16, 64, 25, 125]
+    ```
+
+- Strings are lists, so list comprehensions work with string as well:
+
+    ```haskell
+    > [x | x <- "Three Letter Acronym", elem x ['A'..'Z']]
+    "TLA"
+    ```
+
+
+## 9.8 - Spines and nonstrict evaluation
+
+- Given a list [1, 2, 3], this can be represented in various ways:
+
+    ```
+    [1, 2, 3]           - the list literal
+
+    1 : 2 : 3 : []      - a series of 'cons cells'
+
+    1 : (2 : (3 : []))  - parenthesised version of above
+
+      :                 - 'spine' and 'value' representation
+     / \
+    1   :
+       / \
+      2   :
+         / \
+        3   []
+    ```
+
+- It is possible to evaluate just the spine of the list without evaluating individual values.  It's also possible to evaluate only part of the spine of a list and not the rest of it.
+
+- GHCi offers a command `:sprint`, which prints a value without forcing its evaluation:
+
+    ```haskell
+    > let blah = enumFromTo 'a' 'z'
+
+    > :sprint blah
+    blah = _
+    ```
+
+- We can start to force evaluation of the list by taking elements from it.  This evaluates one cons cell `:` and the first value `'a'`:
+
+    ```haskell
+    > take 1 blah
+    "a"
+
+    > :sprint blah
+    blah = 'a' : _
+    ```
+
+- Taking a second vlaue forces evaluation of the second cons cell and value:
+
+    ```haskell
+    > take 2 blah
+    "ab"
+
+    > :sprint blah
+    blah = 'a' : 'b' : _
+    ```
+
+- Values in Haskell can be in _normal form_ or _weak head normal form_:
+    - _Normal form (NF)_ - the expression is fully evaluated.
+    - _Weak head normal form (WHNF)_ - the expression is only evaluated as far as is necessary to reach a data constructor, or a lambda awaiting an argument.
+
+- NF is a subset of WHNF - for an expression in WHNF, further evaluation may be possible once another argument is provided:
+    - If no further inputs are possible, the expression is also in NF.
+
+- Examples:
+
+    ```haskell
+    (1, 2)              - WHNF & NF - clearly fully evaluated.
+    (1, 1 + 1)          - WHNF but not NF - the (+) could be evaluated but hasn't been yet.
+    \x -> x * 10        - WHNF & NF - (*) cannot be reduced further until the outer x -> ... has been applied.
+    "ab" ++ "cd"        - Neither WHNF nor NF - outermost component of the expression is an unapplied function.
+    (1, "ab" ++ "cd")   - WHNF but not NF.
+    ```
+
+- When we define a list and all its values (e.g. through a list literal), it is in NF and all values are known:
+
+    ```haskell
+    > let num :: [Int]; num = [1, 2, 3]
+    > :sprint num
+    num = [1, 2, 3]
+    ```
+
+- On the other hand, constructing a list through functions (e.g. `enumFromTo`) or ranges results in a list in WHNF:
+
+    ```haskell
+    > let num :: [Int]; num = [1..10]
+    > :sprint num
+    num = _
+    ```
+
+- `length` is only strict in the spine, meaning it only forces evaluation of the spine, not the values.  Unfortunately, `:sprint` behaves as if it were strict in the values as well:
+
+    ```haskell
+    > length blah
+    26
+
+    > :sprint blah
+    blah = "abcdefghijklmnopqrstuvwxyz"
+    ```
+
+- We can demonstrate that `length` is only spine-strict by making a value _bottom_ (with `undefined`) and noting that it doesn't blow up:
+
+    ```haskell
+    > let x = [1, undefined, 3]
+    > length x
+    3
+
+    > foldr (+) 0 x
+    *** Exception: Prelude.undefined
+    ```
+
+- If we define our own version of `length`:
+
+    ```haskell
+    length' :: [a] -> Integer
+    length' [] = 0
+    length' (_:xs) = 1 + length xs
+    ```
+
+    This only forces the `:` data constructors and the final `[]`, so the list looks like this:
+
+    ```
+            :       <-|
+           / \        |
+      |-> _   :     <-|
+      |      / \      | These got evaluated (forced)
+      |->   _   :     |
+      |        / \    |
+      |->     _  [] <-|
+      |
+      | These did not
+    ```
+
+- However, `length` will throw an error on a _bottom_ value if it's part of the spine:
+
+    ```haskell
+    > let x = [1] ++ undefined ++ [3]
+    > length x
+    *** Exception: Prelude.undefined
+    ```
+
+
+## 9.9 - Transforming lists of values
+
+- Generally speaking, we want to use higher-order functions for transforming lists of data, rather than manually recursing over them.
+
+- To apply a function to elements, use `map` for `[]`, or `fmap` for datatypes that have an instance of `Functor`:
+
+    ```haskell
+    > :t map
+    map :: (a -> b) -> [a] -> [b]
+
+    > map (+1) [1, 2, 3]
+    [2, 3, 4]
+
+    > :t fmap
+    fmap :: Functor f => (a -> b) -> f a -> f b
+
+    > fmap (+1) (Just 2)
+    Just 3
+
+    > fmap (+1) Nothing
+    Nothing
+    ```
+
+- `map` is defined as follows in `Base`:
+
+    ```haskell
+    map :: (a ->b) -> [a] -> [b]
+    map _ []     = []
+    map f (x:xs) = f x : map f xs
+    ```
+
+- `map` is non-strict in values, so they're only evaluated if taken:
+
+    ```haskell
+    > map (+1) [1, 2, undefined]
+    [2, 3,*** Exception: Prelude.undefined
+
+    > take 2 $ map (+1) [1, 2, undefined]
+    [2, 3]
+    ```
