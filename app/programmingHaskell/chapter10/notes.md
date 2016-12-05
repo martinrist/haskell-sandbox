@@ -88,4 +88,46 @@
 
 - The difference between left and right folds is in the association of the folding functions, and therefore the direction in which folding or reduction proceeds.
 
-- 
+
+## 10.5 - Fold left
+
+- Left folds traverse the spine in the same direction as right folds, but the folding process is _left associative_ and proceeds in the opposite direction:
+
+    ```haskell
+    foldl :: (b -> a -> b) -> b -> [a] -> [b]
+    foldl f acc []     = acc
+    foldl f acc (x:xs) = foldl f (f acc x) xs
+    ```
+
+    Note that the signature of the folding function `f` is `b -> a -> b`, whereas for `foldr` it was `a -> b -> b`.
+
+- Example evaluation, showing the left-associativity of `foldl`:
+
+    ```haskell
+
+       foldl (+) 0 [1, 2, 3]
+    => foldl (+) (0 + 1) [2, 3]
+    => foldl (+) ((0 + 1) + 2) [3]
+    => foldl (+) (((0 + 1) + 2) + 3) []
+    =>           (((0 + 1) + 2) + 3)
+    =>           6
+    ```
+
+- Note that `foldl` begins the reduction process by adding the `acc` (accumulator) value to the start of the list, whereas `foldr` adds it to the end.
+
+- The difference between `foldl` and `foldr` is harder to see with associative functions, because they come up with the same result.  However, with a non-associative function like `(^)`:
+
+    ```haskell
+    > foldr (^) 2 [1..3]
+    1                       -- i.e. (1 ^ (2 ^ (3 ^ 2))) = (1 ^ (2 ^ 9)) = 1 ^ 512 = 1
+
+    > foldl (^) 2 [1..3]
+    64                      -- ie (((2 ^ 1) ^ 2) ^ 3) = (2 ^ 2) ^ 3 = 4 ^ 3 = 64
+    ```
+
+
+## 10.6 - How to write fold functions
+
+- First step is to consider the start value for the fold - usually the identity for the folding function - e.g. `0` for `(+)`.
+
+- Next step is to consider the arguments - `a` and `b`, where `a` is one of the elements of the list, and `b` is either the start value, or the value accumulated by the list being processed.
