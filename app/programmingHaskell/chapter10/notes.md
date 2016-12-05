@@ -104,7 +104,6 @@
 - Example evaluation, showing the left-associativity of `foldl`:
 
     ```haskell
-
        foldl (+) 0 [1, 2, 3]
     => foldl (+) (0 + 1) [2, 3]
     => foldl (+) ((0 + 1) + 2) [3]
@@ -131,3 +130,93 @@
 - First step is to consider the start value for the fold - usually the identity for the folding function - e.g. `0` for `(+)`.
 
 - Next step is to consider the arguments - `a` and `b`, where `a` is one of the elements of the list, and `b` is either the start value, or the value accumulated by the list being processed.
+
+
+## 10.7 - Folding and evaluation
+
+- `foldr` means the folding function evaluates from the innermost cons cell to the outermost (the head).  `foldl` recurses unconditionally to the end of the list through self-calls.  This has an impact on evaluation:
+
+    ```haskell
+    > take 3 $ foldr (:) [] ([1, 2, 3] ++ undefined)
+    [1, 2, 3]
+
+    > take 3 $ foldl (flip (:)) ([1, 2, 3] ++ undefined)
+    *** Exception: Prelude.undefined
+    ```
+
+- Consider `const`, which takes two arguments and always returns the first, ignoring the second:
+
+    ```haskell
+    > :t const
+    const :: a -> b -> a
+
+    > const 42 "foo"
+    42
+    ```
+
+- Using `const` as the folding function for a right fold shows that the spine isn't fully evaluated:
+
+    ```haskell
+      foldr const 0 ([1] ++ undefined)
+    =       const     1 (foldr const 0 ...)
+    =                 1
+    ```
+
+
+
+## 10.8 - Summary
+
+- `foldr`:
+
+    ```haskell
+    foldr :: (a -> b -> b) -> b -> [a] -> b
+    foldr _ z []     = z
+    foldr f z (x:xs) = f x (foldr f z xs)
+    ```
+
+    - The recursive invocation of `foldr` is the second argument to the folding function `f`.
+    - Effectively 'alternates' between applications of `foldr` and the folding function `f`.
+    - Associates to the right.
+    - Works with infinite lists.
+    - Is a good default choice, for both finite and infinite structures.
+
+- `foldl`:
+
+    ```haskell
+    foldl :: (b -> a -> b) -> b -> [a] -> [b]
+    foldl f acc []     = acc
+    foldl f acc (x:xs) = foldl f (f acc x) xs
+    ```
+
+    - `foldl` self-calls (via a tail-call) through the list, only beginning to produce values after it's reached the end of the list.
+    - Associates to the left.
+    - Cannot be used with infinite lists - will cause REPL to hang.
+    - Nearly useless - should almost always be replaced with `foldl'` for efficiency reasons.
+
+
+## 10.9 - Scans
+
+- Scans work similarly to both maps and folds:
+    - They accumulate values like folds instead of keeping the list's individual values separate.
+    - Like maps, they return a list of results.
+    - The results returned show the intermediate results of the folds.
+
+- Comparison of fold / scan function signatures, shows that the only difference is the list being returned:
+
+    ```haskell
+    foldr :: (a -> b -> b) -> b -> [a] -> b
+    scanr :: (a -> b -> b) -> b -> [a] -> b
+
+    foldl :: (b -> a -> b) -> b -> [a] -> b
+    scanl :: (b -> a -> b) -> b -> [a] -> b
+    ```
+
+- Example scans show the different association rules:
+
+    ```haskell
+    > scanr (+) 0 [1..5]
+    [15, 14, 12, 9, 5, 0]
+
+    > scanl (+) 0 [1..5]
+    [0, 1, 3, 6, 10, 15]
+    ```
