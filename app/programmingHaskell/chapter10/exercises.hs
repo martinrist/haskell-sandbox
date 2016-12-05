@@ -2,6 +2,7 @@
 -- Chapter 10 - Exercises
 -------------------------
 import Data.Time
+import Data.Maybe (mapMaybe)
 
 -- Exercises: Understanding Folds
 ---------------------------------
@@ -59,6 +60,15 @@ getDbDate (DbDate x) = x
 filterDbDate :: [DatabaseItem] -> [UTCTime]
 filterDbDate = map getDbDate . filter isDbDate
 
+-- Better version, using Maybe and mapMaybe
+maybeDbDate :: DatabaseItem -> Maybe UTCTime
+maybeDbDate (DbDate x) = Just x
+maybeDbDate _          = Nothing
+
+filterDbDate' :: [DatabaseItem] -> [UTCTime]
+filterDbDate' = mapMaybe maybeDbDate
+
+
 
 -- Question 2
 isDbNumber :: DatabaseItem -> Bool
@@ -71,19 +81,32 @@ getDbNumber (DbNumber x) = x
 filterDbNumber :: [DatabaseItem] -> [Integer]
 filterDbNumber = map getDbNumber . filter isDbNumber
 
+-- Better version, using Maybe and mapMaybea
+maybeDbNumber :: DatabaseItem -> Maybe Integer
+maybeDbNumber (DbNumber x) = Just x
+maybeDbNumber _ = Nothing
+
+filterDbNumber' :: [DatabaseItem] -> [Integer]
+filterDbNumber' = mapMaybe maybeDbNumber
+
 
 -- Question 3
+
+epochTime :: UTCTime
+epochTime = (UTCTime (fromGregorian 1900 1 1)
+                 (secondsToDiffTime 0))
+
 mostRecent :: [DatabaseItem] -> UTCTime
-mostRecent = foldr max (UTCTime (fromGregorian 1900 1 1) (secondsToDiffTime 0)) . filterDbDate
+mostRecent = foldr max epochTime . filterDbDate'
 
 
 -- Question 4
 sumDb :: [DatabaseItem] -> Integer
-sumDb = foldr (+) 0 . filterDbNumber
+sumDb = foldr (+) 0 . filterDbNumber'
 
 
 -- Question 5
 avgDb :: [DatabaseItem] -> Double
 avgDb xs = (fromIntegral sum) / (fromIntegral count)
     where sum = sumDb xs
-          count = length (filterDbNumber xs)
+          count = length (filterDbNumber' xs)
