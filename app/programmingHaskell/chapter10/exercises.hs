@@ -110,3 +110,27 @@ avgDb :: [DatabaseItem] -> Double
 avgDb xs = (fromIntegral sum) / (fromIntegral count)
     where sum = sumDb xs
           count = length (filterDbNumber' xs)
+
+
+
+-- Chapter Exercises
+--------------------
+
+-- Warm-up and review
+---------------------
+
+-- Question 1
+stops = "pbtdkg"
+vowels = "aeiou"
+
+stopVowelStops = [(s1, v, s2) | s1 <- stops, v <- vowels, s2 <- stops]
+
+stopVowelStops' = [('p', v, s2) | v <- vowels, s2 <- stops]
+
+-- Question 2
+seekritFunc x = div (sum (map length (words x)))
+                    (length (words x))
+
+-- Question 3
+seekritFunc' x = (/) (fromIntegral (sum (map length (words x))))
+                    (fromIntegral (length (words x)))
