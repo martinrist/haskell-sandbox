@@ -134,3 +134,94 @@ seekritFunc x = div (sum (map length (words x)))
 -- Question 3
 seekritFunc' x = (/) (fromIntegral (sum (map length (words x))))
                     (fromIntegral (length (words x)))
+
+
+-- Rewriting functions using folds
+----------------------------------
+
+-- Example - myAnd
+-- Direct recursion
+myAnd1 :: [Bool] -> Bool
+myAnd1 []     = True
+myAnd1 (x:xs) = if x == False
+                then False
+                else myAnd1 xs
+
+-- Direct recursion, using (&&)
+myAnd2 :: [Bool] -> Bool
+myAnd2 []     = True
+myAnd2 (x:xs) = x && myAnd2 xs
+
+-- fold, not point-free in the folding function
+myAnd3 :: [Bool] -> Bool
+myAnd3 = foldr (\a b ->
+                    if a == False
+                    then False
+                    else b) True
+
+-- fold, fully point-free
+myAnd4 :: [Bool] -> Bool
+myAnd4 = foldr (&&) True
+
+
+-- Question 2 - myOr
+myOr :: [Bool] -> Bool
+myOr = foldr (||) False
+
+
+-- Question 3 - myElem
+myElem :: Eq a => a -> [a] -> Bool
+myElem x = foldr
+            (\a _ -> a == x)
+            False
+
+myElem' :: Eq a => a -> [a] -> Bool
+myElem' x = foldr ((||).(== x)) False
+
+
+-- Question 4 - myReverse
+myReverse :: [a] -> [a]
+myReverse = foldl (flip (:)) []
+
+
+-- Question 5 - myMap
+myMap :: (a -> b) -> [a] -> [b]
+myMap f = foldr ((:).f) []
+
+
+-- Question 6 - myFilter
+myFilter :: (a -> Bool) -> [a] -> [a]
+myFilter pred = foldr (\x ys -> if pred x
+                                then x:[] ++ ys
+                                else ys)
+                      []
+
+
+-- Question 7 - squish
+squish :: [[a]] -> [a]
+squish = foldr (++) []
+
+
+-- Question 8 - squishMap
+squishMap :: (a -> [b]) -> [a] -> [b]
+squishMap f = foldr ((++).f) []
+
+
+-- Question 9 - squishAgain
+squishAgain = squishMap id
+
+
+-- Question 10 - myMaximumBy
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy f xs = foldr (\x y -> if f x y == GT
+                                  then x
+                                  else y)
+                         (head xs) xs
+
+
+-- Question 11 - myMinimumBy
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy f xs = foldr (\x y -> if f x y == LT
+                                  then x
+                                  else y)
+                         (head xs) xs
