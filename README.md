@@ -6,3 +6,4 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 7 - More functional patterns](app/programmingHaskell/chapter7/notes.md)
 - [Chapter 8 - Recursion](app/programmingHaskell/chapter8/notes.md)
 - [Chapter 9 - Lists](app/programmingHaskell/chapter9/notes.md)
+- [Chapter 10 - Folding Lists](app/programmingHaskell/chapter10/notes.md)
