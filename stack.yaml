@@ -16,9 +16,7 @@
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
 
-# Force use of stack lts-6.x to ensure ghc 10.7.3 on Linux
-#resolver: lts-7.8
-resolver: lts-6.24
+resolver: lts-7.12
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
