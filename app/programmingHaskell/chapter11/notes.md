@@ -82,3 +82,22 @@
     data DogueDeBordeaux doge = DogueDeBordeax doge
     ```
 
+
+## 11.6 - What's a type and what's data?
+
+- Types are static and resolve at compile time - they are known before runtime, either through explicit declaration or type inference.
+
+- Type constructors appear on the left-hand side of the `=` in data declarations, data constructors on the right:
+    - The exception is where a data constructor has a reference to a concrete type as an argument:
+
+    ```haskell
+    data Price = Price Integer deriving (Eq, Show)
+    data Manufacturer = Mini | Mazda | Tata deriving (Eq, Show)
+    data Airline = PapuAir | CatapultsR'Us | TakeYourChancesUnited deriving (Eq, Show)
+
+    data Vehicle = Car Manufacturer Price
+                 | Plane Airline
+                 deriving (Eq, Show)
+    ```
+
+

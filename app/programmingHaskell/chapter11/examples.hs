@@ -29,3 +29,17 @@ data Doggies a =
       Husky a
     | Mastiff a
     deriving (Eq, Show)
+
+
+----------------------------------------
+-- 11.6 - What's a type and what's data?
+----------------------------------------
+
+data Price = Price Integer deriving (Eq, Show)
+
+data Manufacturer = Mini | Mazda | Tata deriving (Eq, Show)
+
+data Airline = PapuAir | CatapultsR'Us | TakeYourChancesUnited deriving (Eq, Show)
+
+data Vehicle = Car Manufacturer Price
+             | Plane Airline
