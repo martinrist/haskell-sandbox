@@ -221,3 +221,28 @@
     > age me
     42
     ```
+
+
+## 11.12 - Normal form
+
+- A datatype definition is said to be in _normal form_ if it is expressed as a 'sum of products'.
+
+- To express something as _normal form_, we can use the fact that products distribute over sums:
+
+    ```haskell
+    data Fiction = Fiction deriving Show
+    data Nonfiction = Nonfiction deriving Show
+
+    -- `BookType` is a sum of two types
+    data BookType = FictionBook Fiction
+                  | NonfictionBook Nonfiction
+                  deriving Show
+
+    type AuthorName = String
+
+    -- `Author` is a product of `AuthorName` and `BookType`)
+    data Author = Author (AuthorName, BookType)
+
+    -- This is equivalent
+    data Author' = Fiction AuthorName | Nonfiction AuthorName deriving (Eq, Show)
+    ```

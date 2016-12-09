@@ -73,3 +73,22 @@ data PersonRecord = PersonRecord { name :: String
                                  , age :: Int }
                                  deriving (Eq, Show)
 
+
+----------------------
+-- 11.12 - Normal form
+----------------------
+
+-- Two simple datatypes, each with nullary constructors - cardinality = 1
+data Fiction = Fiction deriving Show
+data Nonfiction = Nonfiction deriving Show
+
+-- A sum type, with cardinality 2
+data BookType = FictionBook Fiction
+              | NonfictionBook Nonfiction
+              deriving Show
+
+-- A simple type synonym - infinite cardinality
+type AuthorName = String
+
+-- Product type 
+data Author = Author (AuthorName, BookType)
