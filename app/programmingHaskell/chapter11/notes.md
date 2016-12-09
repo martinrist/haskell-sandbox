@@ -115,3 +115,109 @@
     -- product of Int and String
     data Example2 = Example2 Int String deriving (Eq, Show)
     ```
+
+
+## 11.8 - What makes these datatypes algebraic?
+
+- Datatypes in Haskell are said to be _algebraic_ because we can describe them in terms of _sum_ and _product_ operations.
+
+- The _cardinality_ of a datatype is the number of possible values it defines, e.g.:
+    - `Bool` can have 2 values - `True` or `False` => cardinality = 2.
+    - `Int8` can have values from `-128` to `127` => cardinality = 256.
+    - `Integer` is unbounded => cardinality = infinite.
+    - `[Bool]` can be of any length => cardinality = infinite, although the cardinality of the members is 2.
+
+- Simple types with nullary data constructors have a cardinality of 1:
+
+    ```haskell
+    -- Only possible value is `MakeExample` => cardinality = 1
+    data Example = MakeExample deriving Show
+    ```
+
+- Datatypes with unary data constructors have the same cardinality as the type used in the type argument.  In other words, unary constructors are an identity function for cardinality:
+
+    ```haskell
+    -- Cardinality of `Goats` = cardinality of `Int`
+    data Goats = Goats Int deriving (Eq, Show)
+    ```
+
+
+## 11.9 - `newtype`
+
+- We can use `newtype` to mark a type that can only ever have a single unary data constructor:
+
+    ```haskell
+    newtype Goats = Goats Int deriving (Eq, Show)
+
+    newtype Cows = Cows Int deriving (Eq, Show)
+    ```
+
+- These are differnt from type declarations marked with the `data` keyword, as well as type synonyms marked using the `type` keyword.
+
+- Cardinality of a `newtype` is the same as that of the type it contains.
+
+- A `newtype` cannot be a product type, sum type or contain a nullary constructor.
+
+- A `newtype` has various advantages over a basic `data` declaration:
+    - No runtime overhead, since it reuses the representation of the type it contains.
+    - Can define a typelcass instance for `newtype`s that differ from the instances for their underlying type.
+
+
+## 11.10 - Sum types
+
+- Sum types are represented with `|`, which represents logical disjunction / 'or'.
+
+- The cardinality of a sum type is the sum of the cardinalities of their data constructors.
+
+
+## 11.11 - Product types
+
+- Product types are types with more than one type argument.  They correspond to logical conjunction / 'and'.
+
+- The cardinality of a product type is the product of the cardinalities of the type parameters:
+
+    ```haskell
+    -- This sum type has cardinality 3
+    data QuantumBool = QuantumTrue
+                     | QuantumFalse
+                     | QuantumBoth deriving (Eq, Show)
+
+    -- This product type has cardinality 9 (i.e. 3 * 3)
+    data TwoQs = MkTwoQs QuantumBool QuantumBool
+                    deriving (Eq, Show)
+    ```
+
+- _Records_ in Haskell are product types with additional syntax to provide convenient field accessors:
+
+    ```haskell
+    -- Without records, you have to write accessors explicitly
+    data Person = MkPerson String Int deriving (Eq, Show)
+
+    getName :: Person -> String
+    getName (MkPerson s _) = s
+
+    getAge :: Person -> Int
+    getAge (MkPerson _ i) = i
+
+    -- With records
+
+    data PersonRecord = PersonRecord { name :: String
+                                     , age :: Int }
+                                     deriving (Eq, Show)
+
+    > :t name
+    name :: PersonRecord -> String
+
+    > :t age
+    age :: PersonRecord -> String
+
+    > let me = PersonRecord "Name" 42
+    > me
+    PersonRecord {name = "Name", age = 42}
+
+    > name me
+    "Name"
+
+    > age me
+    42
+    ```

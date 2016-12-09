@@ -43,3 +43,33 @@ data Airline = PapuAir | CatapultsR'Us | TakeYourChancesUnited deriving (Eq, Sho
 
 data Vehicle = Car Manufacturer Price
              | Plane Airline
+
+
+------------------------
+-- 11.11 - Product Types
+------------------------
+
+-- This sum type has cardinality 3
+data QuantumBool = QuantumTrue
+                 | QuantumFalse
+                 | QuantumBoth deriving (Eq, Show)
+
+-- This product type has cardinality 9 (i.e. 3 * 3)
+data TwoQs = MkTwoQs QuantumBool QuantumBool
+              deriving (Eq, Show)
+
+
+-- Person datatype without records requires manually-defined accessors
+data Person = MkPerson String Int deriving (Eq, Show)
+
+getName :: Person -> String
+getName (MkPerson s _) = s
+
+getAge :: Person -> Int
+getAge (MkPerson _ i) = i
+
+-- With records...
+data PersonRecord = PersonRecord { name :: String
+                                 , age :: Int }
+                                 deriving (Eq, Show)
+
