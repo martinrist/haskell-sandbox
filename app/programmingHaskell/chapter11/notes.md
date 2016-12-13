@@ -267,7 +267,7 @@
 
     ```haskell
     data Id a = MkId a deriving (Eq, Show)
-    
+
     idInt :: Id Integer
     idInt = MkId 10
     ```
@@ -285,7 +285,7 @@
     data Product a b = Product a b deriving (Eq, Show)
     type Awesome = Bool
     type Name = String
-    
+
     person :: Product Name Awesome
     person = Product "Simon" True
     ```
@@ -296,7 +296,7 @@
     data Sum a b = First a | Second b deriving (Eq, Show)
     data Twitter = Twitter deriving (Eq, Show)
     data AskFm = AskFm deriving (Eq, Show)
-    
+
     socialNetwork :: Sum Twitter AskFm
     socialNetwork = First Twitter
     ```
@@ -307,7 +307,7 @@
 - When calculating inhabitants of types, the type of functions (`(->)`) is the exponent operator:
     - `|a -> b|` is `|b| ^ |a|` where `| |` represents the cardinality of a type.
     - This is the number of possible implementations of the function.
-    
+
 - For a function `a -> b -> c`:
     - `|a -> b -> c| = (|c| ^ |b|) ^ |a| = |c| ^ (|b| * |a|)`
     - This is equal to `|(a, b) -> c|` - i.e. treating it as a function of a tuple argument (itself a product type).
@@ -325,16 +325,16 @@
     ```haskell
     > :k (, , , )
     (, , , ) :: * -> * -> * -> * -> *
-    
+
     > :k (Int, , , )
     (Int, , , ) :: * -> * -> * -> *
-    
+
     > :k (Int, String, , )
     (Int, String, , ) :: * -> * -> *
 
     > :k (Int, String, Bool, )
     (Int, String, Bool, ) :: * -> *
-    
+
     > :k (Int, String, Bool, String)
     (Int, String, Bool, String) :: *
     ```
@@ -363,7 +363,7 @@
     data Product a b =
         a :&: b
         deriving (Eq, Show)
-    
+
     > :t 1 :&: 2
     1 :&: 2 :: (Num a, Num b) => Product a b
     ```
@@ -372,21 +372,76 @@
 
     ```haskell
     data List a = Nil | Cons a (List a)
-    
+
     -- `Nil` on its own doesn't apply the type parameter
     > let nil = Nil
     > :t nil
     nil :: List a
-    
+
     > let oneItem = (Cons "hello" Nil)
     > :t oneItem
     oneItem :: List [Char]
-    
+
     -- `List` is a higher-kinded type
     > :k List
     List :: * -> *
-    
+
     -- `List Int` has been fully-applied
     > :k List Int
     List Int :: *
+    ```
+
+
+## 11.17 - Binary tree
+
+- We can define a recursive data type that represents a _binary tree_:
+
+    ```haskell
+    data BinaryTree a =
+        Leaf
+      | Node (BinaryTree a) a (BinaryTree a)
+      deriving (Eq, Ord, Show)
+    ```
+
+- Inserting into binary trees is often done such that lesser nodes are to the left:
+
+    ```haskell
+    insert' :: Ord a => a -> BinaryTree a -> BinaryTree a
+    insert' b Leaf = Node Leaf b Leaf
+    insert' b (Node left a right)
+        | b == a = Node left a right
+        | b < a  = Node (insert' b left) a right
+        | b > a  = Node left a (insert' b right)
+    ```
+
+- To map over a binary tree:
+
+    ```haskell
+    mapTree :: (a -> b) -> BinaryTree a -> BinaryTree b
+    mapTree _ Leaf = Leaf
+    mapTree f (Node left a right) =
+        Node (mapTree f left) (f a) (mapTree f right)
+    ```
+
+- Tree traversal can be _pre-order_, _in-order_ or _post-order_:
+
+    ```haskell
+    preorder :: BinaryTree a -> [a]
+    preorder Leaf = []
+    preorder (Node left a right) = a : [] ++ preorder left ++ preorder right
+
+    inorder :: BinaryTree a -> [a]
+    inorder Leaf = []
+    inorder (Node left a right) = inorder left ++ a : [] ++ inorder right
+
+    postorder :: BinaryTree a -> [a]
+    postorder Leaf = []
+    postorder (Node left a right) = postorder left ++ postorder right ++ a : []
+    ```
+
+- We can then implement `foldTree` thus:
+
+    ```haskell
+    foldTree :: (a -> b -> b) -> b -> BinaryTree a -> b
+    foldTree f z = foldr f z . inorder
     ```
