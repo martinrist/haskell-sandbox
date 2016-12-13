@@ -246,3 +246,47 @@
     -- This is equivalent
     data Author' = Fiction AuthorName | Nonfiction AuthorName deriving (Eq, Show)
     ```
+
+
+## 11.13 - Constructing & deconstructing values
+
+- TO BE COMPLETED
+
+
+## 11.14 - Function type is exponential
+
+- When calculating inhabitants of types, the type of functions (`(->)`) is the exponent operator:
+    - `|a -> b|` is `|b| ^ |a|` where `| |` represents the cardinality of a type.
+    - This is the number of possible implementations of the function.
+    
+- For a function `a -> b -> c`:
+    - `|a -> b -> c| = (|c| ^ |b|) ^ |a| = |c| ^ (|b| * |a|)`
+    - This is equal to `|(a, b) -> c|` - i.e. treating it as a function of a tuple argument (itself a product type).
+
+
+## 11.15 - Higher-kinded datatypes
+
+- Recall from earlier that kinds are the types of type constructors:
+    - A concrete type such as `Integer` has a kind of `*`.
+    - Types such as `[a]` have a kind of `* -> *`, and are waiting for a single `*` (corresponding to the type argument `a`) before they are fully-applid.
+    - These are known as _higher-kinded types_.
+
+- Example for tuple types (like product type):
+
+    ```haskell
+    > :k (, , , )
+    (, , , ) :: * -> * -> * -> * -> *
+    
+    > :k (Int, , , )
+    (Int, , , ) :: * -> * -> * -> *
+    
+    > :k (Int, String, , )
+    (Int, String, , ) :: * -> * -> *
+
+    > :k (Int, String, Bool, )
+    (Int, String, Bool, ) :: * -> *
+    
+    > :k (Int, String, Bool, String)
+    (Int, String, Bool, String) :: *
+    ```
+
