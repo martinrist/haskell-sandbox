@@ -250,7 +250,56 @@
 
 ## 11.13 - Constructing & deconstructing values
 
-- TO BE COMPLETED
+- There are two things we can do with a value:
+    - Generate or construct it.
+    - Match on it and consume it.
+
+- Example of constructing a trivial type with a nullary constructor, equivalent to the `()` unit type:
+
+    ```haskell
+    data GuessWhat = Chickenbutt deriving (Eq, Show)
+    
+    trivialValue :: GuessWhat
+    trivialValue = Chickenbutt
+    ```
+
+- Example of a unary type constructor that contains one unary data constructor:
+
+    ```haskell
+    data Id a = MkId a deriving (Eq, Show)
+    
+    idInt :: Id Integer
+    idInt = MkId 10
+    ```
+
+- We can also pass a function type, such as `a -> a`, as the type parameter:
+
+    ```haskell
+    idIdentity :: Id (a -> a)
+    idIdentity = MkId $ \x -> x
+    ```
+
+- Next, we can construct a value for a home-made product type:
+
+    ```haskell
+    data Product a b = Product a b deriving (Eq, Show)
+    type Awesome = Bool
+    type Name = String
+    
+    person :: Product Name Awesome
+    person = Product "Simon" True
+    ```
+
+- Alternatively, a home-made sum type:
+
+    ```haskell
+    data Sum a b = First a | Second b deriving (Eq, Show)
+    data Twitter = Twitter deriving (Eq, Show)
+    data AskFm = AskFm deriving (Eq, Show)
+    
+    socialNetwork :: Sum Twitter AskFm
+    socialNetwork = First Twitter
+    ```
 
 
 ## 11.14 - Function type is exponential
