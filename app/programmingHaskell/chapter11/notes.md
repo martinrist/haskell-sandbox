@@ -290,3 +290,54 @@
     (Int, String, Bool, String) :: *
     ```
 
+
+## 11.16 - Lists are polymorphic
+
+- The list datatype definition shows that it is fully polymorphic in the type of the list's elements:
+
+    ```haskell
+    data [] a = [] | a : [a]
+    ```
+
+- Operators with a non-alphanumeric name are infix by default:
+    - All non-alpha arithmetic functions (e.g. `+`, `*`).
+    - Contrast `div` and `mod` which are arithmetic functions, but are prefix by default.
+
+- Any operator that starts with a `:` must be an infix type or data constructor:
+    - All infix data constructors must start with `:`.
+    - The type constructor of functions (`->`) is the only infix type constructor that doesn't start with a colon.
+    - Type constructors can't be `::` as this is reserved.
+
+- We can use other non-alphanumeric characters for infix type or data constructors, e.g.:
+
+    ```haskell
+    data Product a b =
+        a :&: b
+        deriving (Eq, Show)
+    
+    > :t 1 :&: 2
+    1 :&: 2 :: (Num a, Num b) => Product a b
+    ```
+
+- An alternative way to define the list type using _cons cells_:
+
+    ```haskell
+    data List a = Nil | Cons a (List a)
+    
+    -- `Nil` on its own doesn't apply the type parameter
+    > let nil = Nil
+    > :t nil
+    nil :: List a
+    
+    > let oneItem = (Cons "hello" Nil)
+    > :t oneItem
+    oneItem :: List [Char]
+    
+    -- `List` is a higher-kinded type
+    > :k List
+    List :: * -> *
+    
+    -- `List Int` has been fully-applied
+    > :k List Int
+    List Int :: *
+    ```
