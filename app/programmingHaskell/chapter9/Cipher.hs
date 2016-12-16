@@ -2,13 +2,15 @@ module Cipher where
 
 import Data.Char
 
-caeasr :: Int -> [Char] -> [Char]
-caesar n = map (shiftChar n)
+caesar :: Int -> [Char] -> [Char]
+caesar n = map (shift n)
 
-shiftChar :: Int -> Char -> Char
-shiftChar n c
-  | c == ' '  = ' '
-  | isUpper c = shift 'a' n
-  | isLower c = shift 'A' n
+uncaesar :: Int -> [Char] -> [Char]
+uncaesar = caesar . negate
+
+shift :: Int -> Char -> Char
+shift n c
+  | isUpper c = shiftFrom 'A' n c
+  | isLower c = shiftFrom 'a' n c
   | otherwise = c
-  where shift base n =  chr . (+ ord base) . (`mod` 26) . (+ n) . (subtract (ord base)) . ord
+  where shiftFrom base n =  chr . (+ ord base) . (`mod` 26) . (+ n) . (subtract (ord base)) . ord
