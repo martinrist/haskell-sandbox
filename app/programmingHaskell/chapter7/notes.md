@@ -118,6 +118,19 @@
     getFirst (x, _) = x
     ```
 
+- We can use _as-patterns_ to match on parts of an argument, but still refer to the entire original value:
+
+    ```haskell
+    f :: Show a => (a, b) -> IO (a, b)
+    f t@(a, _) = do
+        print a
+        return t
+
+    > f (1, 2)
+    1
+    (!, 2)
+    ```
+
 
 ## 7.5 - Case expressions
 
