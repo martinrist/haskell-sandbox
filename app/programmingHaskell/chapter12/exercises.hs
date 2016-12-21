@@ -133,3 +133,40 @@ flipMaybe ((Just m):ms) = case flipMaybe ms of
                                Nothing -> Nothing
                                Just ns -> Just (m : ns)
 
+
+-- Small library for Either
+---------------------------
+
+-- Question 1
+lefts' :: [Either a b] -> [a]
+lefts' = foldr accumulator []
+            where accumulator :: (Either a b) -> [a] -> [a]
+                  accumulator (Left a) acc  = a : acc
+                  accumulator _ acc = acc
+
+-- Question 2
+rights' :: [Either a b] -> [b]
+rights' = foldr accumulator []
+            where accumulator :: (Either a b) -> [b] -> [b]
+                  accumulator (Right b) acc  = b : acc
+                  accumulator _ acc = acc
+
+-- Question 3
+partitionEithers' :: [Either a b] -> ([a], [b])
+partitionEithers' es = (lefts' es, rights' es)
+
+-- Question 4
+eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe' _ (Left _)  = Nothing
+eitherMaybe' f (Right b) = Just (f b)
+
+-- Question 5 - general catamorphism for Either values
+either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' f _ (Left a)  = f a
+either' _ g (Right b) = g b
+
+-- Question 6 - question 4 rewritten using either'
+eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe'' g = either' (\a -> Nothing) (\b -> Just (g b))
+
+
