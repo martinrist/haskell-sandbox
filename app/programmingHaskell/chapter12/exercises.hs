@@ -66,3 +66,24 @@ mkWord :: String -> Maybe Word'
 mkWord s = let numVowels = length (filter isVowel s)
                numConsonants = length s - numVowels in
         if (countVowels s) > (length s - countVowels s) then Nothing else Just (Word' s)
+
+
+-- It's only Natural
+--------------------
+
+data Nat =
+    Zero
+    | Succ Nat
+    deriving (Eq, Show)
+
+natToInteger :: Nat -> Integer
+natToInteger Zero     = 0
+natToInteger (Succ n) = 1 + natToInteger n
+
+integerToNat :: Integer -> Maybe Nat
+integerToNat i
+    | i < 0     = Nothing
+    | i == 0    = Just Zero
+    | otherwise = Just (Succ (fromMaybe Zero (integerToNat (i - 1))))
+
+
