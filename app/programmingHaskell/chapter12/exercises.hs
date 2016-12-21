@@ -1,7 +1,7 @@
 -----------------------
 -- Chapter Exercises --
 -----------------------
-import Data.Maybe
+import Data.Maybe (fromMaybe)
 
 -- String processing
 --------------------
@@ -86,4 +86,50 @@ integerToNat i
     | i == 0    = Just Zero
     | otherwise = Just (Succ (fromMaybe Zero (integerToNat (i - 1))))
 
+
+
+-- Small library for Maybe
+--------------------------
+
+-- Question 1 - Simple boolean checks
+isJust :: Maybe a -> Bool
+isJust Nothing = False
+isJust _       = True
+
+isNothing :: Maybe a -> Bool
+isNothing Nothing = True
+isNothing _       = False
+
+-- Question 2 - catamorphism for Maybe
+mayybee :: b -> (a -> b) -> Maybe a -> b
+mayybee z _ Nothing  = z
+mayybee _ f (Just a) = f a
+
+-- Question 3 - default fallback value
+fromMaybe' :: a -> Maybe a -> a
+fromMaybe' d Nothing  = d
+fromMaybe' _ (Just a) = a
+
+-- Question 4 - converting between `List` and `Maybe`
+listToMaybe :: [a] -> Maybe a
+listToMaybe []    = Nothing
+listToMaybe (x:_) = Just x
+
+maybeToList :: Maybe a -> [a]
+maybeToList Nothing = []
+maybeToList (Just a) = [a]
+
+-- Question 5 - filter Nothing from list
+catMaybes :: [Maybe a] -> [a]
+catMaybes []            = []
+catMaybes (Nothing:ms)  = catMaybes ms
+catMaybes ((Just m):ms) = m : catMaybes ms
+
+-- Question 6 - sequence
+flipMaybe :: [Maybe a] -> Maybe [a]
+flipMaybe []            = Just []
+flipMaybe (Nothing:_)   = Nothing
+flipMaybe ((Just m):ms) = case flipMaybe ms of
+                               Nothing -> Nothing
+                               Just ns -> Just (m : ns)
 
