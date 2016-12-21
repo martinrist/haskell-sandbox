@@ -51,3 +51,18 @@ countTheBeforeVowel =
 
 countVowels :: String -> Int
 countVowels =  foldr ((+).length) 0 . map (\w -> (filter isVowel w)) . words
+
+
+-- Validate the word
+--------------------
+
+newtype Word' =
+    Word' String
+    deriving (Eq, Show)
+
+vowels = "aeiou"
+
+mkWord :: String -> Maybe Word'
+mkWord s = let numVowels = length (filter isVowel s)
+               numConsonants = length s - numVowels in
+        if (countVowels s) > (length s - countVowels s) then Nothing else Just (Word' s)
