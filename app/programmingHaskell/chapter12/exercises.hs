@@ -170,3 +170,18 @@ eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
 eitherMaybe'' g = either' (\a -> Nothing) (\b -> Just (g b))
 
 
+-- Unfolds
+----------
+
+-- Question 1 - myIterate using direct recursion
+myIterate :: (a -> a) -> a -> [a]
+myIterate f z = z : myIterate f (f z)
+
+-- Question 2- custom myUnfoldr using direct recusion
+myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+myUnfoldr f b = case f b of
+                     Nothing     -> []
+                     Just (a, b) -> a : myUnfoldr f b
+
+betterIterate :: (a -> a) -> a -> [a]
+betterIterate f = myUnfoldr (\b -> Just(b, f b))
