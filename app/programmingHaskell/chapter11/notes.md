@@ -1,4 +1,4 @@
-## Chapter 11 - Algebraic Datatypes
+# Chapter 11 - Algebraic Datatypes
 
 ## 11.2 - Data declarations review
 
