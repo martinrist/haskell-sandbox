@@ -9,3 +9,4 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 10 - Folding Lists](app/programmingHaskell/chapter10/notes.md)
 - [Chapter 11 - Algebraic Datatypes](app/programmingHaskell/chapter11/notes.md)
 - [Chapter 12 - Signalling Adversity](app/programmingHaskell/chapter12/notes.md)
+- [Chapter 13 - Building Projects](app/programmingHaskell/chapter13/notes.md)
