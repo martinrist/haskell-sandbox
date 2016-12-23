@@ -122,3 +122,73 @@
     -- Functions in `Data.List` are accessed using (e.g.) `L.head`
     ```
 
+
+## 13.7 - Making programs interactive
+
+- The `main` method has a type signature of `IO ()` - the `IO` signified that it has side-effects.
+
+- We can use _do_ syntax as syntactic sugar to sequence side-effects in a convenient manner:
+
+    ```haskell
+    main :: IO ()
+    main = do
+        name <- getLine
+        putStrLn ("Hi " ++ name ++ "!")
+    ```
+
+- `getLine` has type `IO String` - it needs to perform I/O in order to obtain a `String`.
+
+- The result of applying `<-` (_bind_) inside a `do` block to the `IO String` returned by `getLine` is to bind the returned value to `name`.
+
+- `putStrLn` has type `String :: IO ()` - it takes the `String` value of `name` and outputs it.
+
+- If we want to add a prompt for the name we need to use `putStr` and call `hSetBuffering stdout NoBuffering` to ensure the prompt is output immediately:
+
+    ```haskell
+    import System.IO
+
+
+    main :: IO ()
+    main = do
+        hSetBuffering stdout NoBuffering
+        putStr "Please enter your name: "
+        name <- getLine
+        putStrLn ("Hi " ++ name ++ "!")
+    ```
+
+
+## 13.8 - `do` syntax and `IO`
+
+- `do`-syntax can make blocks more readable, but since they are syntactic sugar, they are not strictly required.
+
+- `do`-syntax provides a way of naming values returned by monadic `IO` actions so that they can be used as inputs to actions that happen later in the program:
+
+    ```haskell
+    getAndConcat :: IO String
+    getAndConcat = do
+        x1 <- getLine
+        x2 <- getLine
+        return (x1 ++ x2)
+    ```
+
+- As above, `getLine` returns an `IO String`.  `<-` used inside the `do` block allows us to bind a name (here `x1` and `x2`) to the `a` of an `m a` value, where `m` is some monadic structure (here `IO`).
+
+- `return` takes a value and wraps it in a monadic structure:
+
+    ```haskell
+    > :t return
+    return :: Monad m => a -> m a
+
+    > return 'a' :: Maybe Char
+    Just 'a'
+
+    > return 'a' :: Either Int Char
+    Right 'a'
+
+    > return 'a' :: [Char]
+    "a"
+    ```
+
+- In the example above, we use `return` to make sure we return a value of type `IO String`.
+
+- Take care with using `do`-blocks too much - they aren't needed in single-line expressions, where the bind operator `>>=` is preferred.
