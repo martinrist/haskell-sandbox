@@ -167,3 +167,19 @@
     runQc :: IO ()
     runQc = quickCheck prop_additionGreater
     ```
+
+
+## 14.6 - Kicking around QuickCheck
+
+- To enable our type to be used with QuickCheck it needs to have an instance for `Arbitrary` 
+
+    ```haskell
+    data Trivial = Trivial deriving (Eq, Show)
+
+    trivialGen :: Gen Trivial
+    trivialGen = return Trivial
+
+    instance Arbitrary Trivial where
+        arbitrary = trivialGen
+    ```
+
