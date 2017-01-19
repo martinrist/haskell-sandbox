@@ -183,3 +183,69 @@
         arbitrary = trivialGen
     ```
 
+- For a slightly more complicated example, consider an `Identity` type:
+
+    ```haskell
+    data Identity a = Identity a deriving (Eq, Show)
+
+    identityGen :: Arbitrary a => Gen (Identity a)
+    identityGen = do
+        a <- arbitrary
+        return (Identity a)
+
+    -- We can make `identityGen` the default generator for the `Identity` type:
+    instance Arbitrary a => Arbitrary (Identity a) where
+        arbitrary = identityGen
+
+    -- Now we can get a generator for `Identity Int`...
+    identityIntGen :: Gen (Identity Int)
+    identityIntGen = arbitrary
+
+    -- ... then sample it
+    > sample' identityIntGen
+    [Identity 0, Identity 1, Identity (-4) ...]
+    ```
+
+- `Arbitrary` instances for product types - just pick an arbitrary value for each of the type arguments:
+
+    ```haskell
+    data Pair a b = Pair a b deriving (Eq, Show)
+
+    pairGen :: (Arbitrary a, Arbitrary b) => Gen (Pair a b)
+    pairGen = do
+        a <- arbitrary
+        b <- arbitrary
+        return (Pair a b)
+
+    instance (Arbitrary a, Arbitrary b) => Arbitrary (Pair a b) where
+        arbitrary = pairGen
+
+    > pairIntStringGen = arbitrary :: Gen (Pair Int String)
+    > sample' pairIntStringGen
+    [ Pair 0 "", Pair 2 "", Pair 0 ";@yf475d", Pair (-4) "\229rC\205S\SUB\CAN" ...]
+    ```
+
+- `Arbitrary` instances for sum types are more interesting because you need to choose between the two possibilities, using `oneof` to create a `Gen a` from a list of `Gen a` (with uniform distribution):
+
+    ```haskell
+    data Sum a b = First a | Second b deriving (Eq, Show)
+
+    sumGenEqual :: (Arbitrary a, Arbitrary b) => Gen (Sum a b)
+    sumGenEqual = do
+        a <- arbitrary
+        b <- arbitrary
+        oneOf [return $ First a,
+               return $ Second b]
+
+    instance (Arbitrary a, Arbitrary b) => Arbitrary (Sum a b) where
+        arbitrary = sumGenEqual
+    ```
+
+- For non-uniform distribution, we can use `frequency` - e.g. from the `Arbitrary` instance for `Maybe`:
+
+    ```haskell
+    instance Arbitrary a => Arbitrary (Maybe a) where
+        arbitrary =
+            frequency [(1, return Nothing),
+                       (3, liftM Just arbitrary)]
+    ```
