@@ -26,6 +26,8 @@ executable haskell-sandbox-exe
   build-depends:       base
                      , haskell-sandbox
                      , time
+                     , hspec
+                     , QuickCheck
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
