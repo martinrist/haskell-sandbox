@@ -154,3 +154,96 @@
     ```
 
 - The above laws apply regardless of which monoids you're working with, `Sum`, `Product`, `[a]` etc.
+
+
+## 15.9 - Different instance, same representation
+
+- For some datatypes, the meaning of 'append', in the context of `Monoid` is less clear than for lists and numbers:
+
+- 'Mappending' is best thought of not as a way of combining values, but as a way to condense any set of values to a summary value.
+
+- `Bool` has two possible monoids - one of conjuction (represented by the `All` newtype) and one of disjunction (represented by `Andy`):
+
+    ```haskell
+    > import Data.Monoid
+
+    > All True <> All True
+    All {getAll = True}
+
+    > All True <> All False
+    All {getAll = False}
+
+    > Any True <> Any Trye
+    Any {getAny = True}
+
+    > Any False <> Any True
+    Any {getAny = True}
+    ```
+
+- `Maybe` has more than two possible monoid instances.
+
+- `First` and `Last` are like boolean disjunction, but with preference for the first / last non-`Nothing` value:
+
+    ```haskell
+    > First Nothing <> First (Just 1) <> First (Just 2)
+    First {getFirst = Just 1}
+
+    > Last (Just 1) <> Last (Just 2) <> Last Nothing
+    Last {getLast = Just 2}
+    ```
+
+- When declaring `Monoid` instances for types, beware of _orphan instances_, where the instance is declared in a different module from both the type and the typeclass:
+    - Can easily lead to conflicting declarations.
+    - To address if you own either the type or typeclass, put the instance in the same module as the thing you own.
+    - If you own neither, define a newtype wrapping the original type, then define the instance in your module.
+
+
+## 15.10 - Reusing algebras by asking for algebras
+
+- In the following cases, you are getting a new `Monoid` for a larger type by reusing the `Monoid` instances of the component types:
+
+    ```haskell
+    instance Monoid b => Monoid (a -> b)
+    instance (Monoid a, Monoid b) => Monoid (a, b)
+    instance (Monoid a, Monoid b, Monoid c) => Monoid (a, b, c)
+    ```
+
+- The third variety of monoid for `Maybe a` combines the 'inner' a's (assuming they are monoids themselves:
+
+    ```haskell
+    instance Monoid a => Monoid (Maybbe a) where
+    mempty = Nada
+    mappend Nothing  x        = x
+    mappend x        Nothing  = x
+    mappend (Just x) (Just y) = Just (x `mappend` y)
+
+    > Just (Sum 1) <> Just (Sum 2)
+    Just (Sum {getSum = 2})
+
+    > Just [1, 2, 3] <> Nothing <> Just [4, 5, 6]
+    Just [1, 2, 3, 4, 5, 6]
+
+    > mempty :: Maybe String
+    Nothing
+    ```
+
+## 15.12 - Using QuickCheck to test laws
+
+- We can use QuickCheck to test monoid laws:
+
+    ```haskell
+    monoidAssoc :: (Eq m, Monoid m) => m -> m -> m -> Bool
+    monoidAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
+
+    > quickCheck (monoidAssoc :: String -> String -> String -> Bool)
+
+    monoidLeftIdentity :: (Eq m, Monoid m) => m -> Bool
+    monoidLeftIdentity a = (mempty <> a) == a
+
+    > quickCheck (monoidLeftIdentity :: String -> Bool)
+
+    monoidRightIdentity :: (Eq m, Monoid m) => m -> Bool
+    monoidRightIdentity a = (a <> mempty) == a
+
+    > quickCheck (monoidRightIdentity :: String -> Bool)
+    ```
