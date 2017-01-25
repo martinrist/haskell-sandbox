@@ -2,7 +2,7 @@
 
 ## 15.3 - Monoid
 
-- A _monoid_ is a binary associative operation with an identity.
+- A _monoid_ is a set that is closed under a binary associative operation with an identity.
 
     ```haskell
     -- `mappend` is the binary operation
@@ -247,3 +247,41 @@
 
     > quickCheck (monoidRightIdentity :: String -> Bool)
     ```
+
+
+## 15.13 - Semigroup
+
+- A _semigroup_ is a _monoid_ without the requirement for an identity:
+    - Therefore, it is a set that is closed under an associative binary operation, and nothing else.
+    - i.e. with just the `<>` operator, not `mempty`.
+    - It's therefore a _weaker_ algebra than monoid.
+
+- Defined in Haskell as `Data.Semigroup.Semigroup` (since GHC 8.0):
+
+    ```haskell
+    class Semigroup a where
+        (<>) :: a -> a -> a
+
+    -- associative law:
+    (a <> b) <> c = a <> (b <> c)
+    ```
+
+- An example of a datatype that can't have a `Monoid` instance but can have a `Semigroup` instance is `Data.List.NonEmpty.NonEmpty`, which represents a non-empty list:
+
+    ```haskell
+    data NonEmpty a = a :| [a]
+        deriving (Eq, Ord, Show)
+
+    > import Data.List.NonEmpty
+    > 1 :| [2, 3]
+    1 :| [2, 3]
+
+    > import Data.Semigroup
+    > (1 :| [2, 3]) <> (4 :| [5, 6])
+    1 :| [2, 3, 4, 5, 6]
+    ```
+
+- The _strength_ of an algebra corresponds to the number of operations it provides:
+    - This in turn expands what you can do with an instance of that algebra without needing to know specifically what type you're working with.
+    - However, this reduces the number of datatypes that can provide a law-abiding instance of that algebra.
+    - For example, `Monoid` is stronger than `Semigroup`, which means you can do more with it, but types such as `NonEmpty` can't have `Monoid` instances.
