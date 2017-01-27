@@ -1,8 +1,10 @@
+{-# LANGUAGE DeriveGeneric #-}
 module Addition where
 
 import Test.Hspec
 import Test.QuickCheck
 import Test.QuickCheck.Gen (oneof)
+import GHC.Generics
 
 main :: IO ()
 main = hspec $ do
@@ -115,3 +117,22 @@ sumGenMoreFirst = do
                ( 1, return $ Second b)]
 
 
+
+-- Coarbitrary
+
+data Bool' =
+    True'
+  | False'
+  deriving (Generic)
+
+instance CoArbitrary Bool'
+
+trueGen :: Gen Int
+trueGen = coarbitrary True' arbitrary
+
+falseGen :: Gen Int
+falseGen = coarbitrary False' arbitrary
+
+
+arbFunc :: Gen (Bool' -> Int)
+arbFunc = arbitrary
