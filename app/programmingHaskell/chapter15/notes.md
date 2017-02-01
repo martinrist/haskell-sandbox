@@ -109,7 +109,7 @@
     ```
 
 
-## 15.7 - WHy bother?
+## 15.7 - Why bother?
 
 - Common uses of monoids are to structure and describe common modes of processing data, e.g.:
     - Incrementally processing a large dataset
