@@ -14,7 +14,9 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 15 - Monoid, Semigroup](app/programmingHaskell/chapter15/notes.md)
 
 
-# Setup Notes - Ubuntu 16.04
+# Environment Setup Notes
+
+## Ubuntu 16.04
 ```
 # Install base stack package
 sudo apt install haskell-stack
