@@ -159,3 +159,48 @@
     [Just "ppp", Nothing, Just "pppppp"]
     ```
 
+
+## 16.8 - Transforming the unapplied type argument
+
+- When we `fmap` over a tuple, only the second arguent is transformed:
+
+    ```haskell
+    > fmap (+1) (1, 2)
+    (1, 3)
+    ```
+
+- Similarly using `fmap` over an `Either` value only transforms the `Right` value:
+
+    ```haskell
+    > fmap (+1) (Right 1)
+    Right 2
+
+    > fmap (+1) (Left 1)
+    Left 1
+    ```
+
+- We need to work out how to write `Functor` instances for the following types, both of which have kind `* -> * -> *`:
+
+    ```haskell
+    -- Like `(,)`
+    data Two a b =
+        Two a b
+        deriving (Eq, Show)
+
+    -- Like `Either`
+    data Or a b =
+        First a
+      | Second b
+      deriving (Eq, Show)
+    ```
+
+- To do this, we need to reduce the kindedness by applying a type variable that represents a type constant.  In the implementation we then need to leave this first argument alone, because it's 'part of the structure':
+
+    ```haskell
+    instance Functor (Two a) where
+        fmap f (Two a b) = Two $ a (f b)
+
+    instance Functor (Or a) where
+        fmap _ (First a)  = First a
+        fmap f (Second b) = Second (f b)
+    ```

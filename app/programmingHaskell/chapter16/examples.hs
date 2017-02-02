@@ -41,3 +41,23 @@ instance Functor CountingBad where
 
 lms :: [Maybe String]
 lms = [Just "Ave", Nothing, Just "woohoo"]
+
+
+
+-- 16.8 - Transforming unapplied type arguments
+
+data Two a b =
+    Two a b
+    deriving (Eq, Show)
+
+instance Functor (Two a) where
+    fmap f (Two a b) = Two a (f b)
+
+data Or a b = 
+    First a
+  | Second b
+  deriving (Eq, Show)
+
+instance Functor (Or a) where
+    fmap _ (First a)  = First a
+    fmap f (Second b) = Second $ f b
