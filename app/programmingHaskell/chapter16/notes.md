@@ -124,3 +124,38 @@
     > fmap f . fmap g $ u
     Heisenberg 2 "Uncle lol Jesse" 
     ```
+
+## 16.7 - Commonly used functors
+
+- The functor of functions just does composition:
+
+    ```haskell
+    > let tossEmOne = fmap (+1) negate
+    > tossEmOne 10
+    -9
+    > tossEmOne (-10)
+    11
+    ```
+
+- We can have functors within functors, and can compose `fmap` to get into the 'inner' functors:
+
+    ```haskell
+    -- lms is a [Maybe String]
+    > let lms = [Just "Ave", Nothing, Just "woohoo"]
+
+    > const 'p' lms
+    'p'
+
+    -- Outer functor is the list
+    > fmap (const 'p') lms
+    "ppp"
+
+    -- Composing two `fmap`s 'digs' into the inner 'Maybe'
+    > (fmap . fmap) (const 'p') lms
+    [Just 'p', Nothing, Just 'p']
+
+    -- And three `fmap`s gets into the String
+    > (fmap . fmap . fmap) (const 'p') lms
+    [Just "ppp", Nothing, Just "pppppp"]
+    ```
+

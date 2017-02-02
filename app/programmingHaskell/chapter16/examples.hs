@@ -35,3 +35,9 @@ data CountingBad a =
 
 instance Functor CountingBad where
     fmap f (Heisenberg n a) = Heisenberg (n+1) (f a)
+
+
+-- 16.7 - Commonly used functors
+
+lms :: [Maybe String]
+lms = [Just "Ave", Nothing, Just "woohoo"]
