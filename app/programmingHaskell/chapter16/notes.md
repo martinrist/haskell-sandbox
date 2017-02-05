@@ -204,3 +204,38 @@
         fmap _ (First a)  = First a
         fmap f (Second b) = Second (f b)
     ```
+
+
+## 16.9 - QuickChecking `Functor` instances
+
+- Recall the `Functor` laws:
+
+    ```haskell
+    fmap id      = id
+    fmap (f . g) = (fmap f) . (fmap g)
+    ```
+
+- These can be written as the following QuickCheck properties:
+
+    ```haskell
+    functorIdentity :: (Functor f, Eq (f a)) =>
+                            f a
+                         -> Bool
+    functorIdentity f = fmap id f == f
+
+    functorCompose :: (Eq (f c), Functor f) =>
+                            (a -> b)
+                         -> (b -> c)
+                         -> f a
+                         -> Bool
+    functorCompose f g x = (fmap g (fmap f x)) == (fmap (g . f) x)
+    ```
+
+- We can then test these with concrete instances:
+
+    ```haskell
+    > quickCheck $ \x -> functorIdentity (x :: [Int])
+
+    > let li x = functorCompose (+1) (*2) (x :: [Int])
+    > quickCheck li
+    ```
