@@ -60,3 +60,78 @@ exercise1 = do
     quickCheck (functorCompose' :: Identity Int -> IntToInt -> IntToInt -> Bool)
 
 
+-- Exercise 2 - Pair
+data Pair a = Pair a a
+    deriving (Eq, Show)
+
+instance Functor Pair where
+    fmap f (Pair x y) = Pair (f x) (f y)
+
+instance Arbitrary a => Arbitrary (Pair a) where
+    arbitrary = do
+        a <- arbitrary
+        return (Pair a a)
+
+exercise2 :: IO ()
+exercise2 = do
+    quickCheck $ \x -> functorIdentity (x :: Pair Int)
+    quickCheck (functorCompose' :: Pair Int -> IntToInt -> IntToInt -> Bool)
+
+
+-- Exercise 3 - Two
+data Two a b = Two a b
+    deriving (Eq, Show)
+
+instance Functor (Two a) where
+    fmap f (Two x y) = Two x (f y)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Two a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        return (Two a b)
+
+exercise3 :: IO ()
+exercise3 = do
+    quickCheck $ \x -> functorIdentity (x :: Two Int Int)
+    quickCheck (functorCompose' :: Two Int Int -> IntToInt -> IntToInt -> Bool)
+
+
+-- Exercise 4 - Three
+data Three a b c = Three a b c
+    deriving (Eq, Show)
+
+instance Functor (Three a b) where
+    fmap f (Three x y z) = Three x y (f z)
+
+instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        return (Three a b c)
+
+exercise4 :: IO ()
+exercise4 = do
+    quickCheck $ \x -> functorIdentity (x :: Three Int Int Int)
+    quickCheck (functorCompose' :: Three Int Int Int -> IntToInt -> IntToInt -> Bool)
+
+
+-- Exercise 5 - Three'
+data Three' a b = Three' a b b
+    deriving (Eq, Show)
+
+instance Functor (Three' a) where
+    fmap f (Three' x y z) = Three' x (f y) (f z)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Three' a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        return (Three' a b c)
+
+exercise5 :: IO ()
+exercise5 = do
+    quickCheck $ \x -> functorIdentity (x :: Three' Int Int)
+    quickCheck (functorCompose' :: Three' Int Int -> IntToInt -> IntToInt -> Bool)
