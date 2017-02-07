@@ -79,6 +79,7 @@ exercise2 = do
 
 
 -- Exercise 3 - Two
+
 data Two a b = Two a b
     deriving (Eq, Show)
 
@@ -98,6 +99,7 @@ exercise3 = do
 
 
 -- Exercise 4 - Three
+
 data Three a b c = Three a b c
     deriving (Eq, Show)
 
@@ -118,6 +120,7 @@ exercise4 = do
 
 
 -- Exercise 5 - Three'
+
 data Three' a b = Three' a b b
     deriving (Eq, Show)
 
@@ -135,3 +138,107 @@ exercise5 :: IO ()
 exercise5 = do
     quickCheck $ \x -> functorIdentity (x :: Three' Int Int)
     quickCheck (functorCompose' :: Three' Int Int -> IntToInt -> IntToInt -> Bool)
+
+
+-- Exercise 6 - Four
+
+data Four a b c d = Four a b c d
+    deriving (Eq, Show)
+
+instance Functor (Four a b c) where
+    fmap f (Four w x y z) = Four w x y (f z)
+
+instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four a b c d) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        d <- arbitrary
+        return (Four a b c d)
+
+exercise6 :: IO ()
+exercise6 = do
+    quickCheck $ \x -> functorIdentity (x :: Four Int String Float Int)
+    quickCheck (functorCompose' :: Four Int String Float Int -> IntToInt -> IntToInt -> Bool)
+
+
+
+-- Exercise 7 - Four'
+
+data Four' a b = Four' a a a b
+    deriving (Eq, Show)
+
+instance Functor (Four' a) where
+    fmap f (Four' w x y z) = Four' w x y (f z)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Four' a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        d <- arbitrary
+        return (Four' a b c d)
+
+exercise7 :: IO ()
+exercise7 = do
+    quickCheck $ \x -> functorIdentity (x :: Four' String Int)
+    quickCheck (functorCompose' :: Four' String Int -> IntToInt -> IntToInt -> Bool)
+
+
+-- Exercise 8 - Trivial
+data Trivial = Trivial
+    deriving (Eq, Show)
+
+-- Note: we can't implement this because Trivial has kind *, and Functor requires * -> *
+--instance Functor Trivial where
+--    fmap f Trivial = Trivial
+
+
+
+-------------------------
+-- Exercise : Possibly --
+-------------------------
+
+data Possibly a =
+      LolNope
+    | Yeppers a
+    deriving (Eq, Show)
+
+instance Functor Possibly where
+    fmap _ LolNope     = LolNope
+    fmap f (Yeppers x) = Yeppers (f x)
+
+instance Arbitrary a => Arbitrary (Possibly a) where
+    arbitrary = do
+        a <- arbitrary
+        elements [LolNope, Yeppers a]
+
+exercisePossibly :: IO ()
+exercisePossibly = do
+    quickCheck $ \x -> functorIdentity (x :: Possibly Int)
+    quickCheck (functorCompose' :: Possibly Int -> IntToInt -> IntToInt -> Bool)
+
+
+-----------------------
+-- Exercise : Either --
+-----------------------
+
+data Sum a b =
+      First a
+    | Second b
+    deriving (Eq, Show)
+
+instance Functor (Sum a) where
+    fmap _ (First a)  = First a
+    fmap f (Second b) = Second (f b)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Sum a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        oneof [return $ First a, return $ Second b]
+
+exerciseSum :: IO ()
+exerciseSum = do
+    quickCheck $ \x -> functorIdentity (x :: Sum String Int)
+    quickCheck (functorCompose' :: Sum String Int -> IntToInt -> IntToInt -> Bool)

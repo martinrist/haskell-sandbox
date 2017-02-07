@@ -239,3 +239,80 @@
     > let li x = functorCompose (+1) (*2) (x :: [Int])
     > quickCheck li
     ```
+
+
+## 16.11 - Ignoreing possibilities
+
+- The `Functor` instances for `Maybe` and `Either` are handy for when you intend to ignore the 'left' cases, which are typically the error or failure cases.
+
+- `fmap` doesn't touch these cases, so we can map functions right to the values that you intend to work with, and ignore the failure cases.
+
+- For the `Maybe` type, consider ordinary pattern matching:
+
+    ```haskell
+    incIfJust :: Num a => Maybe a -> Maybe a
+    incIfJust (Just n) => Just $ n + 1
+    incIfJust Nothing = Nothing
+
+    showIfJust :: Show a => Maybe a -> Maybe String
+    showIfJust (Just s) = Just $ show s
+    showIfJust Nothing = Nothing
+    ```
+
+- Because of the instance of `Functor` for `Maybe` (which skips over `Nothing`), these are equivalent to:
+
+    ```haskell
+    incMaybe :: Num a => Maybe a -> Maybe a
+    incMaybe m = fmap (+1) m
+
+    showMaybe :: Show a => Maybe a -> Maybe String
+    showMaybe s = fmap show s
+    ```
+
+- Via eta reduction, we can rewrite these as:
+
+    ```haskell
+    incMaybe :: Num a => Maybe a -> Maybe a
+    incMaybe = fmap (+1)
+
+    showMaybe :: Show a => Maybe a -> Maybe String
+    showMaybe = fmap show
+    ```
+
+- In fact, these don't use anything specific to `Maybe`, so they can be more generally rewritten as:
+
+    ```haskell
+    liftedInc :: (Functor f, Num a) => f a -> f a
+    liftedInc = fmap (+1)
+
+    liftedShow :: (Functor f, Show a) => f a -> f String
+    liftedShow = fmap show
+    ```
+
+- Similarly, with `Either`, we can do the same, simplifications, leading to the same end result:
+
+    ```haskell
+    incIfRight :: Num a => Either e a -> Either e a
+    incIfRight (Right n) = Right $ n + 1
+    incIfRight (Left  e) = Left e
+
+    showIfRight :: Show a => Either e a -> Either e String
+    showIfRight (Right s) = Right $ show s
+    showIfRight (Left  e) = Left e
+
+    -- Equivalent to
+    incEither :: Num a => Either e a -> Either e a
+    incEither = fmap (+1)
+
+    showEither :: Show a => Either e a -> Either e String
+    showEither = fmap show
+
+    -- Equivalent to
+    liftedInc :: (Functor f, Num a) => f a -> f a
+    liftedInc = fmap (+1)
+
+    liftedShow :: (Functor f, Show a) => f a -> f String
+    liftedShow = fmap show
+    ```
+
+

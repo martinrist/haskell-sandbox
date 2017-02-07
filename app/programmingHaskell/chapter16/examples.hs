@@ -76,3 +76,48 @@ functorCompose :: (Eq (f c), Functor f) =>
                           -> f a
                           -> Bool
 functorCompose f g x = (fmap g (fmap f x)) == (fmap (g . f) x)
+
+
+------------------------------------
+-- 16.11 - Ignoring Possibilities --
+------------------------------------
+
+-- Mapping over Maybe
+incIfJust :: Num a => Maybe a -> Maybe a
+incIfJust (Just n) = Just $ n + 1
+incIfJust Nothing = Nothing
+
+showIfJust :: Show a => Maybe a -> Maybe String
+showIfJust (Just s) = Just $ show s
+showIfJust Nothing = Nothing
+
+-- The above are equivalent to
+incMaybe :: Num a => Maybe a -> Maybe a
+incMaybe m = fmap (+1) m
+
+showMaybe :: Show a => Maybe a -> Maybe String
+showMaybe s = fmap show s
+
+-- The fully-generic versions, which work for any Functor
+liftedInc :: (Functor f, Num a) => f a -> f a
+liftedInc = fmap (+1)
+
+liftedShow :: (Functor f, Show a) => f a -> f String
+liftedShow = fmap show
+
+
+-- Mapping over Either
+incIfRight :: Num a => Either e a -> Either e a
+incIfRight (Right n) = Right $ n + 1
+incIfRight (Left  e) = Left e
+
+showIfRight :: Show a => Either e a -> Either e String
+showIfRight (Right s) = Right $ show s
+showIfRight (Left  e) = Left e
+
+-- Equivalent to
+incEither :: Num a => Either e a -> Either e a
+incEither = fmap (+1)
+
+showEither :: Show a => Either e a -> Either e String
+showEither = fmap show
