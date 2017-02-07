@@ -121,3 +121,27 @@ incEither = fmap (+1)
 
 showEither :: Show a => Either e a -> Either e String
 showEither = fmap show
+
+
+-------------------------------------------
+-- 16.12 - A somewhat surprising functor --
+-------------------------------------------
+
+newtype Constant a b =
+    Constant { getConstant :: a }
+    deriving (Eq, Show)
+
+instance Functor (Constant m) where
+    fmap _ (Constant v) = Constant v
+
+
+-------------------------------------------
+-- 16.13 - More structure, more functors --
+-------------------------------------------
+
+data Wrap f a =
+    Wrap (f a)
+    deriving (Eq, Show)
+
+instance Functor f => Functor (Wrap f) where
+    fmap f (Wrap fa) = Wrap (fmap f fa)

@@ -315,4 +315,77 @@
     liftedShow = fmap show
     ```
 
+## 16.12 - A somewhat surprising functor
+
+- Consider the `const` function:
+
+    ```haskell
+    > :t const
+    const :: a -> b -> a
+
+    > const 1 1
+    1
+
+    > const 1 "foo"
+    1
+
+    > const 1 id
+    1
+    ```
+
+- A similar concept is the `Constant` datatype.  Note that the type parameter `b` is a _phantom type_, with no corresponding item at the value / term level:
+
+    ```haskell
+    newtype Constant a b =
+        Constant { getConstant :: a }
+        deriving (Eq, Show)
+    ```
+
+- Consider an instance of `Functor` as follows:
+
+    ```haskell
+    instance Functor (Constant m) where
+        fmap _ (Constant v) = Constant v
+    ```
+
+- We can `fmap` any function (even `undefined`) over a `Constant` value and that value will be returned:
+
+    ```haskell
+    > fmap (const 2) (Constant 3)
+    Constant {getConstant = 3}
+
+    > fmap id (Constant 3)
+    Constant {getConstant = 3}
+
+    > fmap (+1) (Constant 3)
+    Constant {getConstant = 3}
+
+    > fmap undefined (Constant 3)
+    Constant {getConstant = 3}
+    ```
+
+
+## 16.13 - More structure, more functors
+
+- Consider a wrapper type with its `Functor` instance:
+
+    ```haskell
+    data Wrap f a =
+        Wrap (f a)
+        deriving (Eq, Show)
+
+    instance Functor f => Functor (Wrap f) where
+        fmap f (Wrap fa) = Wrap (fmap f fa)
+    ```
+
+- We can now use this wrapper type:
+
+    ```haskell
+    > fmap (+1) $ Wrap (Just 1)
+    Wrap (Just 2)
+
+    > fmap (+1) $ Wrap [1, 2, 3]
+    Wrap [2, 3, 4]
+    ```
+
 
