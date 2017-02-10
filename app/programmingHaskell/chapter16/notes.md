@@ -389,3 +389,106 @@
     ```
 
 
+
+## 16.14 - The `IO` Functor
+
+- `IO` is an abstract type with no data constructors.  Therefore, the only way you can work with values of type `IO a` is through the typeclasses it provides.
+
+- `IO` has an instance of `Functor`, which means that we can lift functions like `read` over the `IO` type.
+
+    ```haskell
+    getInt :: IO Int
+    getInt = fmap read getLine
+
+    > getInt
+    > 10
+    10
+    ```
+
+- Then we can continue to use `fmap` over functions like `getInt`:
+
+    ```haskell
+    > fmap (+1) getInt
+    > 10
+    11
+    ```
+
+- We can also use `do` syntax to do something similar:
+
+    ```haskell
+    meTooIsm :: IO String
+    meTooIsm = do
+        input <- getLine
+        return (input ++ " and me too!")
+    ```
+
+
+## 16.15 - Natural Transformations
+
+- Functors are a means of lifting functions over structure:
+    - We transform only the _contents_, leaving the _structure_ intact
+    - If we want to transform the _structure_ but leave the _contents_ intact, we are doing a _natural transformation_.
+
+- Inuitively, the type definition for this would be something like:
+
+    ```haskell
+    nat :: (f -> g) -> f a -> g a
+    ```
+
+- This type is impossible because `f` and `g` are higher-kinded types, and we can't have higher-kinded types as argument types to the function type.
+
+- However, it _does_ look like the type signature for `fmap`.
+
+- We can rewrite this using the `RankNTypes` language extension:
+
+    ```haskell
+    {-# LANGUAGE RankNTypes #-}
+
+    type Nat f g = forall a. f a -> g a
+    ```
+
+- The use of `forall` here allows us to obligate all functions of the type to be oblivious to the contents of the structures of `f` and `g`.
+
+- This means we can do the following:
+
+    ```haskell
+    maybeToList :: Nat Maybe []
+    maybeToList Nothing = []
+    maybeToList (Just a) = [a]
+    ```
+
+- But not this, because we're changing the contents:
+
+    ```haskell
+    maybeToList :: Nat Maybe []
+    maybeToList Nothing = []
+    maybeToList (Just a) = [a+1]
+    ```
+
+
+## 16.16 - Functors are unique to a datatype
+
+- `Functor` instances will be unique for a given datatype, unlike `Monoid` instances, where we have to use `newtypes` to avoid confusing different `Monoid` instances for a given type.
+
+- This is partly because of parametricity, but partly because arguments to type constructors are applied in order of defintion.
+
+- Consider:
+
+    ```haskell
+    data Tuple a b =
+        Tuple a b
+        deriving (Eq, Show)
+
+    -- can't do this in Haskell
+    instance Functor (Tuple ? b) where
+        fmap f (Tuple a b) = Tuple (f a) b
+    ```
+
+- If we _could_ do the above, then we could potentially write two `Functor` instances for `Tuple` - one of which that works on the first argument, one of which works on the second.
+
+- However, this isn't possible in Haskell because the instance has to be for `Tuple a`, which means, along with parametricity, that the only possible implementation is:
+
+    ```haskell
+    instance Functor (Tuple a) where
+        fmap f (Tuple a b) = Tuple (f a) b
+    ```

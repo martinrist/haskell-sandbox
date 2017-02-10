@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE RankNTypes #-}
 
 ---------------------------
 -- Chapter 16 - Examples --
@@ -145,3 +146,31 @@ data Wrap f a =
 
 instance Functor f => Functor (Wrap f) where
     fmap f (Wrap fa) = Wrap (fmap f fa)
+
+
+----------------------------
+-- 16.14 - The IO Functor --
+----------------------------
+
+getInt :: IO Int
+getInt = fmap read getLine
+
+
+
+-------------------------------------
+-- 16.15 - Natural transformations --
+-------------------------------------
+
+-- This type is impossible because `f` and `g` are higher-kinded types and HKT's can't be arguments to the function type
+--nat :: (f -> g) -> f a -> g a
+--nat = undefined
+
+-- If we use `RankNTypes` we can write the following type to represent a natural transformation
+type Nat f g = forall a. f a -> g a
+
+maybeToList :: Nat Maybe []
+maybeToList Nothing = []
+maybeToList (Just a) = [a]
+
+-- This won't work, because we're changing `a`
+--maybeToList (Just a) = [a + 1]
