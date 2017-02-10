@@ -184,3 +184,75 @@ data EvilGoateeConst a b =
 
 instance Functor (EvilGoateeConst a) where
     fmap f (GoatyConst a) = GoatyConst (f a)
+
+
+-- Exercise 5 - LiftItOut
+
+data LiftItOut f a =
+    LiftItOut (f a)
+    deriving (Eq, Show)
+
+instance Functor f => Functor (LiftItOut f) where
+    fmap g (LiftItOut x) = LiftItOut (fmap g x)
+
+
+-- Exercise 6 - Parappa
+data Parappa f g a =
+    DataWrappa (f a) (g a)
+    deriving (Eq, Show)
+
+instance (Functor f, Functor g) => Functor (Parappa f g) where
+    fmap fn (DataWrappa x y) = DataWrappa (fmap fn x) (fmap fn y)
+
+
+-- Exercise 7 - IgnoreOne
+data IgnoreOne f g a b =
+    IgnoringSomething (f a) (g b)
+    deriving (Eq, Show)
+
+instance Functor g => Functor (IgnoreOne f g a) where
+    fmap fn (IgnoringSomething x y) = IgnoringSomething x (fmap fn y)
+
+
+-- Exercise 8 - Notorious
+data Notorious g o a t =
+    Notorious (g o) (g a) (g t)
+    deriving (Eq, Show)
+
+instance Functor g => Functor (Notorious g o a) where
+    fmap fn (Notorious x y z) = Notorious x y (fmap fn z)
+
+
+-- Exercise 9 - List
+data List a =
+    Nil
+  | Cons a (List a)
+  deriving (Eq, Show)
+
+instance Functor List where
+    fmap f Nil         = Nil
+    fmap f (Cons x y)  = Cons (f x) (fmap f y)
+
+
+-- Exercise 10 - GoatLord
+data GoatLord a = 
+    NoGoat
+  | OneGoat a
+  | MoreGoats (GoatLord a) (GoatLord a) (GoatLord a)
+
+instance Functor GoatLord where
+    fmap _ NoGoat             = NoGoat
+    fmap f (OneGoat x)        = OneGoat (f x)
+    fmap f (MoreGoats x y z ) = MoreGoats (fmap f x) (fmap f y) (fmap f z)
+
+
+-- Exercise 11 - TalkToMe
+data TalkToMe a =
+    Halt
+  | Print String a
+  | Read (String -> a)
+
+instance Functor TalkToMe where
+    fmap _ Halt        = Halt
+    fmap f (Print s a) = Print s (f a)
+    fmap f (Read g)    = Read $ \x -> f (g x)
