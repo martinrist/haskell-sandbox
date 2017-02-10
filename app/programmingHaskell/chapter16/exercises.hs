@@ -242,3 +242,5 @@ exerciseSum :: IO ()
 exerciseSum = do
     quickCheck $ \x -> functorIdentity (x :: Sum String Int)
     quickCheck (functorCompose' :: Sum String Int -> IntToInt -> IntToInt -> Bool)
+
+
