@@ -28,6 +28,7 @@ executable haskell-sandbox-exe
                      , time
                      , hspec
                      , QuickCheck
+                     , optparse-applicative
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
