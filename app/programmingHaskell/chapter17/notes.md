@@ -46,15 +46,164 @@
 
 ## 17.3 - `Functor` vs `Applicative`
 
-- Comparing the types of `<*>` and `fmap` (or `<$>`), we can see the difference:
+- Comparing the types of `<*>` and `fmap` (or `<$>`), we can see the difference between them is that `<$>` wraps the funciton in a `f`:
 
     ```haskell
     (<$>) :: Functor f     =>   (a -> b) -> f a -> f b
     (<*>) :: Applicative f => f (a -> b) -> f a -> f b
     ```
 
-- 
+- They are 'linked' in that `f <$> x = pure f <*> x`:
 
+    ```haskell
+    > (+1) <$> [1, 2, 3]
+    [2, 3, 4]
+
+    > pure (+1) <*> [1, 2, 3]
+    [2, 3, 4]
+    ```
+
+
+## 17.4 - Applicative functors are monoidal functors
+
+- In the type for `<*>`, consider separating the _structure_ parts from the _function_ parts:
+
+    ```haskell
+    (<*>) :: Applicative f => f (a -> b) -> f a -> f b
+
+              Structure ->    f             f      f
+              Function  ->    (a -> b)      a      b
+    ```
+
+- Provided the `f` is a type with a `Monoid` instance, then we can make the 'top' line work.  Then the bottom line is just function application:
+
+    ```haskell
+              mappend ::      f             f      f
+              $       ::      (a -> b)      a      b
+
+              (<*>)   ::      f (a -> b) -> f a -> f b
+    ```
+
+- Examples:
+
+    ```haskell
+    > [(*2), (*3)] <*> [4, 5]
+    [8, 10 , 12, 15]
+
+    > Just (*2) <*> Just 2
+    Just 4
+
+    > Just (*2) <*> Nothing
+    Nothing
+
+    > Nothing <*> Just 2
+    Nothing
+    ```
+
+- Recall from earlier that the `Functor` instance for the two-tuple ignores the first value inside the tuple:
+
+    ```haskell
+    > (+1) <$> ("bar", 0)
+    ("bar", 1)
+    ```
+
+- In contrast, the `Applicative` instance for the two-tuple `(a, b)` requires the `a` to have a `Monoid` instance, which it uses to 'combine' the first values in the tuple:
+
+    ```haskell
+    > :i (,)
+    ...
+    instance Monoid a => Applicative ((,) a)
+    ...
+
+    -- Now the first argument is in a two-tuple
+    > ("foo", (+1)) <*> ("bar", 0)
+    ("foobar", 1)
+    -- Note how "foo" and "bar" are combined using `String`'s `Monoid` instance
+    ```
+
+- Other examples - note how the `a` values in the tuples are combined:
+
+    ```haskell
+    > ((Sum 2), (+1)) <*> ((Sum 3), 0)
+    (Sum {getSum = 5}, 1)
+
+    > ((All True), (+1)) <*> ((All False), 0)
+    (All {getAll = False}, 1)
+    ```
+
+- It's instructive to compare the `Monoid` and `Applicative` instances for the two-tuple to see the similarities:
+
+    ```haskell
+    instance (Monoid a, Monoid b) => Monoid (a, b) where
+        mempty = (mempty, mempty)
+        (a, b) `mappend` (a', b') = (a `mappend` a', b `mappend` b')
+
+    instance Monoid a => Applicative ((,) a) where
+        pure x = (mempty, x)
+        (u, f) <*> (v, x) = (u `mappend` v, f x)
+    ```
+
+
+## 17.5 - Applicative in use
+
+- The `List` applicative maps a plurality of functions over a plurality of values, using a 'cartesian product'-style combination.
+
+- The `Maybe` applicative maps a possible function over a possible value.  To see the use of this, consider looking up values using the `lookup` function:
+
+    ```haskell
+    > :t lookup
+    lookup :: Eq a => a -> [(a, b)] -> Maybe b
+
+    > let m = [(1, "foo"), (2, "bar"), (3, "blort")]
+    > lookup 1 m
+    Just "foo"
+
+    > lookup 4 m
+    Nothing
+    ```
+
+- Say we want to look up two values and concatenate them.  The pattern is:
+
+    ```haskell
+    > (++) <$> lookup 1 m <*> lookup 2 m
+    Just "foobar"
+
+    > (++) <$> lookup 4 m <*> lookup 2 m
+    Nothing
+
+    > (++) <$> lookup 1 m <*> lookup 4 m
+    Nothing
+    ```
+
+- This works because we first map `(++)` over `lookup 1 m`, which is a `Maybe String`, giving a `Maybe (String -> String)`:
+
+    ```haskell
+    > :t (++) <$> lookup 1 m
+    (++) <$> lookup 1 m :: Maybe ([Char] -> [Char])
+    ```
+
+- Then we use `<*>` to apply the `Maybe (String -> String)` to the `Maybe String` from `lookup 2 m`.
+
+- Alternatively, we can use `liftA2`, which takes a binary function and lifts it over `f`:
+
+    ```haskell
+    > :t liftA2
+    liftA2 :: Applicative f => (a -> b -> c) -> f a -> f b -> f c
+
+    > liftA2 (++) (lookup 1 m) (lookup 2 m)
+    Just "foobar"
+    ```
+
+- The applicative context can also be `IO`:
+
+    ```haskell
+    > :t getLine
+    getLine :: IO String
+
+    > (++) <$> getLine <*> getLine
+    > foo
+    > bar
+    "foobar"
 
 *TODO:* Add in something about `liftA`, `liftA2` and `liftA3`
 
