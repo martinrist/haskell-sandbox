@@ -146,7 +146,12 @@
 
 ## 17.5 - Applicative in use
 
+### List
+
 - The `List` applicative maps a plurality of functions over a plurality of values, using a 'cartesian product'-style combination.
+
+
+### Maybe
 
 - The `Maybe` applicative maps a possible function over a possible value.  To see the use of this, consider looking up values using the `lookup` function:
 
@@ -194,6 +199,8 @@
     Just "foobar"
     ```
 
+### IO
+
 - The applicative context can also be `IO`:
 
     ```haskell
@@ -204,6 +211,51 @@
     > foo
     > bar
     "foobar"
+    ```
 
-*TODO:* Add in something about `liftA`, `liftA2` and `liftA3`
+### Identity
+
+- The `Identity` type is a way of introducing structure without changing the semantics of anything that's happening:
+
+    ```haskell
+    newtype Identity a = Identity a
+        deriving (Eq, Ord, Show)
+    ```
+
+- We might introduce this extra structure to lift a function over the `Identity`, rather than the thing it contains:
+
+    ```haskell
+    -- This version does the usual 'cartesian product' thing
+    > const <$> [1, 2, 3] <*> [9, 9, 9]
+    [1, 1, 1, 2, 2, 2, 3, 3, 3]
+
+    -- Wrapping each list in an Identity means that `const` is lifted
+    -- over the Identity, not the lists:
+    > const <$> Identity [1, 2, 3] <*> Identity [9, 9, 9]
+    Identity [1, 2, 3]
+    ```
+
+
+### Constant
+
+- `Constant` is similar to `Identity` (in that it provides structure) but also acts like `const`.
+
+- It sort of throws away a function application, because it takes two arguments, but one of them just gets discarded:
+
+    ```haskell
+    newtype Constant a b =
+        Constant { getConstant :: a }
+        deriving (Eq, Ord, Show)
+    ```
+
+- Consider specialising the types for `(<*>)`, by setting `f ~ Constant e`:
+
+    ```haskell
+    (<*>) ::          f (a -> b) ->          f a ->          f b
+    (<*>) :: Constant e (a -> b) -> Constant e a -> Constant e b
+
+    pure :: a ->          f a
+    pure :: a -> Constant e a
+    ```
+
 
