@@ -1,4 +1,9 @@
 import Control.Applicative
+import Data.Monoid
+import Test.QuickCheck
+import Test.QuickCheck.Checkers
+import Test.QuickCheck.Classes
+
 
 ---------------------------
 -- Chapter 17 - Examples --
@@ -79,3 +84,30 @@ mkCow' :: String -> Int -> Int -> Maybe Cow
 mkCow' name' age' weight' = liftA3 Cow (noEmpty name')
                                        (noNegative age')
                                        (noNegative weight')
+
+
+
+-----------------------------------------
+-- 17.7 - QuickCheck for Applicative laws
+-----------------------------------------
+
+data Bull =
+      Fools
+    | Twoo
+    deriving (Eq, Show)
+
+instance Arbitrary Bull where
+    arbitrary =
+        frequency [ (1, return Fools)
+                  , (1, return Twoo) ]
+
+instance Monoid Bull where
+    mempty = Fools
+    mappend _ _ = Fools
+
+instance EqProp Bull where (=-=) = eq
+
+main :: IO ()
+main = quickBatch (monoid Twoo)
+
+

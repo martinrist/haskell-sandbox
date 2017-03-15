@@ -314,3 +314,101 @@
     ```
 
 
+## 17.6 - Applicative Laws
+
+- _Identity_ - applying `id` wrapped in the `Applicative` to a value in the `Applicative` just returns that value:
+
+    ```haskell
+    pure id <*> v = v
+
+    > pure id <*> [1..5]
+    [1, 2, 3, 4, 5]
+
+    > pure id <*> Just 2
+    Just 2
+    ```
+
+- _Composition_ - composing functions then applying them should be the same as applying functions first:
+
+    ```haskell
+    pure (.) <*> u <*> v <*> w = u <*> (v <*> w)
+
+    -- Composing first, then applying to [1, 2, 3]
+    > pure (.) <*> [(+1)] <*> [(*2)] <*> [1, 2, 3]
+    [3, 5, 7]
+
+    -- Applying first
+    > [(+1)] <*> ([(*2)] <*> [1, 2, 3])
+    [3, 5, 7]
+    ```
+
+- _Homomorphism_ - the effect of applying a function embedded in a structure to a value in the structure should be the same as applying a function to a value without affecting any outside structure:
+
+    ```haskell
+    pure f <*> pure x = pure (f x)
+
+    > pure (+1) <*> pure 1 :: Maybe Int
+    Just 2
+
+    > pure ((+1) 1) :: Maybe Int
+    Just 2
+    ```
+
+- _Interchange_ - where `u` is a function embedded in some structure and `y` is a value:
+
+    ```haskell
+    u <*> pure y = pure ($ y) <*> u
+
+    > Just (+2) <*> pure 3
+    Just 5
+
+    > pure ($ 3) <*> Just (+2)
+    Just 5
+    ```
+
+
+## 17.7 - QuickChecking Applicative laws
+
+- To avoid having to write own versions of properties for various laws, use the `checkers` library:
+
+    ```haskell
+    import Test.QuickCheck
+    import Test.QuickCheck.Checkers
+    import Test.QuickCheck.Classes
+
+    data Bull = Fools | Twoo deriving (Eq, Show)
+
+    instance Arbitrary Bull where
+        arbitrary = frequency [ (1, return Fools, (1, return Twoo) ]
+
+    -- Broken Monoid instance
+    instance Monoid Bull where
+        mempty = Fool
+        mappend _ _ = Fools
+
+    -- This is defined and needed by Test.QuickCheck.Checkers
+    instance EqProp Bull where (=-=) = eq
+
+    main :: IO ()
+    -- Here we test monoid properties, and give an instance as a type hint
+    main = quickBatch (monoid Twoo)
+    ```
+
+- If we want to test an existing `Applicative` instance, say for `[]`, we can do:
+
+    ```haskell
+    > quickBatch $ applicative [("a", "b", 1)]
+    applicative:
+        identity:      +++ OK, passed 500 tests.
+        composition:   +++ OK, passed 500 tests.
+        homomorphism:  +++ OK, passed 500 tests.
+        interchange:   +++ OK, passed 500 tests.
+        functor:       +++ OK, passed 500 tests.
+    ```
+
+- You can alternatively just use a typed _bottom_ to trigger the typeclass dispatch:
+
+    ```haskell
+    > quickBatch $ applicative (undefined :: [(String, String, Int)])
+    ...
+    ```
