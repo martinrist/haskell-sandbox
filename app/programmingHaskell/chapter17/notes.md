@@ -259,3 +259,58 @@
     ```
 
 
+### Maybe
+
+- Here we have a function inside a `Maybe`, applied to a value inside a `Maybe`.
+
+- Consider the case where we're validating inputs using various validation functions that take an input and return a `Maybe` that contains `Just input` or `Nothing`:
+
+    ```haskell
+    validateLength :: Int -> String -> Maybe String
+    validateLength maxLen s =
+        if (length s) > maxLen
+        then Nothing
+        else Just s
+    ```
+
+- Now let's say a `Person` has a `Name` (max length 25) and `Address` (max length 100), and we have functions to create each:
+
+    ```haskell
+    newtype Name = Name String deriving (Eq, Show)
+    newtype Address = Address String deriving (Eq, Show)
+
+    mkName :: String -> Maybe Name
+    mkName s = fmap Name $ validateLength 25 s
+
+    mkAddress :: String -> Maybe Address
+    mkAddress s = fmap Address $ validateLength 100 s
+    ```
+
+- The question is how we compose `mkName` and `mkAddress` to create a smart constructor for `Person`, a product type of `Name` and `Address`:
+
+    ```haskell
+    data Person =
+        Person Name Address
+        deriving (Eq, Show)
+
+    mkPerson :: String -> String -> Maybe Person
+
+    -- Initial attempt requires us to manually pattern match on the various cases
+    mkPerson :: String -> String -> Maybe Person
+    mkPerson n a =
+        case mkName n of
+            Nothing -> Nothing
+            Just n' ->
+                case mkAddress a of
+                    Nothing -> Nothing
+                    Just a' -> Just $ Person n' a'
+    ```
+
+- A much better way is to `fmap` the `Person` constructor over `mkName n`, which gives us a `Maybe (Address -> Person)` - i.e. a function inside a `Maybe`.  This can then be applied using `<*>`:
+
+    ```haskell
+    mkPerson :: String -> String -> Maybe Person
+    mkPerson n a = Person <$> mkName n <*> mkAddress a
+    ```
+
+

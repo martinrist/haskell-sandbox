@@ -74,3 +74,6 @@ instance Functor (Constant e) where
 instance Monoid a => Applicative (Constant a) where
     pure x = Constant mempty
     (Constant x) <*> (Constant x') = Constant $ x `mappend` x'
+
+
+
