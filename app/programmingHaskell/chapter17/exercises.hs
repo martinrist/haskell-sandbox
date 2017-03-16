@@ -1,4 +1,8 @@
 import Data.List (elemIndex)
+import Control.Applicative
+import Test.QuickCheck
+import Test.QuickCheck.Checkers
+import Test.QuickCheck.Classes
 
 -----------------------
 -- Exercises         --
@@ -76,4 +80,59 @@ instance Monoid a => Applicative (Constant a) where
     (Constant x) <*> (Constant x') = Constant $ x `mappend` x'
 
 
+-- Exercise: List Applicative
+data List a = 
+      Nil
+    | Cons a (List a)
+    deriving (Eq, Show)
 
+instance Functor List where
+    fmap _ Nil        = Nil
+    fmap f (Cons x y) = Cons (f x) (fmap f y)
+
+append :: List a -> List a -> List a
+append Nil ys = ys
+append (Cons x xs) ys = Cons x $ xs `append` ys
+
+fold :: (a -> b -> b) -> b -> List a -> b
+fold _ b Nil        = b
+fold f b (Cons h t) = f h (fold f b t)
+
+concat' :: List (List a) -> List a
+concat' = fold append Nil
+
+flatMap :: (a -> List b) -> List a -> List b
+flatMap f as = concat' $ fmap f as
+
+instance Applicative List where
+    pure a = Cons a Nil
+    fs <*> vs = flatMap (\f -> fmap f vs) fs
+
+
+-- Exercise : ZipList Applicative
+
+take' :: Int -> List a -> List a
+take' = undefined
+
+newtype ZipList' a =
+    ZipList' (List a)
+    deriving (Eq, Show)
+
+instance Eq a => EqProp (ZipList' a) where
+    xs =-= ys = xs' `eq` ys'
+        where xs' = let (ZipList' l) = xs
+                    in take' 3000 l
+              ys' = let (ZipList' l) = ys
+                    in take' 3000 l
+
+instance Functor ZipList' where
+    fmap f (ZipList' xs) = ZipList' $ fmap f xs
+
+zipListApply :: List (a -> b) -> List a -> List b
+zipListApply Nil bs                  = Nil
+zipListApply as  Nil                 = Nil
+zipListApply (Cons a as) (Cons b bs) = Cons (a $ b) (zipListApply as bs)
+
+instance Applicative ZipList' where
+    pure a = ZipList' (pure a)
+    (ZipList' fs) <*> (ZipList' vs) = ZipList' $ zipListApply fs vs
