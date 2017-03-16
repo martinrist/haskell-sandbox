@@ -141,7 +141,7 @@ instance Functor ZipList' where
     fmap f (ZipList' xs) = ZipList' $ fmap f xs
 
 instance Applicative ZipList' where
-    pure a = ZipList' (pure a)
+    pure a = ZipList' (toList (repeat a))
     ZipList' fs <*> ZipList' vs = ZipList' $ zipListApply fs vs
         where
             zipListApply Nil _                   = Nil
