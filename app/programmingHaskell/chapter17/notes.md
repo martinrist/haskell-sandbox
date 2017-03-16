@@ -412,3 +412,14 @@
     > quickBatch $ applicative (undefined :: [(String, String, Int)])
     ...
     ```
+
+
+## 17.8 - ZipList Monoid
+
+- The default monoid of lists is concatenation, but it's also possible to monoidally combine lists as parallel sequences:
+
+    ```haskell
+    instance Monoid a => Monoid (ZipList a) where
+        mempty = pure mempty
+        mappend = liftA2 mapped
+    ```
