@@ -1,8 +1,11 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 import Data.List (elemIndex)
 import Control.Applicative
 import Test.QuickCheck
 import Test.QuickCheck.Checkers
 import Test.QuickCheck.Classes
+import GHC.Generics
 
 -----------------------
 -- Exercises         --
@@ -84,7 +87,7 @@ instance Monoid a => Applicative (Constant a) where
 data List a = 
       Nil
     | Cons a (List a)
-    deriving (Eq, Show)
+    deriving (Eq, Show, Generic)
 
 instance Functor List where
     fmap _ Nil        = Nil
@@ -112,7 +115,9 @@ instance Applicative List where
 -- Exercise : ZipList Applicative
 
 take' :: Int -> List a -> List a
-take' = undefined
+take' n Nil = Nil
+take' 0 _   = Nil
+take' n (Cons a as) = Cons a (take' (n-1) as)
 
 newtype ZipList' a =
     ZipList' (List a)
@@ -125,14 +130,38 @@ instance Eq a => EqProp (ZipList' a) where
               ys' = let (ZipList' l) = ys
                     in take' 3000 l
 
+instance Eq a => EqProp (List a) where
+    Nil =-= ys = ys `eq` Nil
+    xs =-= Nil = xs `eq` Nil
+    Cons x xs =-= Cons y ys = x `eq` y .&. xs `eq` ys
+
+
+
 instance Functor ZipList' where
     fmap f (ZipList' xs) = ZipList' $ fmap f xs
 
-zipListApply :: List (a -> b) -> List a -> List b
-zipListApply Nil bs                  = Nil
-zipListApply as  Nil                 = Nil
-zipListApply (Cons a as) (Cons b bs) = Cons (a $ b) (zipListApply as bs)
-
 instance Applicative ZipList' where
     pure a = ZipList' (pure a)
-    (ZipList' fs) <*> (ZipList' vs) = ZipList' $ zipListApply fs vs
+    ZipList' fs <*> ZipList' vs = ZipList' $ zipListApply fs vs
+        where
+            zipListApply Nil _                   = Nil
+            zipListApply _ Nil                   = Nil
+            zipListApply (Cons f fs) (Cons v vs) = Cons (f v) (zipListApply fs vs)
+
+toList :: [a] -> List a
+toList = foldr Cons Nil
+
+instance Arbitrary a => Arbitrary (ZipList' a) where
+    arbitrary = ZipList' <$> arbitrary
+
+instance Arbitrary a => Arbitrary (List a) where
+    arbitrary = toList <$> arbitrary
+
+instance (Arbitrary a, CoArbitrary a) => CoArbitrary (List a)
+
+
+testZipListApplicative :: IO ()
+testZipListApplicative = quickBatch (applicative (undefined :: ZipList' (List String, List String, List Int)))
+
+testListApplicative :: IO ()
+testListApplicative = quickBatch (applicative (undefined :: List (String, String, Int)))
