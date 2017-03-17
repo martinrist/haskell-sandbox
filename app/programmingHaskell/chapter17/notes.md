@@ -423,3 +423,59 @@
         mempty = pure mempty
         mappend = liftA2 mapped
     ```
+
+
+## 17.9 - Either and Validation Applicative
+
+- Specialisation of `f` to `Either e`:
+
+    ```haskell
+    -- f ~ Either e
+    (<*>) ::        f (a -> b) ->        f a ->        f b
+    (<*>) :: Either e (a -> b) -> Either e a -> Either e b
+
+    pure :: a ->        f a
+    pure :: a -> Either e a
+    ```
+
+- Although we can only have one `Functor` instance for a given datatype, we can have more than one valid `Monoid` (c.f. `Sum` and `Product` for `Integer`):
+    - As a result, we can have more than one valid `Applicative` instance, which uses different `Monoid`s for the "monoidal" part of "monoidal functor".
+
+- For example, `Either` short-circuits on the first failure:
+
+    ```haskell
+    > Right (+1) <*> Right 1
+    Right 2
+
+    > Right (+1) <*> Left ":("
+    Left ":("
+
+    > Left ":(" <*> Right 1
+    Left ":("
+
+    -- Note that the second value is lost
+    > Left ":(" <*> Left "sadface.png"
+    Left ":("
+    ```
+
+- `Validation` is an alternative to `Either` that has a different `Applicative`, which uses the `Monoid` of `err` to combine error values and retain all errors that have occurred:
+
+    ```haskell
+    data Validation err a =
+        Failure err
+      | Success a
+      deriving (Eq, Show)
+
+    > Success (+1) <*> Success 1
+    Success 2
+
+    > Success (+1) <*> Failure [StackOverflow]
+    Failure [StackOverflow]
+
+    > Failure [StackOverflow] <*> Success 1
+    Failure [StackOverflow]
+
+    -- Uses the [] monoid to combine the errors
+    > Failure [StackOverflow] <*> Failure [UnknownError]
+    Failure [StackOverflow, UnknownError]
+    ```

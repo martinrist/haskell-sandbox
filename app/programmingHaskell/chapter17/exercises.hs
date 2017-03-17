@@ -165,3 +165,28 @@ testZipListApplicative = quickBatch (applicative (undefined :: ZipList' (List St
 
 testListApplicative :: IO ()
 testListApplicative = quickBatch (applicative (undefined :: List (String, String, Int)))
+
+
+-- Exercise - Varations on Either
+
+Validation e a =
+      Failure e
+    | Success a
+    deriving (Eq, Show)
+
+data Errors =
+    DividedByZero
+  | StackOverflow
+  | MooglesChewedWires
+  deriving (Eq, Show)
+
+instance Functor (Validation e) where
+    fmap _ (Failure x) = Failure x
+    fmap f (Success a) = Success (f a)
+
+instance Monoid e => Applicative (Validation e) where
+    pure a = Success a
+    (Failure f) <*> (Failure v) = Failure (f `mappend` v)
+    _           <*> (Failure v) = Failure v
+    (Failure f) <*> _           = Failure f
+    (Success f) <*> (Success v) = Success (f v)
