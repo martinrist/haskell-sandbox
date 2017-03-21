@@ -188,3 +188,13 @@ testFour'Applicative :: IO ()
 testFour'Applicative = quickBatch (applicative (undefined :: Four' String (String, String, Int)))
 
 
+
+-- Combinations
+stops :: String
+stops = "pbtdkg"
+
+vowels :: String
+vowels = "aeiou"
+
+combos :: [a] -> [b] -> [c] -> [(a, b, c)]
+combos = liftA3 (,,)
