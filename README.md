@@ -13,6 +13,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 14 - Testing](app/programmingHaskell/chapter14/notes.md)
 - [Chapter 15 - Monoid, Semigroup](app/programmingHaskell/chapter15/notes.md)
 - [Chapter 16 - Functor](app/programmingHaskell/chapter16/notes.md)
+- [Chapter 17 - Applicative](app/programmingHaskell/chapter17/notes.md)
 
 
 # Environment Setup Notes
