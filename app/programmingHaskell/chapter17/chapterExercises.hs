@@ -34,3 +34,31 @@ instance Applicative Pair where
 
 testPairApplicative :: IO ()
 testPairApplicative = quickBatch (applicative (undefined :: Pair (String, String, Int)))
+
+
+-- Exercise 2 - Two
+
+data Two a b =
+    Two a b
+    deriving (Eq, Show)
+
+instance Functor (Two a) where
+    fmap f (Two x y) = Two x (f y)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Two a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        return $ Two a b
+
+instance (Eq a, Eq b) => EqProp (Two a b) where (=-=) = eq
+
+testTwoFunctor :: IO ()
+testTwoFunctor = quickBatch (functor (undefined :: Two Int (String, String, Int)))
+
+instance Monoid a => Applicative (Two a) where
+    pure x = Two mempty x
+    Two a b <*> Two a' b' = Two (a `mappend` a') (b b')
+
+testTwoApplicative :: IO ()
+testTwoApplicative = quickBatch (applicative (undefined :: Two String (String, String, Int)))
