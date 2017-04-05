@@ -89,3 +89,84 @@
     bind :: Monad m => (a -> m b) -> m a -> m b
     bind f x = join $ fmap f x
     ```
+
+## 18.3 - `do` Syntax and Monads
+
+- We've seen `do` syntax earlier, when sequencing operations within the `IO` monad:
+
+    ```haskell
+    sequencing :: IO ()
+    sequencing = do
+        putStrLn "blah"
+        putStrLn "another thing"
+    ```
+
+- Consider the following 'sequencing' functions which are used in desugaring `do`:
+
+    ```haskell
+    (*>) :: Applicative f => f a -> f b -> f b
+    (>>) :: Monad m       => m a -> m b -> m b
+    ```
+
+- The intial `do` syntax can be desugared using both `>>` and `*>`, both of which give the same result:
+
+    ```haskell
+    sequencing' :: IO ()
+    sequencing' =
+        putStrLn "blah" >>
+        putStrLn "another thing"
+
+    sequencing'' :: IO ()
+    sequencing'' =
+        putStrLn "blah" *>
+        putStrLn "another thing"
+    ```
+
+- The alternative form of `do` syntax uses variable binding, which can be desugared using `>>=`:
+
+    ```haskell
+    binding :: IO ()
+    binding = do
+        name <- getLine
+        putStrLn name
+
+    binding' :: IO ()
+    binding = getLine >>= putStrLn
+    ```
+
+- Consider how the types fit together in the above - see how the flipped arguments in `>>=` help the sequencing:
+
+    ```haskell
+    (>>=)    :: Monad m => m  a      -> (a      -> m  b) -> m  b
+                           |  |          |         |  |     |  |
+    getLine  ::            IO String     |         |  |     |  |
+    putStrLn ::                          String -> IO ()    |  |
+    binding  ::                                             IO ()
+    ```
+
+- Consider why we can't just `fmap` `putStrLn` over `geLine` in the above:
+
+    ```haskell
+    > putStrLn <$> getLine
+    foo
+    -- No output above...
+
+    > :t (putStrLn <$> getLine)
+    (putStrLn <$> getLine) :: IO (IO ())
+    ```
+
+- Since `putStrLn` has type `String -> IO ()`, using `fmap` has put an extra level of `IO` in the result, which is why it doesn't work.  We can make this work using `join`, or `>>=`:
+
+    ```haskell
+    import Control.Monad (join)
+    > join $ putStrLn <$> getLine
+    foo
+    foo
+
+    -- Note the argument flipping again
+    > getLine >>= putStrLn
+    foo
+    foo
+    ```
+
+- Here, `join` has merged the effects of `getLine` and `putStrLn` into a single `IO` action.
