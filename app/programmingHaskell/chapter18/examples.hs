@@ -69,3 +69,119 @@ twoBinds' =
     \age ->
     putStrLn ("Hello " ++ name ++ "! You are " ++ age ++ " years old")
 
+
+-- 18.4 - Monad Examples in Use
+-------------------------------
+
+-- Maybe
+
+data Cow = Cow {
+     name   :: String
+   , age    :: Int
+   , weight :: Int
+  } deriving (Eq, Show)
+
+-- Validation functions
+noEmpty :: String -> Maybe String
+noEmpty "" = Nothing
+noEmpty s  = Just s
+
+noNegative :: Int -> Maybe Int
+noNegative n | n >= 0    = Just n
+             | otherwise = Nothing
+
+weightCheck :: Cow -> Maybe Cow
+weightCheck c =
+    let w = weight c
+        n = name c
+    in if n == "Bess" && w > 499
+          then Nothing
+          else Just c
+
+-- This is the nasty way of creating a smart constructor for a Cow
+mkCow :: String -> Int -> Int -> Maybe Cow
+mkCow name age weight =
+    case noEmpty name of
+         Nothing -> Nothing
+         Just namey ->
+             case noNegative age of
+                  Nothing -> Nothing
+                  Just agey ->
+                      case noNegative weight of
+                           Nothing -> Nothing
+                           Just weighty ->
+                               weightCheck (Cow namey agey weighty)
+
+-- A much nicer way of doing it
+mkCow' :: String -> Int -> Int -> Maybe Cow
+mkCow' name age weight = do
+    namey   <- noEmpty name
+    agey    <- noNegative age
+    weighty <- noNegative weight
+    weightCheck (Cow namey agey weighty)
+
+
+f :: Integer -> Maybe Integer
+f 0 = Nothing
+f n = Just n
+
+
+g :: Integer -> Maybe Integer
+g i =
+    if even i
+    then Just (i + 1)
+    else Nothing
+
+h :: Integer -> Maybe String
+h i = Just ("10191" ++ show i)
+
+doSomething' n = do
+    a <- f n
+    b <- g a
+    c <- h b
+    pure (a, b, c)
+
+
+-- Either
+
+-- years ago
+type Founded = Int
+
+-- number of coders
+type Coders = Int
+
+data SoftwareShop =
+    Shop {
+        founded     :: Founded
+      , programmers :: Coders
+    } deriving (Eq, Show)
+
+-- possible error conditions
+data FoundedError =
+      NegativeYears Founded
+    | TooManyYears Founded
+    | NegativeCoders Coders
+    | TooManyCoders Coders
+    | TooManyCodersForYears Founded Coders
+    deriving (Eq, Show)
+
+validateFounded :: Int -> Either FoundedError Founded
+validateFounded n
+    | n < 0     = Left $ NegativeYears n
+    | n > 500   = Left $ TooManyYears n
+    | otherwise = Right n
+
+validateCoders :: Int -> Either FoundedError Coders
+validateCoders n
+    | n < 0     = Left $ NegativeCoders n
+    | n > 5000  = Left $ TooManyCoders n
+    | otherwise = Right n
+
+mkSoftware :: Int -> Int -> Either FoundedError SoftwareShop
+mkSoftware years coders = do
+    founded     <- validateFounded years
+    programmers <- validateCoders coders
+    if programmers > div founded 10
+       then Left $ TooManyCodersForYears founded programmers
+       else Right $ Shop founded programmers
+

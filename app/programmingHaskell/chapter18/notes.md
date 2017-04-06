@@ -210,3 +210,183 @@
         putStrLn ("Hello " ++ name ++ "! You are " ++ age ++ " years old")
     ```
 
+
+## 18.4 - Examples of Monad use
+
+### List
+
+- The signatures of `>>=` and `return` specialised to the List monad are:
+
+    ```haskell
+    (>>=) :: Monad m => m  a -> (a -> m  b) -> m  b
+    (>>=) ::            [] a -> (a -> [] b) -> [] b
+
+    -- or, more commonly:
+
+    (>>=) ::            [a]  -> (a -> [b])  -> [b]
+
+    return :: Monad m => a -> m  a
+    return ::            a -> [] a
+    return ::            a -> [a]
+    ```
+
+- An example of using `do` notation with Lists:
+
+    ```haskell
+    twiceWhenEven :: [Integer] -> [Integer]
+    twiceWhenEven xs = do
+        -- This binds individual values out of the list input
+        x <- xs
+
+        -- This is the (a -> m b), or in this case Integer -> [Integer]
+        if even x
+            then [x*x, x*x]
+            else [x*x]
+
+    > twiceWhenEven [1..3]
+    [1, 4, 4, 9]
+    ```
+
+### Maybe
+
+- The signatures of `>>=` and `return` specialised to the 'Maybe' monad are:
+
+    ```haskell
+    (>>=) :: Monad m =>     m a -> (a ->     m b) ->     m b
+    (>>=) ::            Maybe a -> (a -> Maybe b) -> Maybe b
+
+    return :: Monad m => a ->     m a
+    return ::            a -> Maybe a
+    ```
+
+- Say we have a `Cow` datatype, and some basic validation functions:
+
+    ```haskell
+    data Cow = Cow {
+         name   :: String
+       , age    :: Int
+       , weight :: Int
+      } deriving (Eq, Show)
+
+    noEmpty :: String -> Maybe String
+    noEmpty "" = Nothing
+    noEmpty s  = Just s
+
+    noNegative :: Int -> Maybe Int
+    noNegative n | n >= 0    = Just n
+                 | otherwise = Nothing
+
+    weightCheck :: Cow -> Maybe Cow
+    weightCheck c =
+        let w = weight c
+            n = name c
+        in if n == "Bess" && w > 499
+              then Nothing
+              else Just c
+    ```
+
+- Let's say we want a function `mkCow :: String -> Int -> Int -> Maybe Cow` that does validation and (possibly) creates a `Cow` instance.  The naive way would be to have a deeply-nested set of `case`s that check the various validation results.
+
+- The nicer way is to use `do` syntax:
+
+    ```haskell
+    mkCow :: String -> Int -> Int -> Maybe Cow
+    mkCow name age weight = do
+        namey   <- noEmpty name
+        agey    <- noNegative age
+        weighty <- noNegative weight
+        weightCheck (Cow namey agey weighty)
+    ```
+
+- We can't do this using `Applicative` because the final function (`weightCheck`) has signature `Cow -> Maybe Cow` - i.e. it depends on a pre-existing value and returns more monadic structure in its return type.
+
+- In general, `do` syntax that looks like the following can be rewritten using `Applicative`:
+
+    ```haskell
+    doSomething = do
+        a <- f
+        b <- g
+        c <- h
+        pure (a, b, c)
+    ```
+
+- On the other hand, something like the following needs `Monad` because `g` and `h` are producing monadic structure based on values that can only be obtained by depending on values from previous monadic structure:
+
+    ```haskell
+    doSomething' n = do
+        a <- f n
+        b <- g a
+        c <- h b
+        pure (a, b, c)
+    ```
+
+
+### Either
+
+- The signatures of `>>=` and `return` specialised to the 'Either' monad are:
+
+    ```haskell
+    (>>=) :: Monad m =>        m a -> (a ->        m b) ->        m b
+    (>>=) ::            Either e a -> (a -> Either e b) -> Either e b
+
+    return :: Monad m => a ->        m a
+    return ::            a -> Either e a
+    ```
+
+- With `Either`, we can do validation, and fail with an error (in the `Either`'s `Left` data constructor):
+
+    ```haskell
+    -- Some types for a software shop
+    type Founded = Int
+    type Coders = Int
+
+    data SoftwareShop =
+        Shop {
+            founded     :: Founded
+          , programmers :: Coders
+        } deriving (Eq, Show)
+
+    -- validation functions with possible error conditions
+    data FoundedError =
+          NegativeYears Founded
+        | TooManyYears Founded
+        | NegativeCoders Coders
+        | TooManyCoders Coders
+        | TooManyCodersForYears Founded Coders
+        deriving (Eq, Show)
+
+    validateFounded :: Int -> Either FoundedError Founded
+    validateFounded n
+        | n < 0     = Left $ NegativeYears n
+        | n > 500   = Left $ TooManyYears n
+        | otherwise = Right n
+
+    validateCoders :: Int -> Either FoundedError Coders
+    validateCoders n
+        | n < 0     = Left $ NegativeCoders n
+        | n > 5000  = Left $ TooManyCoders n
+        | otherwise = Right n
+
+    mkSoftware :: Int -> Int -> Either FoundedError SoftwareShop
+    mkSoftware years coders = do
+        founded     <- validateFounded years
+        programmers <- validateCoders coders
+        -- This contains validation based on the output of previous steps
+        if programmers > div founded 10
+           then Left $ TooManyCodersForYears founded programmers
+           else Right $ Shop founded programmers
+    ```
+
+- Note that `Either` always short-circuits on the _first_ failure - it must do this because later values can depend on previous ones:
+
+    ```haskell
+    > mkSoftware 200 10
+    Right (Shop {founded = 200, programmer = 10})
+
+    > mkSoftware (-1) 2
+    Left (NegativeYears (-1))
+
+    -- Note that this doesn't also give us `NegativeCoders`
+    > mkSoftware (-1) (-2)
+    Left (NegativeYears (-1))
+    ```
