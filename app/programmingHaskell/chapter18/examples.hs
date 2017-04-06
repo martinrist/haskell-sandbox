@@ -33,3 +33,39 @@ binding = do
 binding' :: IO ()
 binding' =
     getLine >>= putStrLn
+
+
+-- Example using both sequencing and binding
+bindingAndSequencing :: IO ()
+bindingAndSequencing = do
+    putStrLn "Please enter your name:"
+    name <- getLine
+    putStrLn ("Hello " ++ name)
+
+bindingAndSequencing' :: IO ()
+bindingAndSequencing' =
+    putStrLn "Please enter your name:" >>
+    getLine >>=
+    \name -> putStrLn ("Hello " ++ name)
+
+
+
+-- More binds => more nesting
+twoBinds :: IO ()
+twoBinds = do
+    putStrLn "Please enter your name:"
+    name <- getLine
+    putStrLn "Please enter your age:"
+    age <- getLine
+    putStrLn ("Hello " ++ name ++ "! You are " ++ age ++ " years old")
+
+twoBinds' :: IO ()
+twoBinds' =
+    putStrLn "Please enter your name:" >>
+    getLine >>=
+    \name ->
+    putStrLn "Please enter your age:" >>
+    getLine >>=
+    \age ->
+    putStrLn ("Hello " ++ name ++ "! You are " ++ age ++ " years old")
+

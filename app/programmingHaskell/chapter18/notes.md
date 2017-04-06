@@ -170,3 +170,43 @@
     ```
 
 - Here, `join` has merged the effects of `getLine` and `putStrLn` into a single `IO` action.
+
+- Another example of `do` desugaring is when we both sequence and bind:
+
+    ```haskell
+    bindingAndSequencing :: IO ()
+    bindingAndSequencing = do
+        putStrLn "Please enter your name:"
+        name <- getLine
+        putStrLn ("Hello " ++ name)
+
+    -- Desugared form
+    bindingAndSequencing' :: IO ()
+    bindingAndSequencing' =
+        putStrLn "Please enter your name:" >>
+        getLine >>=
+        \name -> putStrLn ("Hello " ++ name)
+    ```
+
+- As we nest more and more, the value of `do` becomes more apparent:
+
+    ```haskell
+    twoBinds :: IO (
+    twoBinds = do
+        putStrLn "Please enter your name:"
+        name <- getLine
+        putStrLn "Please enter your age:"
+        age <- getLine
+        putStrLn ("Hello " ++ name ++ "! You are " ++ age ++ " years old")
+
+    -- Desugared form
+    twoBinds' :: IO ()
+    twoBinds' =
+        putStrLn "Please enter your name:" >>
+        getLine >>=
+        \name -> putStrLn "Please enter your age:" >>
+        getLine >>=
+        \age ->
+        putStrLn ("Hello " ++ name ++ "! You are " ++ age ++ " years old")
+    ```
+
