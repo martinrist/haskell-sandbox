@@ -390,3 +390,38 @@
     > mkSoftware (-1) (-2)
     Left (NegativeYears (-1))
     ```
+
+
+## 18.5 - Monad laws
+
+- Identity laws state that `return` should be neutral and not perform any computations:
+
+    ```haskell
+    -- right identity
+    m >>= return      = m
+
+    -- left identity
+    return x >>= f    = f x
+    ```
+
+- Associativity is similar to the associativity laws for the other typeclasses, but looks different due to the nature of `>>=`:
+
+    ```hasell
+    (m >>= f) >> = g   =   m >>= (\x -> f x >>= g)
+    ```
+
+- In the above, the left-hand side looks as expected, but the right-hand side is a little stranger:
+    - `\x -> f x >>= g)` is just a function that has type `a -> m b`.
+    - It takes `x`, then applies `f :: a -> m b` to it through normal function application, yielding an `m b`.
+    - It then uses `>>=` to apply `g` to the resulting `b`.
+
+- As before, we can test the Monad laws using the `checkers` library:
+
+    ```haskell
+    > quickBatch (monad [(1, 2, 3)])
+
+    monad laws:
+      left  identity: +++ OK, passed 500 tests.
+      right identity: +++ OK, passed 500 tests.
+      associativity:  +++ OK, passed 500 tests.
+    ```

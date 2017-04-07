@@ -1,3 +1,7 @@
+import Test.QuickCheck
+import Test.QuickCheck.Checkers
+import Test.QuickCheck.Classes
+
 ---------------------------
 -- Chapter 18 - Examples --
 ---------------------------
@@ -185,3 +189,41 @@ mkSoftware years coders = do
        then Left $ TooManyCodersForYears founded programmers
        else Right $ Shop founded programmers
 
+
+-- 18.5 - Monad Laws
+
+-- A datatype like Identity, but with an integer that gets
+-- incremented on each fmap or bind - this is broken
+
+data CountMe a =
+    CountMe Integer a
+    deriving (Eq, Show)
+
+instance Arbitrary a => Arbitrary (CountMe a) where
+    arbitrary = CountMe <$> arbitrary <*> arbitrary
+
+instance Eq a => EqProp (CountMe a) where (=-=) = eq
+
+instance Functor CountMe where
+    -- This is broken, because we can't change the structure
+    --fmap f (CountMe i a) = CountMe (i + 1) (f a)
+    -- We need to leave the structure unchanged
+    fmap f (CountMe i a) = CountMe i (f a)
+
+instance Applicative CountMe where
+    pure = CountMe 0
+    (CountMe i f) <*> (CountMe i' a) = CountMe (i + i') (f a)
+
+instance Monad CountMe where
+    return = pure
+    CountMe n a >>= f =
+        let CountMe n' b = f a
+            in CountMe (n + n') b
+
+
+testCountMe :: IO ()
+testCountMe = do
+    let trigger = undefined :: CountMe (Int, String, Int)
+    quickBatch $ functor trigger
+    quickBatch $ applicative trigger
+    quickBatch $ monad trigger
