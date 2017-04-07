@@ -425,3 +425,70 @@
       right identity: +++ OK, passed 500 tests.
       associativity:  +++ OK, passed 500 tests.
     ```
+
+## 18.6 - Application and composition
+
+- With `Functor` and `Applicative`, the 'mapping' function doesn't add structure (it's `a -> b`, not `a -> m b`), so composition 'just works':
+
+    ```haskell
+    > fmap ((+1) . (+2)) [1..5]
+    [4, 5, 6, 7, 8]
+
+    > fmap (+1) . fmap (+2) $ [1..5]
+    [4, 5, 6, 7, 8]
+    ```
+
+- Consider the types we'd want for composing monadic functions, compared to normal composition:
+
+    ```haskell
+    (.)   ::            (b ->   c) -> (a ->   b) -> (a ->   c)
+    mcomp :: Monad m => (b -> m c) -> (a -> m b) -> (a -> m c)
+    ```
+
+- This clearly won't work, because the types don't align:
+
+    ```haskell
+    mcomp f g a = f (g a)
+    ```
+
+- However, we can `fmap` `f` over `g a` to give an extra level of structure, which we then remove using `join`:
+
+    ```haskell
+    mcomp f g a = join (f <$> (g a))
+    ```
+
+- But this is just `>>=`:
+
+    ```haskell
+    mcomp f g a = g a >>= f
+    ```
+
+- `Control.Monad` contains the _Kleisli composition_ function `>=>`, which is designed to do just this (albeit with flipped arguments to make it easier to see the sequencing):
+
+    ```haskell
+    (.)      ::            (b ->   c) -> (a ->   b) -> a ->   c
+    flip (.) ::            (a ->   b) -> (b ->   c) -> a ->   c
+    (>=>)    :: Monad m => (a -> m b) -> (b -> m c) -> a -> m c
+    ```
+
+- An example using the `IO` Monad:
+
+    ```haskell
+    -- Outputs a prompt, then gets input
+    sayHi :: String -> IO String
+    sayHi prompt = do
+        putStrLn prompt
+        getLine
+
+    -- Takes a readable String and returns it wrapped in IO
+    readM :: Read a => String -> IO a
+    readM = return.read
+
+    -- Prompts for, then reads age
+    -- Uses Kleisli composition to stitch together sayHi and readM
+    getAge :: String -> IO Int
+    getAge = sayHi >=> readM
+
+    askForAge :: IO Int
+    askForAge = getAge "Hello! How old are you?"
+    ```
