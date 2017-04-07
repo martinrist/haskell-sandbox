@@ -34,12 +34,12 @@
 
 - `(>>=) :: m a -> (a -> m b) -> m b` is called 'bind', and it contains the things that are special about `Monad`.
 
-- Compare the various signatures of `<$>`, `<*>` and `>>=`, and `flip (>>=)` (easier to see the similarity):
+- Compare the various signatures of `<$>`, `<*>` and `>>=`, and `=<<` (a.k.a. `flip (>>=)`) (easier to see the similarity):
 
     ```haskell
     fmap       :: Functor f     =>   (a -> b) -> f a -> f b
     <*>        :: Applicative f => f (a -> b) -> f a -> f b
-    flip (>>=) :: Monad f       =>   a -> f b -> f a -> f b
+    =<<        :: Monad f       =>   a -> f b -> f a -> f b
 
     >>=        :: Monad f       => f a        -> (a -> f b)
     ```
