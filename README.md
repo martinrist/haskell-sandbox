@@ -32,5 +32,5 @@ stack setup
 stack upgrade
 
 # Install dev tools (from ~)
-stack install hlint stylish-haskell hindent ghc-mod
+stack install hlint stylish-haskell hindent ghc-mod hdevtools
 ```
