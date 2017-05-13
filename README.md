@@ -19,10 +19,12 @@ This repository contains various samples, experiments and notes relating to Hask
 
 # Environment Setup Notes
 
-## Ubuntu 16.04
-```
+```bash
 # Install base stack package
 sudo apt install haskell-stack
+
+# On OS X, install Homebrew, then:
+brew install haskell-stack
 
 # Set up stack (outside project)
 cd
