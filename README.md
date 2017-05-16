@@ -15,6 +15,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 16 - Functor](app/programmingHaskell/chapter16/notes.md)
 - [Chapter 17 - Applicative](app/programmingHaskell/chapter17/notes.md)
 - [Chapter 18 - Monad](app/programmingHaskell/chapter18/notes.md)
+- [Chapter 20 - Foldable](app/programmingHaskell/chapter20/notes.md)
 
 
 # Environment Setup Notes
