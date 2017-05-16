@@ -27,6 +27,7 @@ executable haskell-sandbox-exe
                      , haskell-sandbox
                      , time
                      , hspec
+                     , containers
                      , QuickCheck
                      , optparse-applicative
                      , checkers
