@@ -27,9 +27,12 @@ executable haskell-sandbox-exe
                      , haskell-sandbox
                      , time
                      , hspec
+                     , containers
                      , QuickCheck
                      , optparse-applicative
                      , checkers
+                     , bytestring
+                     , wreq
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
