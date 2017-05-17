@@ -31,6 +31,8 @@ executable haskell-sandbox-exe
                      , QuickCheck
                      , optparse-applicative
                      , checkers
+                     , bytestring
+                     , wreq
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test

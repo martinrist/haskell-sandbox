@@ -1,4 +1,7 @@
 import qualified Data.Map as M
+import Data.ByteString.Lazy hiding (map)
+import Network.Wreq
+
 
 -----------------------------------------
 -- Chapter 21 - Traversable - Examples --
@@ -76,3 +79,22 @@ charToMorse c = M.lookup c letterToMorse
 
 stringToMorse :: String -> Maybe [Morse]
 stringToMorse = traverse charToMorse
+
+
+-- 21.8 - Do all the things
+
+urls :: [String]
+urls = [ "http://httpbin.org/ip"
+       , "http://httpbin.org/user-agent"
+        ]
+
+mappingGet :: [IO (Response ByteString)]
+mappingGet = map get urls
+
+traversedUrls :: IO [Response ByteString]
+traversedUrls = traverse get urls
+
+getResponses :: IO ()
+getResponses = do
+    responses <- traversedUrls
+    print responses

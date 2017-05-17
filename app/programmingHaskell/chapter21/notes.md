@@ -194,9 +194,58 @@
     [Just ".--",Just "....",Nothing,Just "-",Nothing]
     ```
 
+- If we want to return either `Just` the Morse representation or `Nothing`, we can use `sequence`:
+
+    ```haskell
+    > sequence $ fmap charToMorse "hello"
+    Just ["....", ".", ".-..", ".-..", "---"]
+
+    > sequence $ fmap charToMorse "wh@t?"
+    Nothing
+    ```
+
+- But instead of `sequence $ fmap` we can just use `traverse`:
+
+    ```haskell
+    > traverse charToMorse "hello"
+    Just ["....", ".", ".-..", ".-..", "---"]
+
+    > traverse charToMorse "wh@t?"
+    Nothing
+    ```
 
 
+## 21.8 - Multiple HTTP Requests
 
+- Say we're using [wreq](http://hackage.haskell.org/package/wreq) to make HTTP calls:
 
+    ```haskell
+    import Data.ByteString.Lazy hiding (map)
+    import Network.Wreq
 
+    urls :: [String]
+    urls = [ "http://httpbin.org/ip"
+           , "http://httpbin.org/bytes/5"
+           ]
+
+    mappingGet :: [IO (Response ByteString)]
+    mappingGet = map get urls
+    ```
+
+- Say that, instead of a list of IO actions that we can perform to get a respnose, we want one big IO action that produces a list of all responses:
+    - Then we want a `IO [Response ByteString]` instead of an `[IO (Response ByteString)]`
+    - This is where `Traversable` comes in, because we want to switch the `IO` and `[]`.
+
+- Example:
+
+    ```haskell
+    traversedUrls :: IO [Response ByteString]
+    traversedUrls = traverse get urls
+
+    -- We can then call this like:
+    getResponses :: IO ()
+    getResponses = do
+        responses <- traversedUrls
+        print responses
+    ```
 
