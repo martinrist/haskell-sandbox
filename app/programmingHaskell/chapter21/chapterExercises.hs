@@ -14,13 +14,6 @@ main = undefined
 -- Traversable instances
 ------------------------
 
--- Triggers for QuickCheck
-type TI = []
-
-trigger :: TI (Int, Int, [Int])
-trigger = undefined
-
-
 -- Identity
 
 newtype Identity a =
@@ -36,9 +29,19 @@ instance Foldable Identity where
 instance Traversable Identity where
     traverse f (Identity a) = Identity <$> f a
 
+identityTrigger :: Identity (Int, Int, [Int])
+identityTrigger = undefined
+
+instance Arbitrary a => Arbitrary (Identity a) where
+    arbitrary = do
+        a <- arbitrary
+        return $ Identity a
+
+instance Eq a => EqProp (Identity a) where
+    (=-=) = eq
 
 testIdentityTraversable :: IO ()
-testIdentityTraversable = quickBatch $ traversable trigger
+testIdentityTraversable = quickBatch $ traversable identityTrigger
 
 
 
@@ -46,6 +49,7 @@ testIdentityTraversable = quickBatch $ traversable trigger
 
 newtype Constant a b =
     Constant { getConstant :: a}
+    deriving (Eq, Ord, Show)
 
 instance Functor (Constant a) where
     fmap f = Constant . getConstant
@@ -56,5 +60,50 @@ instance Foldable (Constant a) where
 instance Traversable (Constant a) where
     traverse f x = Constant <$> pure (getConstant x)
 
+instance Arbitrary a => Arbitrary (Constant a b) where
+    arbitrary = do
+        a <- arbitrary
+        return $ Constant a
+
+instance Eq a => EqProp (Constant a b) where
+    (=-=) = eq
+
+constantTrigger :: Constant (Int, Int, [Int]) (Int, Int, [Int])
+constantTrigger = undefined
+
 testConstantTraversable :: IO ()
-testConstantTraversable = quickBatch $ traversable trigger
+testConstantTraversable = quickBatch $ traversable constantTrigger
+
+
+-- Maybe
+
+data Optional a =
+      Nada
+    | Yep a
+    deriving (Eq, Ord, Show)
+
+instance Functor Optional where
+    fmap _ Nada    = Nada
+    fmap f (Yep a) = Yep (f a)
+
+instance Foldable Optional where
+    foldMap _ Nada    = mempty
+    foldMap f (Yep a) = f a
+
+instance Traversable Optional where
+    traverse _ Nada    = pure Nada
+    traverse f (Yep a) = Yep <$> f a
+
+instance Arbitrary a => Arbitrary (Optional a) where
+    arbitrary =
+        frequency [(1, return Nada),
+                   (3, fmap Yep arbitrary)]
+
+instance Eq a => EqProp (Optional a) where
+    (=-=) = eq
+
+optionalTrigger :: Optional (Int, Int, [Int])
+optionalTrigger = undefined
+
+testOptionalTraversable :: IO ()
+testOptionalTraversable = quickBatch $ traversable optionalTrigger
