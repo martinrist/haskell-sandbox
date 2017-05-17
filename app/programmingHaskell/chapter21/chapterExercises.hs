@@ -1,57 +1,60 @@
-import Data.Monoid
-import Data.Foldable
+import           GHC.Generics
+import           Test.QuickCheck
+import           Test.QuickCheck.Checkers
+import           Test.QuickCheck.Classes
+import           Test.QuickCheck.Function
 
 ------------------------------------
--- Chapter 20 - Chapter Exercises --
+-- Chapter 21 - Chapter Exercises --
 ------------------------------------
 
 main :: IO ()
 main = undefined
 
--- 1 - Constant
-data Constant a b =
-    Constant a
+-- Traversable instances
+------------------------
+
+-- Triggers for QuickCheck
+type TI = []
+
+trigger :: TI (Int, Int, [Int])
+trigger = undefined
+
+
+-- Identity
+
+newtype Identity a =
+    Identity a
+    deriving (Eq, Ord, Show)
+
+instance Functor Identity where
+    fmap f (Identity a) = Identity $ f a
+
+instance Foldable Identity where
+    foldMap f (Identity a) = f a
+
+instance Traversable Identity where
+    traverse f (Identity a) = Identity <$> f a
+
+
+testIdentityTraversable :: IO ()
+testIdentityTraversable = quickBatch $ traversable trigger
+
+
+
+-- Constant
+
+newtype Constant a b =
+    Constant { getConstant :: a}
+
+instance Functor (Constant a) where
+    fmap f = Constant . getConstant
 
 instance Foldable (Constant a) where
-    foldMap _ (Constant a) = mempty
+    foldMap f x = mempty
 
+instance Traversable (Constant a) where
+    traverse f x = Constant <$> pure (getConstant x)
 
--- 2 - Two
-data Two a b =
-    Two a b
-
-instance Foldable (Two a) where
-    foldMap f (Two a b) = f b
-
-
--- 3 - Three
-data Three a b c =
-    Three a b c
-
-instance Foldable (Three a b) where
-    foldMap f (Three a b c) = f c
-
-
--- 4 - Three '
-data Three' a b =
-    Three' a b b
-
-instance Foldable (Three' a) where
-    foldMap f (Three' a b b') = f b'
-
-
--- 5 - Four'
-data Four' a b =
-    Four' a b b b
-
-instance Foldable (Four' a) where
-    foldMap f (Four' a b b' b'') = f b''
-
-
-
--- Filter function for foldable types
-filterF :: (Applicative f, Foldable t, Monoid (f a))
-            => (a -> Bool) -> t a -> f a
-filterF pred = foldr (acc pred) mempty
-    where acc pred a fa =
-              if pred a then mappend (pure a) fa else fa
+testConstantTraversable :: IO ()
+testConstantTraversable = quickBatch $ traversable trigger
