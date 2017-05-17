@@ -249,3 +249,63 @@
         print responses
     ```
 
+
+
+## 21.9 - `Traversable` instances
+
+- `Traversable` instance for `Either` looks like:
+
+    ```haskell
+    data Either a b =
+          Left a
+        | Right b
+        deriving (Eq, Ord, Show)
+
+    instance Traversable (Either a) where
+        traverse _ (Left x)  = pure (Left x)
+        traverse f (Right y) = Right <$> f y
+    ```
+
+- For a two-tuple, we have:
+
+    ```haskell
+    instance Traversable ((,) a) where
+        traverse f (x, y) = (,) x <$> f y
+    ```
+
+
+## 21.10 - `Traversable` laws
+
+- Like `Functor`, `Applicative` and `Monad`, `Traversable` must satisfy laws.
+
+- _Naturality_ - function composition behaves in unsurprising ways with respect to a traversed function `f`:
+
+    ```haskell
+    t . traverse f = traverse (t . f)
+    ```
+
+- _Identity_ - traversing the data constructor of the `Identity` type over a value produces the same result as just putting the value directly into `Identity`:
+
+    ```haskell
+    traverse Identity = Identity
+    ```
+
+- _Composition_ - we can collapse sequential traversals into a single traversal, using the `Compose` datatype
+
+    ```haskell
+    traverse (Compose . fmap g . f) =
+                Compose . fmap (traverse g) . traverse f
+    ```
+
+
+## 21.11 - QuickChecking `Traversable` instances
+
+- The _checkers_ library can also be used to check `Traversable` laws:
+
+    ```haskell
+    type TI = []
+
+    main = do
+        let trigger = undefined :: TI (Int, Int, [Int])
+        quickBatch (traversable trigger)
+    ```
