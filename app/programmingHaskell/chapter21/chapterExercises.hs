@@ -143,3 +143,80 @@ listTrigger = undefined
 
 testListTraversable :: IO ()
 testListTraversable = quickBatch $ traversable listTrigger
+
+
+-- Three
+
+data Three a b c =
+    Three a b c
+    deriving (Eq, Ord, Show)
+
+instance Functor (Three a b) where
+    fmap f (Three a b c) = Three a b (f c)
+
+instance Foldable (Three a b) where
+    foldMap f (Three a b c) = f c
+
+instance Traversable (Three a b) where
+    traverse f (Three a b c) = Three a b <$> f c
+
+instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        return $ Three a b c
+
+instance (Eq a, Eq b, Eq c) => EqProp (Three a b c) where
+    (=-=) = eq
+
+threeTrigger :: Three (Int, Int, [Int]) (Int, Int, [Int]) (Int, Int, [Int])
+threeTrigger = undefined
+
+testThreeTraversable :: IO ()
+testThreeTraversable = quickBatch $ traversable threeTrigger
+
+
+
+-- Three'
+
+data Three' a b =
+    Three' a b b
+    deriving (Eq, Ord, Show)
+
+instance Functor (Three' a) where
+    fmap f (Three' a b b') = Three' a (f b) (f b')
+
+instance Foldable (Three' a) where
+    foldMap f (Three' a b b') = mappend (f b) (f b')
+
+instance Traversable (Three' a) where
+    traverse f (Three' a b b') = Three' a <$> f b <*> f b'
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Three' a b) where
+    arbitrary = do
+        a  <- arbitrary
+        b  <- arbitrary
+        b' <- arbitrary
+        return $ Three' a b b'
+
+instance (Eq a, Eq b) => EqProp (Three' a b) where
+    (=-=) = eq
+
+three'Trigger :: Three' (Int, Int, [Int]) (Int, Int, [Int])
+three'Trigger = undefined
+
+testThree'Traversable :: IO ()
+testThree'Traversable = quickBatch $ traversable three'Trigger
+
+
+
+
+testAll :: IO ()
+testAll = do
+    testIdentityTraversable
+    testConstantTraversable
+    testOptionalTraversable
+    testListTraversable
+    testThreeTraversable
+    testThree'Traversable
