@@ -18,7 +18,7 @@ main = undefined
 
 newtype Identity a =
     Identity a
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
 
 instance Functor Identity where
     fmap f (Identity a) = Identity $ f a
@@ -49,7 +49,7 @@ testIdentityTraversable = quickBatch $ traversable identityTrigger
 
 newtype Constant a b =
     Constant { getConstant :: a}
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
 
 instance Functor (Constant a) where
     fmap f = Constant . getConstant
@@ -80,7 +80,7 @@ testConstantTraversable = quickBatch $ traversable constantTrigger
 data Optional a =
       Nada
     | Yep a
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
 
 instance Functor Optional where
     fmap _ Nada    = Nada
@@ -113,7 +113,7 @@ testOptionalTraversable = quickBatch $ traversable optionalTrigger
 data List a =
       Nil
     | Cons a (List a)
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
 
 instance Functor List where
     fmap _ Nil         = Nil
@@ -149,7 +149,7 @@ testListTraversable = quickBatch $ traversable listTrigger
 
 data Three a b c =
     Three a b c
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
 
 instance Functor (Three a b) where
     fmap f (Three a b c) = Three a b (f c)
@@ -182,7 +182,7 @@ testThreeTraversable = quickBatch $ traversable threeTrigger
 
 data Three' a b =
     Three' a b b
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Show)
 
 instance Functor (Three' a) where
     fmap f (Three' a b b') = Three' a (f b) (f b')
@@ -208,7 +208,6 @@ three'Trigger = undefined
 
 testThree'Traversable :: IO ()
 testThree'Traversable = quickBatch $ traversable three'Trigger
-
 
 
 
