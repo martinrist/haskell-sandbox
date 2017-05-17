@@ -244,12 +244,69 @@ sTrigger = undefined
 testSTraversable :: IO ()
 testSTraversable = quickBatch $ traversable sTrigger
 
+-- Tree
+
+data Tree a =
+      Empty
+    | Leaf a
+    | Node (Tree a) a (Tree a)
+    deriving (Eq, Show)
+
+instance Functor Tree where
+    fmap _ Empty        = Empty
+    fmap f (Leaf a)     = Leaf $ f a
+    fmap f (Node l a r) = Node (fmap f l) (f a) (fmap f r)
+
+instance Foldable Tree where
+    foldMap _ Empty        = mempty
+    foldMap f (Leaf a)     = f a
+    foldMap f (Node l a r) = foldMap f l <> f a <> foldMap f r
+
+instance Traversable Tree where
+    traverse g Empty        = pure Empty
+    traverse g (Leaf a)     = Leaf <$> g a
+    traverse g (Node l a r) = Node <$> traverse g l <*> g a <*> traverse g r
+
+
+doubleIfOdd :: (Eq a, Integral a) => a -> Maybe a
+doubleIfOdd x = if (x `mod` 2) == 0 then Nothing else Just (x * 2)
+
+mkTree :: Arbitrary a => Gen (Tree a)
+mkTree = do
+    a <- arbitrary
+    l <- mkTree
+    r <- mkTree
+    frequency [ (1, return Empty)
+              , (2, return $ Leaf a)
+              , (2, return $ Node l a r) ]
+
+instance (Arbitrary a, CoArbitrary a) => Arbitrary (Tree a) where
+    arbitrary = mkTree
+
+instance Eq a => EqProp (Tree a) where
+    (=-=) = eq
+
+treeTrigger :: Tree (Int, Int, [Int])
+treeTrigger = undefined
+
+testTreeTraversable :: IO ()
+testTreeTraversable = quickBatch $ traversable treeTrigger
+
 testAll :: IO ()
 testAll = do
+    putStrLn "\n\nTesting Traversable instance for Identity"
     testIdentityTraversable
+    putStrLn "\n\nTesting Traversable instance for Constant"
     testConstantTraversable
+    putStrLn "\n\nTesting Traversable instance for Optional"
     testOptionalTraversable
+    putStrLn "\n\nTesting Traversable instance for List"
     testListTraversable
+    putStrLn "\n\nTesting Traversable instance for Three"
     testThreeTraversable
+    putStrLn "\n\nTesting Traversable instance for Three'"
     testThree'Traversable
+    putStrLn "\n\nTesting Traversable instance for S"
     testSTraversable
+    putStrLn "\n\nTesting Traversable instance for Tree"
+    testTreeTraversable
