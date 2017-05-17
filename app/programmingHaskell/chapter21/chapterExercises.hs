@@ -107,3 +107,39 @@ optionalTrigger = undefined
 
 testOptionalTraversable :: IO ()
 testOptionalTraversable = quickBatch $ traversable optionalTrigger
+
+
+-- List
+data List a =
+      Nil
+    | Cons a (List a)
+    deriving (Eq, Ord, Show)
+
+instance Functor List where
+    fmap _ Nil         = Nil
+    fmap f (Cons x ys) = Cons (f x) (fmap f ys)
+
+instance Foldable List where
+    foldMap _ Nil         = mempty
+    foldMap f (Cons x ys) = mappend (f x) (foldMap f ys)
+
+instance Traversable List where
+    traverse _ Nil         = pure Nil
+    traverse f (Cons x ys) = Cons <$> f x <*> traverse f ys
+
+toList :: [a] -> List a
+toList = foldr Cons Nil
+
+instance Arbitrary a => Arbitrary (List a) where
+    arbitrary = toList <$> arbitrary
+
+instance Eq a => EqProp (List a) where
+    Nil =-= ys = ys `eq` Nil
+    xs =-= Nil = xs `eq` Nil
+    Cons x xs =-= Cons y ys = x `eq` y .&. xs `eq` ys
+
+listTrigger :: List (Int, Int, [Int])
+listTrigger = undefined
+
+testListTraversable :: IO ()
+testListTraversable = quickBatch $ traversable listTrigger
