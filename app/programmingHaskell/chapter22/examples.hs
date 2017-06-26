@@ -93,3 +93,28 @@ getDogR = Dog <$> dogName <*> address
 -- Alternatively, with `liftA2`
 getDogR' :: Person -> Dog
 getDogR' = liftA2 Dog dogName address
+
+
+
+-- 22.7 - The Monad of Functions
+
+-- Increment all values in the Functor f
+mapInc :: (Functor f, Num a) => f a -> f a
+mapInc r = fmap (+1) r
+
+-- Returns a tuple of arg 1, and the length of arg 2
+returnWithArg2Length :: Foldable f => t -> f a -> (t, Int)
+returnWithArg2Length r t = (r, length t)
+
+
+-- Reduce `returnWithArg2Length` to one parameter
+returnWithArgLength :: Foldable t => t a -> (t a, Int)
+returnWithArgLength r = (r, length r)
+
+
+-- Example with Dog and Person
+getDogRM :: Person -> Dog
+getDogRM = do
+    name <- dogName
+    addr <- address
+    return $ Dog name addr

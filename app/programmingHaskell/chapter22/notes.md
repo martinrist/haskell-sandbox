@@ -234,4 +234,94 @@
     getDogR' = liftA2 Dog dogName address
     ```
 
-- 
+
+## 22.7 - The Monad of functions
+
+- Functions also have a `Monad` instance to help combine them.
+
+- Suppose we have a couple of functions:
+
+    ```haskell
+    mapInc :: (Functor f, Num a) => f a -> f a
+    mapInc r = fmap (+1) r
+
+    returnWithArg2Length :: Foldable f => t -> f a -> (t, Int)
+    returnWithArg2Length r t = (r, length t)
+    ```
+
+- Let's say we want to make a function that does both - increment and return length:
+
+    ```haskell
+    incAndReturnLength1 :: Num a => [a] -> ([a], Int)
+    incAndReturnLength1 r = (fmap (+1) r, length r)
+    ```
+
+- Instead, we'd like to write the same function by composing `mapInc` and `returnWithArg2Length` somehow.
+
+- First we could rewrite `returnWithArg2Length` to just take a single argument, but this doesn't do the mapping of `(+1)`:
+
+    ```haskell
+    returnWithArgLength :: Foldable t => t a -> (t, Int)
+    returnWithArgLength r = (r, length r)
+    ```
+
+- Alternatively, we could replace the `fmap (+1)` in `incAndReturnLength1` with `mapInc`:
+
+    ```haskell
+    incAndReturnLength2 :: Num a => [a] -> ([a], Int)
+    incAndReturnLength2 r = (mapInc r, length r)
+    ```
+
+- More compactly, we could do this by making `mapInc r` the first argument to `returnWithArg2Length`:
+
+    ```haskell
+    incAndReturnLength3 :: Num a => [a] -> ([a], Int)
+    incAndReturnLength3 r = returnWithArg2Length (mapInc r) r
+    ```
+
+- Now we have an environment in which two functions (`mapInc` and `returnWithArg2Length`) are waiting for the same argument to come in.
+
+- Rewriting `incAndReturnLength3` to look a bit more like Reader:
+
+    ```haskell
+    incAndReturnLength3' :: Num a => [a] -> ([a], Int)
+    incAndReturnLength3' = \r -> returnWithArg2Length (mapInc r) r
+    ```
+
+- Abstracting out the specific functions:
+
+    ```haskell
+    -- We know very little about `m` and `k`, hence the type is highly polymorphic
+    functionBind :: (r -> a) -> (a -> r -> b) -> (r -> b)
+    functionBind m k = \r -> k (m r) r
+    ```
+
+- Now, replace `r -> a` with `m a` and we'll see something familar - the bind operator for Monads:
+
+    ```haskell
+    functionBind ::            (r -> a) -> (a -> (r -> b)) -> (r -> b)
+    (>>=)        :: Monad m =>  m    a  -> (a -> (m    b)) ->  m    b
+    ```
+
+- Looking at this the other way, from the types:
+
+    ```haskell
+    -- m ~ (->) r
+    (>>=) :: Monad m =>      m a -> (a ->      m b)      -> m b
+    (>>=) ::            (->) r a -> (a -> (->) r b) -> (->) r b
+                        (r -> a) -> (a ->   r -> b) ->   r -> b
+
+    return :: Monad m => a ->      m a
+    return ::            a -> (->) r a
+                         a ->   r -> a
+    ```
+
+- The example above using `Person` and `Dog` can be rewritten using the Reader monad as:
+
+    ```haskell
+    getDogRM :: Person -> Dog
+    getDogRM = do
+        name <- dogName
+        addr <- address
+        return $ Dog name addr
+    ```
