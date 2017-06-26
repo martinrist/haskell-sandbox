@@ -136,3 +136,102 @@
     - This value will be an argument to a whole bunch of functions.
     - Using _Reader_ allows us to avoid passing that argument around explicitly.
 
+
+## 22.4 - Breaking down the Functor of functions
+
+- One of the instances of `Functor` in `Prelude` is one for the partially-applied type constructor of functions `((->) r)`:
+
+    ```haskell
+    > :info Functor
+    class Functor (f :: * -> *) where
+        fmap :: (a -> b) -> f a -> f b
+        ...
+
+    instance Functor ((->) r) -- Defined in 'GHC.Base'
+    ```
+
+- The implementation in `base` is trivial:
+
+    ```haskell
+    instance Functor ((->) r) where
+        fmap = (.)
+    ```
+
+- `(->)` takes two arguments, so has kind `* -> * -> *`:
+    - Recall that `(->)` is defined as: `data (->) a b`
+    - Used in the context of Reader, the `a` here is conventionally called `r`
+    - So, we're lifting over `((->) r)` or, in other words `r ->`
+
+
+
+## 22.5 - The `Reader` wrapper
+
+- `Reader` itself is a `newtype` wrapper for the function type, where the `r` is the type we're reading in, and `a` is the result type of our function:
+
+    ```haskell
+    newtype Reader r a =
+        Reader { runReader :: r -> a }
+    ```
+
+- The instance of `Functor` for `Reader r` is:
+
+    ```haskell
+    instance Functor (Reader r) where
+        fmap :: (a -> b) -> Reader r a -> Reader r b
+        fmap f (Reader ra) =
+            Reader $ \r -> f (ra r)
+
+    -- Or, alternatively, using composition:
+            Reader $ (f . ra)
+    ```
+
+
+## 22.6 - Functions have an `Applicative` too
+
+- First, note how the types specialise for `Applicative`, replacing `f` with `(->) r`:
+
+    ```haskell
+    pure :: a ->     f a
+    pure :: a -> (r -> a)
+
+    (<*>) ::    f (a -> b) ->     f a  ->     f b
+    (<*>) :: (r -> a -> b) -> (r -> a) -> (r -> b)
+    ```
+
+- We'll show how the `Applicative` instance for functions is normally used:
+    - First assume we have newtypes `HumanName`, `DogName` and `Address` that are just aliases for `String`.
+
+- Consider the following two record types:
+
+    ```haskell
+    data Person =
+        Person {
+            humanName :: HumanName
+          , dogName :: DogName
+          , address :: Address
+          } deriving (Eq, Show)
+
+    data Dog =
+        Dog {
+            dogsName :: DogName
+          , dogsAddress :: Address
+          } deriving (Eq, Show)
+    ```
+
+- Let's say we want to take a `Person` and create their `Dog` record, using `dogName` and `address`:
+
+    ```haskell
+    -- Without reader
+    getDog :: Person -> Dog
+    getDog p = Dog (dogName p) (address p)
+
+    -- But `dogName` and `address` are both functions of a single argument (`p`)
+    -- so, we can use Reader:
+    getDogR :: Person -> Dog
+    getDogR = Dog <$> dogName <*> address
+
+    -- ... or use `liftA2`:
+    getDogR' = liftA2 Dog dogName address
+    ```
+
+- 
