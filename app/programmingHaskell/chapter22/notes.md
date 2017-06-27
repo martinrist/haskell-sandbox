@@ -137,6 +137,7 @@
     - Using _Reader_ allows us to avoid passing that argument around explicitly.
 
 
+
 ## 22.4 - Breaking down the Functor of functions
 
 - One of the instances of `Functor` in `Prelude` is one for the partially-applied type constructor of functions `((->) r)`:
@@ -234,10 +235,25 @@
     getDogR' = liftA2 Dog dogName address
     ```
 
+- `Applicative` for function application is defined as:
+
+    ```haskell
+    instance Applicative ((->) r) where
+        pure = const
+        f <*> a = \r -> f r (a r)
+    ```
+
+
 
 ## 22.7 - The Monad of functions
 
-- Functions also have a `Monad` instance to help combine them.
+- Functions also have a `Monad` instance to help combine them:
+
+    ```haskell
+    instance Monad ((->) r) where
+        return = pure
+        m >>= k = flip k <*> m
+    ```
 
 - Suppose we have a couple of functions:
 
@@ -325,3 +341,9 @@
         addr <- address
         return $ Dog name addr
     ```
+
+- Note that the `Reader` monad is fairly boring, since it can't do anything that the applicative can't already do.
+
+- In reality, we tend to see `ReaderT` rather than `Reader`:
+    - `Reader` is normally just one Monad in a stack of multiple types providing a Monad instance.
+    - Used in this context, it's a _monad transformer_, indicated by the `T` prefix - `ReaderT` as opposed to just `Reader`.
