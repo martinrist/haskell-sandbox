@@ -33,6 +33,8 @@ executable haskell-sandbox-exe
                      , checkers
                      , bytestring
                      , wreq
+                     , random
+                     , transformers
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
