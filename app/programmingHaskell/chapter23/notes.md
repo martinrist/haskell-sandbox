@@ -170,3 +170,4 @@
 
     > evalState (nDie 5) (mkStdGen 0)
     [DieSix, DieSix, DieFour, DieOne, DieFive]
+    ```
