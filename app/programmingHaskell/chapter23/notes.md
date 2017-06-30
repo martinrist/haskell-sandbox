@@ -114,5 +114,59 @@
         (intToDie d1, intToDie d2, intToDie d3)
     ```
 
-- 
+- We can extract the generation of a single Die using `State`:
 
+    ```haskell
+    rollDie :: State StdGen Die
+    rollDie = state $ do
+        (n, s) <- randomR (1, 6)
+        return (intToDie n, s)
+    ```
+
+- Here, `state` is a constructor that takes a state-like function (an `s -> (a, s)`) and embeds it in the State monad transformer (more about that later...)
+
+- Next, we can just lift `intToDie` over the state, to make it a little less verbose:
+
+    ```haskell
+    rollDie' :: State StdGen Die
+    rollDie' = intToDie <$> state (randomR (1, 6))
+    ```
+
+- To demonstrate using this to roll dice, we can use `evalState`:
+
+    ```haskell
+    > evalState rollDie (mkStdGen 0)
+    DieSix
+    ```
+
+- To roll a die multiple times, we can return a tuple with multiple rolls, using `liftA3`:
+
+    ```haskell
+    > let threeRolls = liftA3 (,,) rollDie rollDie rollDie
+    > evalState threeRolls (mkStdGen 0)
+    (DieSix, DieSix, DieFour)
+
+    > evalState threeRolls (mkStdGen 1)
+    (DieSix, DieFive, DieTwo)
+    ```
+
+- If we want to populate a list of rolls, we need to use `Control.Monad.replicateM` in order to apply the action and carry along the state:
+
+    ```haskell
+    -- Using `repeat` won't work
+    > take 5 (repeat 1)
+    [1, 1, 1, 1, 1]
+
+    infiniteDie :: State StdGen [Die]
+    infiniteDie = repeat <$> rollDie
+
+    -- All the rolls are the same, because we've just repeated the first result
+    > take 5 $ evalState infiniteDie (mkStdGen 0)
+    [DieSix,DieSix,DieSix,DieSix,DieSix]
+
+    -- We need to use `replicateM`
+    nDie :: Int -> State StdGen [Die]
+    nDie n = replicateM n rollDie
+
+    > evalState (nDie 5) (mkStdGen 0)
+    [DieSix, DieSix, DieFour, DieOne, DieFive]

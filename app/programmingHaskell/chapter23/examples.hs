@@ -1,4 +1,5 @@
 import           Control.Applicative       (liftA3)
+import           Control.Monad             (replicateM)
 import           Control.Monad.Trans.State
 import           System.Random
 
@@ -46,6 +47,14 @@ rollDie = state $ do
     (n, s) <- randomR (1, 6)
     return (intToDie n, s)
 
-
+-- Alternatively, lift `intToDie` over the result of `state`
 rollDie' :: State StdGen Die
 rollDie' = intToDie <$> state (randomR (1, 6))
+
+-- Trying to use repeat to roll a list doesn't work
+infiniteDie :: State StdGen [Die]
+infiniteDie = repeat <$> rollDie
+
+-- We need to use `replicateM` to carry the state along
+nDie :: Int -> State StdGen [Die]
+nDie n = replicateM n rollDie
