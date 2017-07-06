@@ -32,5 +32,5 @@ oneTwo' :: Parser Char
 oneTwo' = oneTwo >> stop
 
 -- test a given parser against the string '123'
-testParse :: Parser Char :: IO ()
-testParse p = print $ parseString p mempty '123'
+testParse :: Parser Char -> IO ()
+testParse p = print $ parseString p mempty "123"
