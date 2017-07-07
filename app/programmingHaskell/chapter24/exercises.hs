@@ -40,3 +40,11 @@ oneTwoThree' = string "123" <|> string "12" <|> string "1"
 -- Question 3 - `string` from `char`
 string' :: String -> Parser String
 string' = mapM char
+
+
+
+-- Exercise: Unit of Success
+----------------------------
+
+parseInteger :: Parser Integer
+parseInteger = integer <* eof

@@ -170,3 +170,61 @@
     123<EOF>
       ^
     ```
+
+
+## 24.4 - Parsing fractions
+
+- Consider parsing fractions (e.g. `1/2` to produce a `GHC.Real.Ratio.Integer`:
+
+    ```haskell
+    parseFraction :: Parser Rational
+    parseFraction = do
+        numerator <- decimal
+        char '/'
+        denominator <- decimal
+        return (numerator % denominator)
+    ```
+
+- Note that we use `do` notation, and the monadic nature of `Parser` to allow us to bind the parsed `numerator` and `denominator` in order to combine them in the result.
+
+- Some examples of how this behaves:
+
+    ```haskell
+    > let parseIt = parseString parseFraction mempty
+
+    > parseIt "1/2"
+    Success (1 % 2)
+
+    > parseIt "2/1"
+    Success (2 % 1)
+
+    > parseIt "10"
+    Failure (interactive):1:3: error: unexpected
+        EOF, expected: "/", digit
+    10<EOF>
+      ^
+
+    > parseIt "2/0"
+    Success *** Exception: Ratio has zero denominator
+    ```
+
+- This last case is a problem, because it will break our program.  Our parser should instead be checking for the presence of a zero denominator and failing:
+
+    ```haskell
+    virtuousFraction :: Parser Rational
+    virtuousFraction = do
+        numerator <- decimal
+        char '/'
+        denominator <- decimal
+        case denominator of
+            0 -> fail "Denominator cannot be zero"
+            _ -> return (numerator % denominator)
+
+    > parseString virtuousFraction mempty "2/0"
+    Failure (interactive):1:4: error: Denominator
+        cannot be zero, expected: digit
+    2/0<EOF>
+       ^
+    ```
+
+- `fail :: Monad m => String -> m a` is (for legacy reasons) part of `Monad`.  It returns a failure with some text.
