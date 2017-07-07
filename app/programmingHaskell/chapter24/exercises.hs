@@ -1,4 +1,5 @@
 import           Control.Applicative
+import           Data.Ratio              ((%))
 import           Text.Parser.Combinators
 import           Text.Trifecta
 
@@ -48,3 +49,20 @@ string' = mapM char
 
 parseInteger :: Parser Integer
 parseInteger = integer <* eof
+
+
+-- Exercise: Try Try
+
+parseFraction :: Parser Rational
+parseFraction = do
+    numerator <- decimal
+    char '/'
+    denominator <- decimal
+    case denominator of
+         0 -> fail "Denominator cannot be zero"
+         _ -> return (numerator % denominator)
+
+type FractionOrInteger = Either Rational Integer
+
+parseFractionOrInteger :: Parser FractionOrInteger
+parseFractionOrInteger = try (Left <$> parseFraction) <|> (Right <$> integer)

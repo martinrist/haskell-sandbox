@@ -228,3 +228,73 @@
     ```
 
 - `fail :: Monad m => String -> m a` is (for legacy reasons) part of `Monad`.  It returns a failure with some text.
+
+
+## 24.5 - Haskell's parsing ecosystem
+
+- Some Haskell parsing libraries include:
+    - `parsec` and `attoparsec` - most well-known parser combinator libraries.
+    - `megaparsec` - another parser combinator library, less well known.
+    - `aeson` - parses JSON data
+    - `cassava` - parses CSV data
+    - `trifecta` - has better error messages
+
+- `trifecta` relies on the `parsers` library for certain typeclasses that abstract over common kinds of things that parsers do.
+
+- The `Text.Parser.Combinators.Parsing` typeclass defines functions needed to describe parsers independent of their type, and includes:
+    - `try :: Parsing m => m a -> m a` - takes a parser that may consume input.  On failure, goes back to where we started and fail as if we didn't consume any input.
+    - `notFollowedBy :: (Show a, Parsing m) => m a -> m ()` - succeeds only if the parser in its argument fails.
+    - `<?> :: Parsing m => m a -> String -> m a` - gives a parser a name, which is reported in failure messages.
+
+- `CharParsing` is a typeclass which extends `Parsing` and has functions to parse individual characters, e.g.:
+    - `notChar :: CharParsing m => Char -> m Char` - parses any character other than the one specified.
+    - `anyChar :: CharParsing m => m Char` - parses any character.
+    - `string :: CharParsing m => String -> m String` - parses the specified string.
+
+
+## 24.6 - `Alternative`
+
+- If we want to parse different options (e.g. a number or a string), we can use `<|>` as a disjunction operator for parsers:
+
+    ```haskell
+    type NumberOrString = Either Number String
+
+    parseNoS :: Parser NumberOrString
+    parseNoS = (Left <$> integer) <|> (Right <$> some letter)
+
+    > parseString parseNoS mempty "123"
+    Success (Left 123)
+
+    > parseString parseNoS mempty "foo"
+    Success (Right "foo")
+
+    > parseString parseNoS mempty "foo123"
+    Success (Right "foo")
+    ```
+
+- We can also use `many` to match zero or more, or `some` to match one or more, and return a list:
+
+    ```haskell
+    > parseString (many integer) mempty "123"
+    Success [123]
+
+    > parseString (many integer) mempty ""
+    Success []
+
+    > parseString (some integer) mempty ""
+    Failure (interactive):1:1: error: unexpected
+        EOF, expected: integer
+    <EOF>
+    ^
+    ```
+
+- `some`, `many` and `(<|>)` are defined in the `Alternative` typeclass:
+
+    ```haskell
+    class Applicative f => Alternative f where
+        -- | The identity of '<|>'
+        empty :: F a
+
+        -- | An associative binary operation
+        (<|>) :: f a -> f a -> f a
+    ```

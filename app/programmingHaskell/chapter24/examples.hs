@@ -1,5 +1,5 @@
-import           Control.Monad.Trans.State
-import           Data.Ratio                ((%))
+import           Control.Applicative
+import           Data.Ratio          ((%))
 import           Text.Trifecta
 
 -----------------------------------
@@ -62,3 +62,17 @@ badFraction = "1/0"
 alsoBad = "10"
 shouldWork = "1/2"
 shouldAlsoWork = "2/1"
+
+
+-- 24.6 - Alternative
+---------------------
+
+type NumberOrString = Either Integer String
+
+a = "blah"
+b = "123"
+c = "123blah789"
+
+parseNoS :: Parser NumberOrString
+parseNoS = (Left <$> integer) <|> (Right <$> some letter)
+
