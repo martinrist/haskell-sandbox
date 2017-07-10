@@ -37,6 +37,8 @@ executable haskell-sandbox-exe
                      , transformers
                      , trifecta
                      , parsers
+                     , text
+                     , raw-strings-qq
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
