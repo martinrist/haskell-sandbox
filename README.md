@@ -19,6 +19,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 21 - Traversable](app/programmingHaskell/chapter21/notes.md)
 - [Chapter 22 - Reader](app/programmingHaskell/chapter22/notes.md)
 - [Chapter 23 - State](app/programmingHaskell/chapter23/notes.md)
+- [Chapter 24 - Parser Combinators](app/programmingHaskell/chapter24/notes.md)
 
 
 # Environment Setup Notes
