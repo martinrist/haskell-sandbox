@@ -144,10 +144,6 @@ data Section =
     Section Header Assignments
     deriving (Eq, Show)
 
-newtype Config =
-    Config (Map Header Assignments)
-    deriving (Eq, Show)
-
 
 -- | Parser to skip whitespace
 skipWhitespace :: Parser ()
@@ -172,3 +168,98 @@ parseSection = do
     skipEOL
     assignments <- some parseAssignment
     return $ Section h (M.fromList assignments)
+
+
+
+------------
+-- Config --
+------------
+
+newtype Config =
+    Config (Map Header Assignments)
+    deriving (Eq, Show)
+
+
+-- | Roll up the sections into a `Map` that keys section data by section name.
+-- Values in the map are `Map`s of assignment names mapped to values.
+rollup :: Section
+       -> Map Header Assignments
+       -> Map Header Assignments
+rollup (Section h a) =
+    M.insert h a
+
+
+-- | Parser to parse an entire configuration
+parseIni :: Parser Config
+parseIni = do
+    sections <- some parseSection
+    let mapOfSections =
+            foldr rollup M.empty sections
+    return (Config mapOfSections)
+
+
+-----------
+-- Tests --
+-----------
+
+maybeSuccess :: Result a -> Maybe a
+maybeSuccess (Success a) = Just a
+maybeSuccess _           = Nothing
+
+main :: IO ()
+main = hspec $ do
+
+    describe "Assignment Parsing" $
+        it "can parse a simple assignment" $ do
+            let m = parseByteString parseAssignment
+                    mempty assignmentExample
+                r' = maybeSuccess m
+            print m
+            r' `shouldBe` Just ("woot", "1")
+
+    describe "Header Parsing" $
+        it "can parse a simple header" $ do
+            let m = parseByteString parseHeader
+                    mempty headerExample
+                r' = maybeSuccess m
+            print m
+            r' `shouldBe` Just (Header "blah")
+
+    describe "Comment parsing" $
+        it "Can skip a comment before a header" $ do
+            let p = skipComments >> parseHeader
+                i = "; woot\n[blah]"
+                m = parseByteString p mempty i
+                r' = maybeSuccess m
+            print m
+            r' `shouldBe` Just (Header "blah")
+
+    describe "Section parsing" $
+        it "Can parse a simple section" $ do
+            let m = parseByteString parseSection
+                    mempty sectionExample
+                r' = maybeSuccess m
+                states = M.fromList [("Chris", "Texas")]
+                expected' = Just (Section
+                                  (Header "states")
+                                  states)
+            print m
+            r' `shouldBe` expected'
+
+    describe "INI parsing" $
+        it "Can parse multiple sections" $ do
+            let m = parseByteString parseIni mempty sectionExample'
+                r' = maybeSuccess m
+                sectionValues = M.fromList
+                                [ ("alias", "claw")
+                                , ("host", "wikipedia.org")]
+                whatisitValues = M.fromList
+                                 [("red", "intoothandclaw")]
+                expected' = Just (Config
+                                  (M.fromList
+                                   [ (Header "section"
+                                     , sectionValues)
+                                   , (Header "whatisit"
+                                     , whatisitValues)]))
+            print m
+            r' `shouldBe` expected'
