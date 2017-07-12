@@ -298,3 +298,19 @@
         -- | An associative binary operation
         (<|>) :: f a -> f a -> f a
     ```
+
+
+## 24.9 - Polymorphic parsers
+
+- Asserting polymorphic types for our parsers allow us to use parsers that can be run using `attoparsec`, `trifecta`, `parsec` or anything else that has implemented the necessary typeclasses:
+
+    ```haskell
+    polyParseFraction :: (Monad m, TokenParsing m) => m Rational
+    polyParseFraction = do
+        numerator <- decimal
+        _ <- char '/'
+        denominator <- decimal
+        case denominator of
+             0 -> fail "Denominator cannot be zero"
+             _ -> return (numerator % denominator)
+    ```
