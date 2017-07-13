@@ -140,3 +140,98 @@
 
     -- And it's not possible to `join` that final `f` and `g`.
     ```
+
+
+## 25.7 - Monad Transformers
+
+- Recall from earlier that a _Monad transformer_ is a type constructor that takes a Monad as an argument and returns a Monad as a result.
+
+- When attempting to 'compose' two Monads, we saw that the fundamental problem is trying to join the two unknown Monads:
+    - To get around this, we need to reduce the polymorphism and get concrete information about one of the Monads we're working with.
+    - The other Monad remains polymorphic as a variable type argument to our type constructor.
+
+- Let's think about how we get a bind operation over a type like `IO (Reader String [a])` where the Monad instances are `IO`, `Reader` and `[]`.
+
+- We could make one-off types for each combination of two Monads, but that won't scale:
+
+    ```haskell
+    newtype MaybeIO a =
+        MaybeIO { runMaybeIO :: IO (Maybe a) }
+
+    newtype MaybeList a =
+        MaybeList { runMaybeList :: [Maybe a] )
+
+    newtype IOList a =
+        IOList { runIoList :: IO [a] }
+    ```
+
+- It turns out, however, that we can get a Monad for _two_ types, provided we know what _one_ of them is - this is what Monad transformers do.
+
+
+## 25.8 - `IdentityT`
+
+- `IdentityT` is the simplest of the Monad transformers:
+    - Just like `Identity` helps start to understnad the essence of `Functor`, `Applicative` and `Monad`.
+
+- The new `IdentityT` data type:
+
+    ```haskell
+    -- The original Identity type
+    newtype Identity a =
+        Identity { runIdentity :: a }
+        deriving (Eq, Show)
+
+    -- The IdentityT monad transformer
+    newtype IdentityT f a =
+        IdentityT { runIdentityT :: f a }
+        deriving (Eq, Show)
+    ```
+
+- `Functor` and `Applicative` instances for `IdentityT` are straightforward:
+
+    ```haskell
+    instance Functor m => Functor (IdentityT m) where
+        fmap f (IdentityT fa) = IdentityT (fmap f fa)
+
+    instance Applicative m => Applicative (IdentityT m) where
+        pure x = IdentityT (pure x)
+        (IdentityT fab) <*> (IdentityT fa) =
+            IdentityT (fab <*> fa)
+    ```
+
+- The Monad instance is where we have to use concrete type information from `IdentityT` (specifically the call to `runIdentityT`) to make the types fit:
+
+    ```haskell
+    instance Monad m => Monad (IdentityT m) where
+        return = pure
+        (IdentityT ma) >>= f =
+            IdentityT $ ma >>= runIdentityT . f
+    ```
+
+- Looking in detail at the bind implementation:
+
+    ```haskell
+    (IdentityT ma) >>= f   = IdentityT $ ma  >>= runIdentityT . f
+
+    [     1      ] [2] [3]   [   8   ]   [4] [5] [    7     ]   [6]
+    ```
+
+- Taking each component in turn:
+    1. Pattern-match and unpack the `m a` value of `IdentityT m a`.  The type of `ma` is thus `m a`.
+    2. We are implementing a bind of type `(>>=) :: IdentityT m a -> (a -> IdentityT m b) -> IdentityT m b`.
+    3. `f` is the function we're binding over, of type `f :: a -> IdentityT m b`.
+    4. This is the `ma` we unpacked out of [1].  It is of type `m a`.
+    5. This bind is the one for the Monad `m`.  It is of type `(>>=) :: m a -> (a -> m b) -> m b`
+    6. This is the same `f :: a -> IdentityT m b` as [3] on the left hand side.
+    7. The bind [5] needs a second argument of type `a -> m b`, so we need to compose `f` with `runIdentity :: IdentityT m b -> m b` to make the types line up.
+    8. Finally, to make the bind [2] return `IdentityT m b`, we need to wrap the whole result from [4] - [6] in an `IdentityT`.
+
+- Once we have the Monad instance in place, we can use it as follows:
+
+    ```haskell
+    > IdentityT [1, 2, 3] >>= return . (+1)
+    IdentityT { runIdentityT = [2, 3, 4] }
+
+    > IdentityT [1, 2, 3] >>= (\x -> IdentityT [x, x * 2])
+    IdentityT {runIdentityT = [1,2,2,4,3,6]}
+    ```
