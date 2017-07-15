@@ -62,18 +62,18 @@
                     --              y :: a
                     --              f :: a -> MaybeT m b
                     --            f y :: Maybe T m b
-                    -- runMaybe (f y) :: m b
+                    -- runMaybe (f y) :: m (Maybe b)
                     Just y  -> runMaybeT (f y)
     --                  [7]       [8]
     ```
 
 
 - Notes:
-    1. We have to return a `MaybeT m b` at the end, so the `do` block has the `MaybeT` data constructor in front of it.  The final value of our `do` block should be of type `m b`.
+    1. We have to return a `MaybeT m b` at the end, so the `do` block has the `MaybeT` data constructor in front of it.  The final value of our `do` block should be of type `m (Maybe b)`, because we're going to apply `MaybeT :: m (MaybeT b) -> MaybeT m b` to it to get the `MaybeT m b` we're looking for.
     2. `ma :: m (Maybe a)`, since we destructured it in the pattern match.
-    3. `f :: (a -> MaybeT m b)`.
+    3. `f :: a -> MaybeT m b`.
     4. `v <- ma` extracts the `Maybe a` value out of `ma :: m (Maybe a)`.
     5. `v :: Maybe a`, so we match on it being either `Nothing` or `Just y`.
-    6. If `v` is `Nothing`, we return `Nothing`, but it needs to be wrapped back up in `m`, using `m`'s `return` implementation.
+    6. If `v` is `Nothing`, we return `Nothing`, but it needs to be wrapped back up in `m`, using `m`'s `return` implementation - it then returns a `m (Maybe b)`, as required to pass into `MaybeT` in step 1.
     7. If `v` is `Just y`, then `y :: a` and `f y :: MaybeT m b`.
-    8. We have to get the `m b` value out of `f y`, which we can do by just calling `runMaybeT`.
+    8. Finally, calling `runMaybeT` on `f y` turns the `MaybeT m b` into `m (Maybe b)`, which is what we pass into `MaybeT` in step 1 to finally get a `MaybeTWe have to get the `m b` value out of `f y`, which we can do by just calling `runMaybeT`.
