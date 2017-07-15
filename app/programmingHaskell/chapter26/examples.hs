@@ -39,3 +39,33 @@ instance (Monad m) => Monad (MaybeT m) where
                  Just y  -> runMaybeT (f y)
 
 
+-- 26.4 - ReaderT
+-----------------
+
+newtype ReaderT r m a =
+    ReaderT { runReaderT :: r -> m a }
+
+
+-- Functor for ReaderT
+instance Functor m => Functor (ReaderT r m) where
+    fmap f (ReaderT rma) =
+        ReaderT $ (fmap . fmap) f rma
+
+-- Applicative for ReaderT
+instance Applicative m => Applicative (ReaderT r m) where
+    pure a = ReaderT $ pure (pure a)
+
+    (ReaderT fmab) <*> (ReaderT rma) =
+        ReaderT $ (<*>) <$> fmab <*> rma
+
+-- Monad for ReaderT
+instance Monad m => Monad (ReaderT r m) where
+    return = pure
+
+    (>>=) :: ReaderT r m a
+          -> (a -> ReaderT r m b)
+          -> ReaderT r m b
+    (ReaderT rma) >>= f =
+        ReaderT $ \r -> do
+            a <- rma r
+            runReaderT (f a) r
