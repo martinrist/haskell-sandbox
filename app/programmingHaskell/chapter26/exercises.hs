@@ -73,23 +73,34 @@ newtype StateT s m a =
 
 -- 1. Functor instance
 instance (Functor m) => Functor (StateT s m) where
-    fmap f (StateT sm) =
-        StateT $ (fmap . fmap) f sm
-
-
-
+    fmap f (StateT sma) =
+        StateT $ \s ->
+            fmap (\(a, s') -> (f a, s')) (sma s)
 
 
 -- 2. Applicative instance
 instance (Monad m) => Applicative (StateT s m) where
-    pure = undefined
-    (<*>) = undefined
+    pure a = StateT $ \s -> pure (a, s)
 
-
+    (<*>) :: StateT s m (a -> b)
+          -> StateT s m a
+          -> StateT s m b
+    (StateT smfab) <*> (StateT sma) =
+        StateT $ \s -> do
+           (fab, s') <- smfab s
+           (a, s'')  <- sma s'
+           return (fab a, s'')
 
 
 
 -- 3. Monad instance
 instance (Monad m) => Monad (StateT s m) where
     return = pure
-    (>>=) = undefined
+
+    (>>=) :: StateT s m a
+          -> (a -> StateT s m b)
+          -> StateT s m b
+    (StateT sma) >>= f =
+        StateT $ \s -> do
+            (a, s')  <- sma s
+            runStateT (f a) $ s'
