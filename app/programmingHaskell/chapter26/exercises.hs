@@ -61,3 +61,35 @@ eitherT famc fbmc (EitherT amb) = do
     case v of
          Left a  -> famc a
          Right b -> fbmc b
+
+
+
+-- 26.5 - StateT
+----------------
+
+newtype StateT s m a =
+    StateT { runStateT :: s -> m (a, s) }
+
+
+-- 1. Functor instance
+instance (Functor m) => Functor (StateT s m) where
+    fmap f (StateT sm) =
+        StateT $ (fmap . fmap) f sm
+
+
+
+
+
+-- 2. Applicative instance
+instance (Monad m) => Applicative (StateT s m) where
+    pure = undefined
+    (<*>) = undefined
+
+
+
+
+
+-- 3. Monad instance
+instance (Monad m) => Monad (StateT s m) where
+    return = pure
+    (>>=) = undefined
