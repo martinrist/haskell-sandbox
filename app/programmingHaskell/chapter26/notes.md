@@ -261,7 +261,7 @@
 - Note how the additional structure `m` is always wrapped _around_ our value - e.g. the `Maybe` in `MaybeT` is inside the `m`:
     - So, a series of monad transformers will start with the structurally-innermost type and work outwards.
 
-- Comsider this example:
+- Consider this example:
 
     ```haskell
     -- Use the libray versions, not our own ones
