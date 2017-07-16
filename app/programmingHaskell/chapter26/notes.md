@@ -166,3 +166,125 @@
     4. Applying `f :: a -> ReaderT r m b)` to `a` yields a value of type `ReaderT r m b`.
     5. We now unpack the `r -> m b` structure out of `f a :: ReaderT r m b` using `runReaderT`.
     6. Finally, we apply this to `r`, to return an `m b` from the `do` block, as required.
+
+
+## 25.6 - `StateT`
+
+- Similar to `ReaderT`, `StateT` is `State` but with extra monadic structure wrapped around the `(a, s`):
+
+    ```haskell
+    newtype StateT s m a -
+        StateT { runStateT :: s -> m (a, s) }
+    ```
+
+- Unlike with other transformers, we can't just fall back to the standard patterns (e.g. `fmap.fmap` for `Functor`, `FooT (<$>) fmab <*> ma` for `Applicative`).  Instead we need to write our own versions that carry along the state correctly:
+
+    ```haskell
+    instance (Functor m) => Functor (StateT s m) where
+        fmap f (StateT sma) =
+            StateT $ \s ->
+                fmap (\(a, s') -> (f a, s')) (sma s)
+
+    instance (Monad m) => Applicative (StateT s m) where
+        pure a = StateT $ \s -> pure (a, s)
+
+        (<*>) :: StateT s m (a -> b)
+              -> StateT s m a
+              -> StateT s m b
+        (StateT smfab) <*> (StateT sma) =
+            StateT $ \s -> do
+               (fab, s') <- smfab s
+               (a, s'')  <- sma s'
+               return (fab a, s'')
+    ```
+
+- Note how similar the `Monad` instance looks to the one for `ReaderT`:
+
+    ```haskell
+    instance (Monad m) => Monad (StateT s m) where
+        return = pure
+
+        (>>=) :: StateT s m a
+              -> (a -> StateT s m b)
+              -> StateT s m b
+        (StateT sma) >>= f =
+            StateT $ \s -> do
+                (a, s')  <- sma s
+                runStateT (f a) $ s'
+    ```
+
+
+## 26.6 - Types we don't want to use
+
+- `ListT` and `WriterT` are examples of types that aren't necessarily performant or don't make sense.
+
+- `Writer` / `WriterT` (the opposite of `Reader` / `ReaderT`) are often either too lazy or too strict:
+    - They can often end up using too much memory as a result.
+
+- The most obvious way to implement `ListT` isn't generally recommended:
+    - Most initial attempts won't pass the associativity law.
+    - Correct implementations are not very fast.
+    - Streaming libraries like [`pipes`](http://hackage.haskell.org/package/pipes) or [`conduit`](http://hackage.haskell.org/package/conduit) do it better for most use cases.
+
+
+
+## 26.7 - Recovering an ordinary type from a transformer
+
+- If we have a transformer variety of a type and we want to get back the plain type, we just need some `m` structure that does nothing:
+    - The `Identity` monad is the obvious candidate.
+
+- So we can retrieve the non-transfomer types thus:
+
+    ```haskell
+    type Maybe a    = MaybeT Identity a
+    type Either e a = EitherT e Identity a
+    type Reader r a = ReaderT r Identity a
+    type State s a  = StateT s Identity a
+    ```
+
+
+## 26.8 - Lexically inner is structurally outer
+
+- Look again at the structure of some common monad transformers:
+
+    ```haskell
+    newtype MaybeT m a =
+        MaybeT { runMaybeT :: m (Maybe a) }
+
+    newtype ExceptT e m a =
+        ExceptT { runExceptT :: m (Either e a)) }
+
+    newtype ReaderT r m a =
+        ReaderT { runReaderT :: r -> m a }
+    ```
+
+- Note how the additional structure `m` is always wrapped _around_ our value - e.g. the `Maybe` in `MaybeT` is inside the `m`:
+    - So, a series of monad transformers will start with the structurally-innermost type and work outwards.
+
+- Comsider this example:
+
+    ```haskell
+    -- Use the libray versions, not our own ones
+    import Control.Monad.Trans.Except
+    import Control.Monad.Trans.Maybe
+
+    embedded :: MaybeT (ExceptT String []) Int
+    embedded = return 1
+
+    maybeUnwrap :: ExceptT String [] (Maybe Int)
+    maybeUnwrap = runMaybeT embedded
+
+    eitherUnwrap :: [Either String (Maybe Int)]
+    eitherUnwrap = runExceptT maybeUnwrap
+
+    -- Note how the first transformer (MaybeT) is the innermost
+    -- and the last transformer ([]) is the outermost
+    > embedded
+    MaybeT (ExceptT [Right (Just 1)])
+
+    > maybeUnwrap
+    ExceptT [Right (Just 1)]
+
+    > eitherUnwrap
+    [Right (Just 1)]
+    ```
