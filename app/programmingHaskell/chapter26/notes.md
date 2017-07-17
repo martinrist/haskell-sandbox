@@ -425,3 +425,27 @@
     instance MonadTrans MaybeT where
         lift = MaybeT . liftM Just
     ```
+
+
+## 26.10 - `MonadIO` and `liftIO`
+
+- `MonadIO` is similar to `MonadTrans` but different in that, rather than lifting through one 'layer' of a monad transformer stack, it keeps lifting an IO action until it's lifted over all structure embedded in the outermost IO type.
+
+    ```haskell
+    > import Control.Monad.IO.Class
+    > :t liftIO
+    liftIO :: MonadIO m => IO a -> m a
+    ```
+
+- Some example instances:
+
+    ```haskell
+    instance (MonadIO m) => MonadIO (IdentityT m) where
+        liftIO = IdentityT . liftIO
+
+    instance (MonadIO m) => MonadIO (MaybeT m) where
+        liftIO = lift . liftIO
+
+    instance (MonadIO m) => MonadIO (EitherT e m) where
+        liftIO = lift . liftIO
+    ```
