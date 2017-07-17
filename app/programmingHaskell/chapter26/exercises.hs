@@ -1,5 +1,9 @@
 {-# LANGUAGE InstanceSigs #-}
 
+import           Control.Monad
+import           Control.Monad.Trans.Class
+
+
 ----------------------------
 -- Chapter 26 - Exercises --
 ----------------------------
@@ -103,4 +107,14 @@ instance (Monad m) => Monad (StateT s m) where
     (StateT sma) >>= f =
         StateT $ \s -> do
             (a, s')  <- sma s
-            runStateT (f a) $ s'
+            runStateT (f a) s'
+
+
+-- Exercises : Lift More
+------------------------
+
+instance MonadTrans (EitherT e) where
+    lift :: Monad m => m a -> EitherT e m a
+    lift = EitherT . fmap Right
+
+

@@ -287,4 +287,141 @@
 
     > eitherUnwrap
     [Right (Just 1)]
+    ``
+
+
+## 26.9 - `MonadTrans`
+
+- We often want to _lift_ a function into a larger context, as we do for `Functor`, `Applicative` and `Monad`:
+
+    ```haskell
+    fmap  :: Functor f     => (a -> b) -> f a -> f b
+
+    liftA :: Applicative f => (a -> b) -> f a -> f b
+
+    liftM :: Monad m       => (a -> b) -> m a -> m b
+    ```
+
+- In some cases, we want to talk about more or different structure than offered by the above:
+    - e.g we may want something that does as much lifting as necessary to reach the structurally outermost position in a stack of monad transformers.
+
+- `MonadTrans` is a typeclass with one method `lift`:
+
+    ```haskell
+    > import Control.Monad.Trans.Class
+    > :i MonadTrans
+    class MonadTrans t where
+        lift :: Monad m => m a -> t m a
+    ```
+
+- Here, the `t` is a monad transformer type that has an instance of `MonadTrans` defined, and `m` is any generic Monad.
+
+- As motivation for `MonadTrans`, consider the web framework [`scotty`](http://hackage.haskell.org/package/scotty).
+
+- Here are some of the types defined in {{scotty}}:
+
+    ```haskell
+    newType ScottyT e m a =
+        ScottyT { runS :: State (ScottyState e m) a }
+        deriving (Functor, Applicative, Monad)
+
+    type ScottyM = ScottyT Text IO
+
+    newType ActionT e m a =
+        ActionT { runAM :: ExceptT (ActionError e)
+                                   (ReaderT ActionEnv
+                                   (StateT ScottyResponse m)) a }
+        deriving (Functor, Applicative)
+
+    -- Note that the `M` variants are just type synonyms for
+    -- the transformers, with the inner types already set
+    type ActionM = ActionT Text IO
+    ```
+
+- Here's an example Scotty app:
+
+    ```haskell
+    main = scotty 3000 $
+        get "/:word" $ do
+            beam <- param "word"
+            html $ mconcat ["<h1>Scotty, ", beam, " me up!</h1>"]
+    ```
+
+- Let's interrogate some of the types:
+
+    ```haskell
+    > :t scotty
+    scotty :: Port -> ScottyM () -> IO ()
+    -- So, the result of `get ...` in the example app is `ScottyM ()`
+
+    > :t get
+    get :: RoutePattern -> ActionM () -> ScottyM ()
+    -- So, the result of the `do` block should be `ActionM ()`
+
+    > :t html
+    html :: Text -> ActionM ()
+    ```
+
+- Say we want to output the value of `beam` in the `do` block:
+
+    ```haskell
+    main = scotty 3000 $
+        get "/:word" $ do
+            beam <- param "word"
+            putStrLn "hello"
+            html $ mconcat ["<h1>Scotty, ", beam, " me up!</h1>"]
+    ```
+
+- Since `putStrLn beam :: IO ()` we'll get a type error since it needs to be `ActionM ()`.
+
+- To turn the `IO ()` into `ActionM ()`, we apply `lift`:
+
+    ```haskell
+    > :t lift
+    lift :: (Monad m, MonadTrans t) => m a -> t m a
+
+    -- m ~ IO
+    > :t lift (putStrLn "output")
+    lift (putStrLn "output") :: MonadTrans t => t IO ()
+
+    -- Here, we're heading towards `ActionM = ActionT Text IO`
+    -- and the `MonadTrans` instance is defined on `ActionT Text`
+    -- so `t ~ ActionT Text`:
+
+    ... lift (putStrLn "output") :: ActionT Text IO ()
+    ...                          :: ActionM ()
+    ```
+
+- We can work out exactly what `lift` does in the `MonadTrans` instance for `ActionT` by looking at the [source code](https://github.com/scotty-web/scotty/blob/0.10.2/Web/Scotty/Internal/Types.hs#L157):
+
+    ```haskell
+    instance MonadTrans (ActionT e) where
+        lift = ActionT . lift . lift . lift
+    ```
+
+- This is reusing and composing the `lift` implementations for the three additional monad transformers that comprise `ActionT`, namely `ExceptT`, `ReaderT` and `StateT`:
+
+    ```haskell
+    instance MonadTrans (ExceptT e) where
+        lift = ExceptT . liftM Right
+
+    instance MonadTrans (ReaderT r) where
+        lift = ReaderT . const
+
+    instance MonadTrans (StateT s) where
+        lift m = StateT $ \s -> do
+            a <- m
+            return (a, s)
+    ```
+
+- Some other `MonadTrans` instances:
+
+    ```haskell
+    instance MonadTrans IdentityT where
+        lift = IdentityT
+
+    -- Roughly speaking , this takes an `m a` and lifts it into
+    -- a `MaybeT` context:
+    instance MonadTrans MaybeT where
+        lift = MaybeT . liftM Just
     ```

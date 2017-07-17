@@ -1,4 +1,12 @@
-{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE InstanceSigs      #-}
+{-# LANGUAGE OverloadedStrings #-}
+
+import           Control.Monad.Trans.Class
+import           Data.Monoid               (mconcat)
+import           Data.Text.Internal.Lazy
+import           Web.Scotty
+import           Web.Scotty.Internal.Types
+
 
 -------------------------------------
 -- Chapter 26 - Monad Transformers --
@@ -69,3 +77,18 @@ instance Monad m => Monad (ReaderT r m) where
         ReaderT $ \r -> do
             a <- rma r
             runReaderT (f a) r
+
+
+-- 26.9 - MonadTrans
+--------------------
+
+runScotty = scotty 3000 $
+    get "/:word" $ do
+        beam <- param "word"
+        -- This will cause a type error
+        -- since it's IO () and we're expecting ActionM ()
+        -- putStrLn beam
+
+        -- But lifting into ActionM will work
+        (ActionT . lift . lift . lift) (putStrLn "hello")
+        html $ mconcat ["<h1>Scotty, ", beam, " me up!</h1>"]
