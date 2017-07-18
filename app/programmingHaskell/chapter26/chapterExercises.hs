@@ -1,7 +1,10 @@
 {-# LANGUAGE InstanceSigs #-}
 
+import           Control.Applicative        ((<|>))
+import           Control.Monad
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Class
+import           Control.Monad.Trans.Maybe
 import           Control.Monad.Trans.Reader
 import           Control.Monad.Trans.State
 import           Data.Functor.Identity
@@ -48,3 +51,26 @@ sPrintIncAccum :: (Num a, Show a) => StateT a IO String
 sPrintIncAccum = StateT $ \a -> do
     putStrLn $ "Hi: " ++ show a
     return (show a, a + 1)
+
+
+
+------------------
+-- Fix the code --
+-------------------
+
+isValid :: String -> Bool
+isValid v = '!' `elem` v
+
+maybeExcite :: MaybeT IO String
+maybeExcite = MaybeT $ do
+    v <- getLine
+    pure (guard $ isValid v) :: IO (Maybe ())
+    return (pure v)
+
+doExcite :: IO ()
+doExcite = do
+    putStrLn "say something excite!"
+    excite <- runMaybeT maybeExcite
+    case excite of
+         Nothing -> putStrLn "MOAR EXCITE"
+         Just e  -> putStrLn ("Good, was very excite: " ++ e)
