@@ -40,6 +40,7 @@ executable haskell-sandbox-exe
                      , text
                      , raw-strings-qq
                      , attoparsec
+                     , scotty
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
