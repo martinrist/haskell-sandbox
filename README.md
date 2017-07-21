@@ -22,6 +22,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 24 - Parser Combinators](app/programmingHaskell/chapter24/notes.md)
 - [Chapter 25 - Composing Types](app/programmingHaskell/chapter25/notes.md)
 - [Chapter 26 - Monad Transformers](app/programmingHaskell/chapter26/notes.md)
+- [Chapter 27 - Non-strictness](app/programmingHaskell/chapter27/notes.md)
 
 
 # Environment Setup Notes
