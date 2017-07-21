@@ -41,6 +41,7 @@ executable haskell-sandbox-exe
                      , raw-strings-qq
                      , attoparsec
                      , scotty
+                     , criterion
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
