@@ -24,6 +24,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 26 - Monad Transformers](app/programmingHaskell/chapter26/notes.md)
 - [Chapter 27 - Non-strictness](app/programmingHaskell/chapter27/notes.md)
 - [Chapter 28 - Basic Libraries](app/programmingHaskell/chapter28/notes.md)
+- [Chapter 29 - IO](app/programmingHaskell/chapter29/notes.md)
 
 
 # Environment Setup Notes
