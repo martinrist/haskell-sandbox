@@ -42,6 +42,9 @@ executable haskell-sandbox-exe
                      , attoparsec
                      , scotty
                      , criterion
+                     , bytestring
+                     , network
+                     , sqlite-simple
   default-language:    Haskell2010
 
 test-suite haskell-sandbox-test
