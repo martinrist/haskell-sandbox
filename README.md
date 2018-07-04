@@ -42,9 +42,18 @@ cd
 stack setup
 
 # Upgrade to latest version
-# At time of writing - v1.3.2 - 181 packages updated)
 stack upgrade
 
 # Install dev tools (from ~)
-stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle
+stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle hasktags
 ```
+
+
+# FAQs
+
+## Compiler warnings with GHC 8.0.2 when first running `stack build`
+
+Need to apply [this patch ](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/compilers/ghc/ghc-8.0.2-no-cpp-warnings.patch) to the GHC 8.0.2 source.
+
+The source files can be found in `$(stack path
+--programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
