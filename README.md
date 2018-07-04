@@ -57,3 +57,14 @@ Need to apply [this patch ](https://github.com/NixOS/nixpkgs/blob/master/pkgs/de
 
 The source files can be found in `$(stack path
 --programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
+
+
+
+# TODO
+
+- Get `hasktags` to regenerate tags files automatically on save (including extra
+  metadata).
+
+- Work out why `syntastic` and `vim-gitgutter` are fighting over gutter icons.
+
+- Do we need both `hdevtools` and `ghc-mod` in Vim?
