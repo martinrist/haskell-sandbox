@@ -65,6 +65,14 @@ The source files can be found in `$(stack path
 - Get `hasktags` to regenerate tags files automatically on save (including extra
   metadata).
 
-- Work out why `syntastic` and `vim-gitgutter` are fighting over gutter icons.
+- Work out why `syntastic` and `vim-gitgutter` icons are going wrong when
+  `stylish-haskell` is installed
 
 - Do we need both `hdevtools` and `ghc-mod` in Vim?
+
+- Investigate setting up more Vim shortcuts
+
+- Work out how to install dev tools using `stack build --copy-compiler-tool ghc-mod ...` - how do we set up the `stack` environment (including `$PATH`) before using Vim?
+
+- Other things suggested in [this page](https://lexi-lambda.github.io/blog/2018/02/10/an-opinionated-guide-to-haskell-in-2018/)
+
