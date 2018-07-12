@@ -1,11 +1,9 @@
 module Main where
 
-import Lib
 import Options.Applicative.Common
 import Options.Applicative.Builder
 import Options.Applicative.Extra
 import Control.Monad
-import Control.Applicative
 import Data.Semigroup ((<>))
 
 data Sample = Sample
