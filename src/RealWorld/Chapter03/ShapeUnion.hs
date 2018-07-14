@@ -1,4 +1,4 @@
-module ShapeUnion where
+module RealWorld.Chapter03.ShapeUnion where
 
 type Vector = (Double, Double)
 

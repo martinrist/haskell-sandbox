@@ -1,4 +1,4 @@
-module Distinction where
+module RealWorld.Chapter03.Distinction where
 
 data Cetacean =
     Cetacean String

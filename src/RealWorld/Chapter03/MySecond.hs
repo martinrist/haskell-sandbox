@@ -1,4 +1,4 @@
-module MySecond where
+module RealWorld.Chapter03.MySecond where
 
 -- Illustrates the use of Maybe to handle failures
 

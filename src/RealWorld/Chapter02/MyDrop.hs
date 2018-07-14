@@ -1,4 +1,4 @@
-module MyDrop where
+module RealWorld.Chapter02.MyDrop where
 
 myDrop :: Int -> [a] -> [a]
 myDrop n xs = if n <= 0 || null xs

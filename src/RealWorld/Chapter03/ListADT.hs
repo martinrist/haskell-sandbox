@@ -1,4 +1,4 @@
-module ListADT where
+module RealWorld.Chapter03.ListADT where
 
 data List a
     = Cons a

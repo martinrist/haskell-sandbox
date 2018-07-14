@@ -1,4 +1,4 @@
-module Exercises where
+module RealWorld.Chapter02.Exercises where
 
 lastButOne :: [a] -> Maybe a
 lastButOne xs = let len = length xs in

@@ -1,4 +1,4 @@
-module Lending where
+module RealWorld.Chapter03.Lending where
 
 lend :: Int -> Int -> Maybe Int
 lend amount balance = let reserve = 100

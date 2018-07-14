@@ -1,4 +1,4 @@
-module Roygbiv where
+module RealWorld.Chapter03.Roygbiv where
 
 data Roygbiv
     = Red

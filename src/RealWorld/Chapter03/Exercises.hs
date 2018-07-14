@@ -1,4 +1,4 @@
-module Exercises where
+module RealWorld.Chapter03.Exercises where
 
 import Data.List (sortBy, sortOn)
 

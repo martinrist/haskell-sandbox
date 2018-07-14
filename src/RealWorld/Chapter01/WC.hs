@@ -1,4 +1,4 @@
-module WC where
+module RealWorld.Chapter01.WC where
 
 main = interact wordCount
   where

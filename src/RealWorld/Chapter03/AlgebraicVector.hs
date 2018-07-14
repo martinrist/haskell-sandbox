@@ -1,4 +1,4 @@
-module AlgebraicVector where
+module RealWorld.Chapter03.AlgebraicVector where
 
 data Cartesian2D =
     Cartesian2D Double

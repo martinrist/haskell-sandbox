@@ -1,4 +1,4 @@
-module Bookstore where
+module RealWorld.Chapter03.Bookstore where
 
 data BookInfo =
     Book Int
