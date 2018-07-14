@@ -51,7 +51,10 @@ stack setup
 # later versions.  Run `stack setup` again to install GHC 8.0.2
 
 # Install dev tools (from ~)
-stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle hasktags
+stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle hasktags hspec-discover
+
+# Generate hoogle database
+hoogle generate
 ```
 
 
