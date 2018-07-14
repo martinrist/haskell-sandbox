@@ -11,11 +11,31 @@ library:
   source-dirs: src
   dependencies:
     - base
+    - time
+    - hspec
+    - containers
+    - QuickCheck
+    - optparse-applicative
+    - checkers
+    - bytestring
+    - wreq
+    - random
+    - transformers
+    - trifecta
+    - parsers
+    - text
+    - raw-strings-qq
+    - attoparsec
+    - scotty
+    - criterion
+    - bytestring
+    - network
+    - sqlite-simple
 
 executables:
   optparse-applicative-exe:
     main:           Main.hs
-    source-dirs:    app
+    source-dirs:    app/optparse-applicative
     ghc-options:
       - -threaded
       - -rtsopts
@@ -24,38 +44,6 @@ executables:
     dependencies:
       - base
       - optparse-applicative
-
-  haskell-sandbox-exe:
-    main: Main.hs
-    source-dirs: app
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-      - -Wall
-    dependencies:
-      - base
-      - haskell-sandbox
-      - time
-      - hspec
-      - containers
-      - QuickCheck
-      - optparse-applicative
-      - checkers
-      - bytestring
-      - wreq
-      - random
-      - transformers
-      - trifecta
-      - parsers
-      - text
-      - raw-strings-qq
-      - attoparsec
-      - scotty
-      - criterion
-      - bytestring
-      - network
-      - sqlite-simple
 
 tests:
   haskell-sandbox-test:
