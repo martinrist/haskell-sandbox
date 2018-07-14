@@ -35,14 +35,20 @@ This repository contains various samples, experiments and notes relating to Hask
 sudo apt install haskell-stack
 
 # On OS X, install Homebrew, then:
-brew install haskell-stack
+brew install stack
+
+# Install exuberant ctags for tagbar
+brew install ctags
 
 # Set up stack (outside project)
 cd
 stack setup
 
-# Upgrade to latest version
-stack upgrade
+# The above command will start installing a later GHC
+# so abort it and edit ~/.stack/global-project/stack.yaml
+# to set resolver to lts-9.21
+# This is to force the use of GHC 8.0.2 until ghc-mod supports
+# later versions.  Run `stack setup` again to install GHC 8.0.2
 
 # Install dev tools (from ~)
 stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle hasktags
@@ -53,7 +59,7 @@ stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle hasktags
 
 ## Compiler warnings with GHC 8.0.2 when first running `stack build`
 
-Need to apply [this patch ](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/compilers/ghc/ghc-8.0.2-no-cpp-warnings.patch) to the GHC 8.0.2 source.
+Need to apply [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/compilers/ghc/ghc-8.0.2-no-cpp-warnings.patch) to the GHC 8.0.2 source.
 
 The source files can be found in `$(stack path
 --programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
@@ -68,7 +74,11 @@ The source files can be found in `$(stack path
 - Work out why `syntastic` and `vim-gitgutter` icons are going wrong when
   `stylish-haskell` is installed
 
-- Do we need both `hdevtools` and `ghc-mod` in Vim?
+- Do we need both `hdevtools` and `ghc-mod` in Vim?  Investigate just using
+  GhcModCheck and GhcModLint in place of Syntastic + hdevtools + hlint, since
+  the former gives a proper QuickFix list that's formatted better.  Perhaps
+  switch Syntastic to package mode?  Note that you don't get handy gutter marks
+  without Syntastic
 
 - Investigate setting up more Vim shortcuts
 
@@ -76,3 +86,8 @@ The source files can be found in `$(stack path
 
 - Other things suggested in [this page](https://lexi-lambda.github.io/blog/2018/02/10/an-opinionated-guide-to-haskell-in-2018/)
 
+- Investigate why there are problems with the above setup when using versions of
+  the stack resolver later than 9.21 / GHC later than 8.0.2
+
+- Investigate using package.yaml in preference to .cabal files
+    - Use https://github.com/yamadapc/hpack-convert
