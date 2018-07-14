@@ -1,0 +1,72 @@
+name:                   haskell-sandbox
+version:                '0.1.0.0'
+description:            Sandbox for investigating Haskell
+author:                 Martin Rist
+maintainer:             mlr-github@martinrist.com
+copyright:              2018 Martin Rist
+license:                BSD3
+github:                 martinrist/haskell-sandbox
+
+library:
+  source-dirs: src
+  dependencies:
+      - base
+
+executables:
+  optparse-applicative-exe:
+    main:           Main.hs
+    source-dirs:    app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    dependencies:
+    - base
+    - optparse-applicative
+
+  haskell-sandbox-exe:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    dependencies:
+    - base
+    - haskell-sandbox
+    - time
+    - hspec
+    - containers
+    - QuickCheck
+    - optparse-applicative
+    - checkers
+    - bytestring
+    - wreq
+    - random
+    - transformers
+    - trifecta
+    - parsers
+    - text
+    - raw-strings-qq
+    - attoparsec
+    - scotty
+    - criterion
+    - bytestring
+    - network
+    - sqlite-simple
+
+tests:
+  haskell-sandbox-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - hspec
+    - hspec-discover
+    - haskell-sandbox
