@@ -1,4 +1,4 @@
-module Chapter1 where
+module LearnYouAHaskell.Chapter1 where
 
 ------------------------------------------------
 -- Chapter 1 - Starting Out                   --

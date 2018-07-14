@@ -1,4 +1,4 @@
-module Chapter2 where
+module LearnYouAHaskell.Chapter2 where
 
 ---------------------------------------------------------
 -- Chapter 2 - Types and Typeclasses                   --

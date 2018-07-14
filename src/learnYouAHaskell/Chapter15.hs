@@ -1,4 +1,4 @@
-module Chapter15 where
+module LearnYouAHaskell.Chapter15 where
 
 -- Define the `Tree` data structure
 data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show)

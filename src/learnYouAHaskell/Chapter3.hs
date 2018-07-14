@@ -1,4 +1,4 @@
-module Chapter3 where
+module LearnYouAHaskell.Chapter3 where
 
 ------------
 -- Guards --
