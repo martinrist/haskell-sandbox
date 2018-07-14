@@ -1,6 +1,6 @@
 module RealWorld.Chapter03.GrahamScan where
 
-import Data.List (sortBy, sortOn)
+import Data.List (sortOn)
 
 data Direction =
     CounterClockwise

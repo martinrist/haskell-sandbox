@@ -3,6 +3,7 @@ module RealWorld.Chapter03.GrahamScanSpec where
 import Test.Hspec
 import RealWorld.Chapter03.GrahamScan
 
+test1 :: SpecWith ()
 test1 = describe "Test 1" $
     it "Direction Equality" $
         (CounterClockwise == CounterClockwise) `shouldBe` True
