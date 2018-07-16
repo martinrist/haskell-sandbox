@@ -44,8 +44,6 @@ pointsToDirections = map turnDirection . inThrees
 -- Convert a list to a list of triples, where the midpoint of
 -- each triple is each member of the original list in turn
 -- Wraps around so that the first triple consists of (last xs, head xs, xs !! 1
-
--- TODO: This needs to handle the case where `length xs` < 3
 toTriples :: [a] -> [(a, a, a)]
 toTriples [] = []
 toTriples xs = let inThrees ys@(y1:y2:y3:_) = (y1, y2, y3) : inThrees (tail ys)
