@@ -59,7 +59,7 @@ testVectorComparisons = describe "Test implementation of `Ord` for `Vector`" $
     it "Tests" $
         pendingWith "Tests not implemented yet"
 
--- TODO: This may be a candidate for property-based testing?
+-- TODO:unwords This may be a candidate for property-based testing?
 testToTriples :: SpecWith ()
 testToTriples = describe "Test implementation of `toTriples`" $ do
     it "returns empty list when called on empty list" $
@@ -72,16 +72,33 @@ testToTriples = describe "Test implementation of `toTriples`" $ do
         toTriples "abcd" `shouldBe` [('d', 'a', 'b'), ('a', 'b', 'c'),
                                      ('b', 'c', 'd'), ('c', 'd', 'a')]
 
-testConvexHullSimplePolygons :: SpecWith ()
-testConvexHullSimplePolygons = describe "Test `convexHull` for simple regular polygons" $ do
-    it "calculates `convexHull` correctly for simple triangle in expected order" $
+testConvexHullConvexPolygons :: SpecWith ()
+testConvexHullConvexPolygons = describe "Test `convexHull` for simple convex polygons" $ do
+    it "works for simple triangle in expected order" $
         convexHull [Point 1 1, Point 3 1, Point 2 2] `shouldBe` [Point 1 1, Point 3 1, Point 2 2]
-    it "calculates `convexHull` correctly for simple triangle in non-standard order" $
+    it "works for simple triangle in non-standard order" $
         convexHull [Point 3 1, Point 2 2, Point 1 1] `shouldBe` [Point 1 1, Point 3 1, Point 2 2]
-    it "calculates `convexHull` correctly for simple square in standard order" $
+    it "works for simple square in standard order" $
         convexHull [Point 1 1, Point 2 2, Point 1 3, Point 0 2] `shouldBe` [Point 1 1, Point 2 2, Point 1 3, Point 0 2]
-    it "calculates `convexHull` correctly for simple square in non-standard order" $
+    it "works for simple square in non-standard order" $
         convexHull [Point 1 3, Point 1 1, Point 0 2, Point 2 2] `shouldBe` [Point 1 1, Point 2 2, Point 1 3, Point 0 2]
+    it "works for square with points in all quadrants" $
+        convexHull [Point (-1) 1, Point 1 (-1), Point 1 1, Point (-1) (-1)] `shouldBe` [Point (-1) (-1), Point 1 (-1), Point 1 1, Point (-1) 1]
+
+testConvexHullConcavePolygons :: SpecWith ()
+testConvexHullConcavePolygons = describe "Test `convexHull` for concave polygons" $ do
+    it "works for polygon with single point of concavity" $
+        convexHull [Point 1 1, Point 3 1, Point 2 2, Point 2 3]
+            `shouldBe` [Point 1 1, Point 3 1, Point 2 3]
+    it "works for polygon with two non-consecutive points of concavity" $
+        convexHull [Point 1 1, Point 5 1, Point 4 2, Point 5 3, Point 1 3, Point 2 2]
+            `shouldBe` [Point 1 1, Point 5 1, Point 5 3, Point 1 3]
+    it "works for polygon with two consecutive points of concavity" $
+        convexHull [Point 1 1, Point 5 1, Point 4 2, Point 4 3, Point 5 4, Point 1 4]
+            `shouldBe` [Point 1 1, Point 5 1, Point 5 4, Point 1 4]
+    it "works for polygon where second point only appears inside on 2nd pass" $
+        convexHull [Point 1 1, Point 5 1, Point 3 2, Point 3 3, Point 2 5]
+            `shouldBe` [Point 1 1, Point 5 1, Point 2 5]
 
 testConvexHullEdgeCases :: SpecWith ()
 testConvexHullEdgeCases = describe "Test edge cases for `convexHull`" $ do
@@ -97,7 +114,8 @@ testConvexHullEdgeCases = describe "Test edge cases for `convexHull`" $ do
 testConvexHull :: Spec
 testConvexHull = do
     testConvexHullEdgeCases
-    testConvexHullSimplePolygons
+    testConvexHullConvexPolygons
+    testConvexHullConcavePolygons
 
 spec :: Spec
 spec = do
