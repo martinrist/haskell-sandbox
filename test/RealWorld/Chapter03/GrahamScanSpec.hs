@@ -37,7 +37,31 @@ testPointComparisons = describe "Test implementation of `Ord` for `Point`" $ do
     it "returns `GT` when `p1` is above-right `p2`" $
         compare (Point 2 2) (Point 1 1) `shouldBe` GT
 
+testTurnDirection :: SpecWith()
+testTurnDirection = describe "Test implementation of `turnDirection`" $ do
+    it "returns `Straight` for three identical points" $
+        turnDirection (Point 1 1, Point 1 1, Point 1 1) `shouldBe` Straight
+    it "returns `Straight` for two identical points" $
+        turnDirection (Point 1 1, Point 1 1, Point 2 3) `shouldBe` Straight
+    it "returns `Straight` for three collinear points" $
+        turnDirection (Point 1 1, Point 2 2, Point 3 3) `shouldBe` Straight
+    it "returns `CounterClockwise` for simple counter-clockwise right-angled turn" $
+        turnDirection (Point 1 1, Point 2 1, Point 2 2) `shouldBe` CounterClockwise
+    it "returns `Clockwise` for simple clockwise right-angled turn" $
+        turnDirection (Point 2 2, Point 2 1, Point 1 1) `shouldBe` Clockwise
+    it "correctly calculates counter-clockwise turn for points in different quadrants" $
+        turnDirection (Point 1 1, Point (-1) 1, Point (-1) (-1)) `shouldBe` CounterClockwise
+    it "correctly calculates clockwise turn for points in different quadrants" $
+        turnDirection (Point (-1) (-1), Point (-1) 1, Point 1 1) `shouldBe` Clockwise
+
+testVectorComparisons :: SpecWith()
+testVectorComparisons = describe "Test implementation of `Ord` for `Vector`" $
+    it "Tests" $
+        pendingWith "Tests not implemented yet"
+
 spec :: Spec
 spec = do
     testGoldMaster
     testPointComparisons
+    testTurnDirection
+    testVectorComparisons
