@@ -83,6 +83,8 @@ scanSorted ps = let triples = toTriples ps in
                 where isClockwise = (== Clockwise) . turnDirection
 
 convexHull :: [Point] -> [Point]
+convexHull [] = []
 convexHull ps = let point1 = minimum ps
-                    sortedPoints = sortOn (toVector point1) ps
+                    otherPoints = filter (/= point1) ps
+                    sortedPoints = point1 : sortOn (toVector point1) otherPoints
                 in scanSorted sortedPoints

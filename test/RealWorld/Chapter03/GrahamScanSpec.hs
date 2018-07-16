@@ -72,9 +72,19 @@ testToTriples = describe "Test implementation of `toTriples`" $ do
         toTriples "abcd" `shouldBe` [('d', 'a', 'b'), ('a', 'b', 'c'),
                                      ('b', 'c', 'd'), ('c', 'd', 'a')]
 
+testConvexHullSimplePolygons :: SpecWith ()
+testConvexHullSimplePolygons = describe "Test `convexHull` for simple regular polygons" $ do
+    it "calculates `convexHull` correctly for simple triangle in expected order" $
+        convexHull [Point 1 1, Point 3 1, Point 2 2] `shouldBe` [Point 1 1, Point 3 1, Point 2 2]
+    it "calculates `convexHull` correctly for simple triangle in non-standard order" $
+        convexHull [Point 3 1, Point 2 2, Point 1 1] `shouldBe` [Point 1 1, Point 3 1, Point 2 2]
+    it "calculates `convexHull` correctly for simple square in standard order" $
+        convexHull [Point 1 1, Point 2 2, Point 1 3, Point 0 2] `shouldBe` [Point 1 1, Point 2 2, Point 1 3, Point 0 2]
+    it "calculates `convexHull` correctly for simple square in non-standard order" $
+        convexHull [Point 1 3, Point 1 1, Point 0 2, Point 2 2] `shouldBe` [Point 1 1, Point 2 2, Point 1 3, Point 0 2]
 
 testConvexHullEdgeCases :: SpecWith ()
-testConvexHullEdgeCases = describe "Test edge cases for `complexHull`" $ do
+testConvexHullEdgeCases = describe "Test edge cases for `convexHull`" $ do
     it "returns empty list when called on an empty list" $
         convexHull ([] :: [Point]) `shouldBe` []
     it "returns single point when called on degenerate polygon with single point" $
@@ -84,6 +94,11 @@ testConvexHullEdgeCases = describe "Test edge cases for `complexHull`" $ do
     it "returns three points when called on degenerate polygon collapsing to a line" $
         convexHull [Point 1 1, Point 2 2, Point 3 3] `shouldBe` [Point 1 1, Point 2 2, Point 3 3]
 
+testConvexHull :: Spec
+testConvexHull = do
+    testConvexHullEdgeCases
+    testConvexHullSimplePolygons
+
 spec :: Spec
 spec = do
     testGoldMaster
@@ -91,4 +106,4 @@ spec = do
     testTurnDirection
     testVectorComparisons
     testToTriples
-    testConvexHullEdgeCases
+    testConvexHull
