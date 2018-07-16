@@ -1,6 +1,7 @@
 module RealWorld.Chapter03.GrahamScan where
 
 import Data.List (sortOn)
+import Test.QuickCheck (arbitrary, Arbitrary)
 
 data Direction =
     CounterClockwise
@@ -18,6 +19,12 @@ instance Ord Point where
         | x1 < x2 = LT
         | x1 > x2 = GT
         | otherwise = EQ
+
+instance Arbitrary Point where
+    arbitrary = do
+        x <- arbitrary
+        y <- arbitrary
+        return $ Point x y
 
 -- 10. Turn direction between three points
 

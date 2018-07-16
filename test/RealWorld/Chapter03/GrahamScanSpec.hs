@@ -1,6 +1,7 @@
 module RealWorld.Chapter03.GrahamScanSpec where
 
 import Test.Hspec
+import Test.QuickCheck
 import RealWorld.Chapter03.GrahamScan
 
 testGoldMaster :: SpecWith ()
@@ -59,7 +60,16 @@ testVectorComparisons = describe "Test implementation of `Ord` for `Vector`" $
     it "Tests" $
         pendingWith "Tests not implemented yet"
 
--- TODO:unwords This may be a candidate for property-based testing?
+
+
+testToTriplesProperties :: SpecWith()
+testToTriplesProperties = describe "Test properties of `toTriples`" $
+    it "returns a list with the same number of elements" $ property $
+        \xs -> length (xs :: [Point]) == length (toTriples xs)
+
+
+
+
 testToTriples :: SpecWith ()
 testToTriples = describe "Test implementation of `toTriples`" $ do
     it "returns empty list when called on empty list" $
@@ -111,11 +121,20 @@ testConvexHullEdgeCases = describe "Test edge cases for `convexHull`" $ do
     it "returns three points when called on degenerate polygon collapsing to a line" $
         convexHull [Point 1 1, Point 2 2, Point 3 3] `shouldBe` [Point 1 1, Point 2 2, Point 3 3]
 
+testConvexHullProperties :: SpecWith ()
+testConvexHullProperties = describe "Test `convexHull` properties using QuickCheck" $ do
+    it "results in a shorter list of `Point`s" $ property $
+        \ps -> length (convexHull ps) <= length ps
+    it "results in a list of points all of which are in the original polygon" $ property $
+        \ps -> all (`elem` ps) (convexHull ps)
+
+
 testConvexHull :: Spec
 testConvexHull = do
     testConvexHullEdgeCases
     testConvexHullConvexPolygons
     testConvexHullConcavePolygons
+    testConvexHullProperties
 
 spec :: Spec
 spec = do
@@ -124,4 +143,5 @@ spec = do
     testTurnDirection
     testVectorComparisons
     testToTriples
+    testToTriplesProperties
     testConvexHull

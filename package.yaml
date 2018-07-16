@@ -58,3 +58,4 @@ tests:
       - hspec
       - hspec-discover
       - haskell-sandbox
+      - QuickCheck
