@@ -88,15 +88,3 @@ convexHull :: [Point] -> [Point]
 convexHull ps = let point1 = minimum ps
                     sortedPoints = sortOn (toVector point1) ps
                 in scanSorted sortedPoints
-
--- Some test data
-
-poly1 :: [Point]
-poly1 = [Point 0 0, Point 3 1, Point 1 1, Point 3 3,
-              Point 1 4, Point (-1) 2, Point (-2) 1]
-
-poly2 :: [Point]
-poly2 = [Point 0 0, Point 3 1, Point 2 2, Point 1.75 2, Point 2 4, Point 1 4]
-
-poly3 :: [Point]
-poly3 = [Point 1 1, Point 4 1, Point 5 3, Point 3 2, Point 2 3, Point 1 4]
