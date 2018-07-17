@@ -60,7 +60,7 @@ testExercise2 = context "Exercise 2 Tests" $
 testSplitWith :: Spec
 testSplitWith = context "splitWith" $ do
     it "works" $
-        pendingWith "
+        pendingWith "Not implemented yet"
 
 
 
