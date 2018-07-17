@@ -45,6 +45,17 @@ executables:
       - base
       - optparse-applicative
 
+  interact-with-exe:
+    main:           InteractWith.hs
+    source-dirs:    app/realWorldHaskell/interact-with
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+      - -Wall
+    dependencies:
+      - base
+
 tests:
   haskell-sandbox-test:
     main: Spec.hs
