@@ -8,16 +8,21 @@ module LearnYouAHaskell.Chapter1 where
 
 -- Simple function definition (without a type signature)
 -- Function names can't start with a capital letter
+doubleMe :: Num a => a -> a
 doubleMe x = x + x
 --DoubleMe x = x + x                            -- Not in scope: data constructor 'DoubleMe'
 
 
 -- Functions can use forward definitions
+tripleUs :: Num a => a -> a -> a
 tripleUs x y = tripleMe x + tripleMe y
+
+tripleMe :: Num a => a -> a
 tripleMe x = x * 3
 
 
 -- Conditionals are expressions, so they must have an `else` clause
+doubleIfSmall :: (Num a, Ord a) => a -> a
 doubleIfSmall x = if x > 100 then x else x * 2
 
 -- > doubleIfSmall 100                  -- 200
@@ -26,11 +31,13 @@ doubleIfSmall x = if x > 100 then x else x * 2
 
 -- Apostrophes are valid in identifiers, so we can use it to denote strict
 -- (i.e. non-lazy) versions or modified versions of functions.
+doubleIfSmall' :: (Ord a, Num a) => a -> a
 doubleIfSmall' x = (if x > 100 then x else x * 2) + 1
 
 -- > doubleIfSmall' 100                 -- 201
 -- > doubleIfSmall' 101                 -- 102
 
+main :: String -> IO ()
 main = putStrLn
 
 
@@ -40,7 +47,10 @@ main = putStrLn
 -----------
 
 -- Lists are homogeneous, surrounded by square brackets, separated by commas
+numberList :: [Integer]
 numberList = [1, 2, 3, 4, 5]
+
+stringList :: [String]
 stringList = ["One", "Two", "Three", "Four", "Five"]
 
 -- brokenList = [1, "Two"]              -- Compile error

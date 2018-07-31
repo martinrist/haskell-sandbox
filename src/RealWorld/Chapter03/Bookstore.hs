@@ -37,10 +37,14 @@ data BillingInfo
     | Invoice CustomerID
     deriving (Show)
 
-bookID (Book id _ _) = id
 
+bookID :: BookInfo -> Int
+bookID (Book ident _ _) = ident
+
+bookTitle :: BookInfo -> String
 bookTitle (Book _ title _) = title
 
+bookAuthors :: BookInfo -> [String]
 bookAuthors (Book _ _ authors) = authors
 
 -- Using record syntax to give field accessors without the above boilerplate.

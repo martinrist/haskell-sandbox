@@ -1,6 +1,6 @@
 module RealWorld.Chapter03.Exercises where
 
-import Data.List (sortBy, sortOn)
+import Data.List (sortBy)
 
 -- 1. Function that computes the number of elements in a list
 -- 2. Type signature for exercise 1
