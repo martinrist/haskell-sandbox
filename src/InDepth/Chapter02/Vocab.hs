@@ -1,4 +1,4 @@
-module Vocab where
+module InDepth.Chapter02.Vocab where
 
 import Data.Char
 import Data.List
@@ -6,12 +6,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import System.Environment
 
-main :: IO ()
-main = do
-    args <- getArgs
-    case args of
-         [fname] -> processTextFile fname
-         _ -> putStrLn "Usage: vocab-builder filename"
+
 
 -- | A single entry, consisting of a word and its number of occurrences
 type Entry = (T.Text, Int)
