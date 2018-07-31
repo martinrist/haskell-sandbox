@@ -15,7 +15,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - [Chapter 14 - Testing](src/programmingHaskell/chapter14/notes.md)
 - [Chapter 15 - Monoid, Semigroup](src/programmingHaskell/chapter15/notes.md)
 - [Chapter 16 - Functor](src/programmingHaskell/chapter16/notes.md)
-- [Chapter 17 - srclicative](src/programmingHaskell/chapter17/notes.md)
+- [Chapter 17 - Applicative](src/programmingHaskell/chapter17/notes.md)
 - [Chapter 18 - Monad](src/programmingHaskell/chapter18/notes.md)
 - [Chapter 20 - Foldable](src/programmingHaskell/chapter20/notes.md)
 - [Chapter 21 - Traversable](src/programmingHaskell/chapter21/notes.md)
