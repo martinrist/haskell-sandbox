@@ -1,4 +1,4 @@
-module Chapter2 where
+module ProgrammingHaskell.Chapter02.Examples where
 
 ----------------------------
 -- Chapter 2 - Hello Haskell

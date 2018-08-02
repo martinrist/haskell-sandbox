@@ -1,4 +1,4 @@
-module Reverse where
+module ProgrammingHaskell.Chapter03.Reverse where
 
 rvrs :: String -> String
 rvrs s = let word1 = take 5 s;

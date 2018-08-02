@@ -1,4 +1,4 @@
-module Main where
+module ProgrammingHaskell.Chapter13.Main where
 
 import System.IO
 

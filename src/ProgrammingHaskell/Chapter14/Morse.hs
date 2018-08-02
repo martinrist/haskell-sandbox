@@ -1,4 +1,4 @@
-module Morse
+module ProgrammingHaskell.Chapter14.Morse
         ( Morse
         , charToMorse
         , morseToChar
@@ -60,5 +60,5 @@ charToMorse c = M.lookup c letterToMorse
 stringToMorse :: String -> Maybe [Morse]
 stringToMorse s = sequence $ fmap charToMorse s
 
-morseToChar = Morse -> Maybe Char
+morseToChar :: Morse -> Maybe Char
 morseToChar m = M.lookup m morseToLetter

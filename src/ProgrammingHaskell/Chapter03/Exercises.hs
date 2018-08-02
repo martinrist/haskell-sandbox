@@ -1,4 +1,4 @@
-module Exercises where
+module ProgrammingHaskell.Chapter03.Exercises where
 
 -- Exercise 2
 exercise_2a :: String -> String

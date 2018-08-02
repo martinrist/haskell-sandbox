@@ -1,4 +1,4 @@
-module Main where
+module ProgrammingHaskell.Chapter31.Debug where
 
 import Control.Monad (forever)
 import Network.Socket hiding (recv)

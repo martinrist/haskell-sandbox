@@ -1,4 +1,5 @@
-module Arith3Broken where
+module ProgrammingHaskell.Chapter05.Arith3Broken where
+
 main :: IO ()
 main = do
     print (1 + 2)

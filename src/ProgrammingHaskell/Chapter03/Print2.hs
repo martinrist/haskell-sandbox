@@ -1,4 +1,4 @@
-module Print2 where
+module ProgrammingHaskell.Chapter03.Print2 where
 
 main :: IO ()
 main = do

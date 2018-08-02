@@ -1,5 +1,5 @@
 -- Chapter 4 - Notes
-module Notes where
+module ProgrammingHaskell.Chapter04.Examples where
 
 import Data.Tuple
 

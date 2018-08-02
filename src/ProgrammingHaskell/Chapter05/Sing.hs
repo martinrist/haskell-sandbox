@@ -1,4 +1,4 @@
-module Sing where
+module ProgrammingHaskell.Chapter05.Sing where
 
 fstString :: [Char] -> [Char]
 fstString x = x ++ " in the rain"

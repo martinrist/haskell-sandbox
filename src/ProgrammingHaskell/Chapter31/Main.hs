@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
 
-module Main where
+module ProgrammingHaskell.Chapter31.Main where
 
 import           Control.Exception
 import           Control.Monad                (forever)

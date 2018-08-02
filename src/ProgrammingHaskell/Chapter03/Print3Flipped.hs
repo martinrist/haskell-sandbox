@@ -1,4 +1,4 @@
-module Print3Flipped where
+module ProgrammingHaskell.Chapter03.Print3Flipped where
 
 myGreeting :: String
 -- Here `(++)` denotes the prefix version of the `++` operator

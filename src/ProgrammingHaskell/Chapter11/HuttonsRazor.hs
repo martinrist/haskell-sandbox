@@ -1,4 +1,4 @@
-module HuttonsRazor where
+module ProgrammingHaskell.Chapter11.HuttonsRazor where
 
 
 data Expr

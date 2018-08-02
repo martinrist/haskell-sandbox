@@ -1,6 +1,6 @@
 -- Chapter 3 - Strings
 
-module Chapter3 where
+module ProgrammingHaskell.Chapter03.Examples where
 
 main :: IO()
 main = putStrLn "Hello"

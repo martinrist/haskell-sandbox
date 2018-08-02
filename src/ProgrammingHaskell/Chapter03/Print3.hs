@@ -1,4 +1,4 @@
-module Print3 where
+module ProgrammingHaskell.Chapter03.Print3 where
 
 myGreeting :: String
 -- ++ can be used to concatenate Strings

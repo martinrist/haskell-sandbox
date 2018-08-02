@@ -1,4 +1,4 @@
-module Phone where
+module ProgrammingHaskell.Chapter11.Phone where
 
 import Data.List
 import Data.Maybe
