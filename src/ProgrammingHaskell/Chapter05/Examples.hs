@@ -1,3 +1,5 @@
+module ProgrammingHaskell.Chapter05.Examples where
+
 uncurriedAdd :: Num a => (a, a) -> a
 uncurriedAdd (x, y) = x + y
 
@@ -9,5 +11,3 @@ jackal = undefined
 
 kessel :: (Ord a, Num b) => a -> b -> a
 kessel = undefined
-
-
