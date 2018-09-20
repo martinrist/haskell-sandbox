@@ -88,7 +88,7 @@
     15
     ```
 
-- It is possible to _uncurry_ functions, replacing the curried version with an uncurried version that takes a tuple parameter containing all the arguments:
+- It is possible to _uncurry_ functions, replacing the curried version with an uncurried version that takes a tuple parameter containing all the arguments.
 
 - _Sectioning_ refers to partial application of infix operators, with a special syntax:
 
