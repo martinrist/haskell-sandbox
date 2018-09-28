@@ -41,6 +41,7 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
       - -Wall
+      - -Wno-type-defaults
     dependencies:
       - base
       - optparse-applicative
@@ -53,6 +54,7 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
       - -Wall
+      - -Wno-type-defaults
     dependencies:
       - base
 
@@ -64,6 +66,7 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
       - -Wall
+      - -Wno-type-defaults
     dependencies:
       - base
       - haskell-sandbox
