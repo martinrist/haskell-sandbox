@@ -103,7 +103,7 @@
         (==) (Identity v) (Identity v') = v == v'
     ```
 
-# 6.6 - The `Num` typeclass
+## 6.6 - The `Num` typeclass
 
 - `Num` is implemented by most numeric types, and defines common arithmetic operations:
 
@@ -148,7 +148,7 @@
     ```
 
 
-# 6.7 - Type-defaulting typeclasses
+## 6.7 - Type-defaulting typeclasses
 
 - When evaluating a type-class constrained polymorphic value, the polymorphism must be resolved to a specific concrete type.
 
@@ -179,7 +179,7 @@
     (/) :: Double -> Double -> Double
     ```
 
-# 6.8 - The `Ord` typeclass
+## 6.8 - The `Ord` typeclass
 
 
 - `Ord` covers things that have a notion of ordering and can be compared:
