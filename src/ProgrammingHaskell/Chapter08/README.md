@@ -65,9 +65,9 @@
     ```
 
 
-## 8.4 - Fibonnaci numbers
+## 8.4 - Fibonacci numbers
 
-- Fibonnaci numbers are another classic case of recursion, but with two bases cases / recursive steps:
+- Fibonacci numbers are another classic case of recursion, but with two bases cases / recursive steps:
     - Base cases - `fib(0) = 0` and `fib(1) = 1`
     - Recursive case - `fib(n) = fib(n-1) + fib(n-2)`
 
