@@ -1,4 +1,4 @@
-module Chapter8 where
+module ProgrammingHaskell.Chapter08.Examples where
 
 
 ------------------
