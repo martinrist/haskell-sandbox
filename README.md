@@ -6,7 +6,7 @@ This repository contains various samples, experiments and notes relating to Hask
 
 - ✅ [Chapter 5 - Types](src/ProgrammingHaskell/Chapter05/README.md)
 - ✅ [Chapter 6 - Typeclasses](src/ProgrammingHaskell/Chapter06/README.md)
-- [Chapter 7 - More functional patterns](src/ProgrammingHaskell/Chapter07/README.md)
+- ✅ [Chapter 7 - More functional patterns](src/ProgrammingHaskell/Chapter07/README.md)
 - [Chapter 8 - Recursion](src/ProgrammingHaskell/Chapter08/README.md)
 - [Chapter 9 - Lists](src/ProgrammingHaskell/Chapter09/README.md)
 - [Chapter 10 - Folding Lists](src/ProgrammingHaskell/Chapter10/README.md)
