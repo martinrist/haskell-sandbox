@@ -48,7 +48,7 @@ cd
 stack setup
 
 # Install dev tools (from ~)
-stack install hlint stylish-haskell hindent hdevtools hoogle hasktags hspec-discover
+stack install hlint stylish-haskell hindent hdevtools hoogle hasktags hspec-discover ghcid
 
 # Generate hoogle database
 hoogle generate
@@ -64,7 +64,11 @@ Need to apply [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/dev
 The source files can be found in `$(stack path
 --programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
 
+## Running tests with ghcid
 
+```
+ghcid -c="stack ghci test/Spec.hs" -T=main
+```
 
 # TODO
 
