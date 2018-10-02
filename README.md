@@ -47,14 +47,8 @@ brew install ctags
 cd
 stack setup
 
-# The above command will start installing a later GHC
-# so abort it and edit ~/.stack/global-project/stack.yaml
-# to set resolver to lts-9.21
-# This is to force the use of GHC 8.0.2 until ghc-mod supports
-# later versions.  Run `stack setup` again to install GHC 8.0.2
-
 # Install dev tools (from ~)
-stack install hlint stylish-haskell hindent ghc-mod hdevtools hoogle hasktags hspec-discover
+stack install hlint stylish-haskell hindent hdevtools hoogle hasktags hspec-discover
 
 # Generate hoogle database
 hoogle generate
@@ -75,25 +69,10 @@ The source files can be found in `$(stack path
 # TODO
 
 - Get `hasktags` to regenerate tags files automatically on save (including extra
-  metadata).
-
-- Work out why `syntastic` and `vim-gitgutter` icons are going wrong when
-  `stylish-haskell` is installed
-
-- Do we need both `hdevtools` and `ghc-mod` in Vim?  Investigate just using
-  GhcModCheck and GhcModLint in place of Syntastic + hdevtools + hlint, since
-  the former gives a proper QuickFix list that's formatted better.  Perhaps
-  switch Syntastic to package mode?  Note that you don't get handy gutter marks
-  without Syntastic
+  metadata) - command to run is `hasktags -cx .` from project root.
 
 - Investigate setting up more Vim shortcuts
 
 - Work out how to install dev tools using `stack build --copy-compiler-tool ghc-mod ...` - how do we set up the `stack` environment (including `$PATH`) before using Vim?
 
 - Other things suggested in [this page](https://lexi-lambda.github.io/blog/2018/02/10/an-opinionated-guide-to-haskell-in-2018/)
-
-- Investigate why there are problems with the above setup when using versions of
-  the stack resolver later than 9.21 / GHC later than 8.0.2
-
-- Investigate using package.yaml in preference to .cabal files
-    - Use https://github.com/yamadapc/hpack-convert
