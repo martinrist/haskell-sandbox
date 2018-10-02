@@ -1,4 +1,5 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module ProgrammingHaskell.Chapter05.Exercises.DetermineTheType where
 
@@ -33,7 +34,7 @@ x = 5
 y = x + 5
 
 -- z :: Num a => a -> a
-z y = y * 10
+z v = v * 10
 
 -- Question 3
 x' = 5

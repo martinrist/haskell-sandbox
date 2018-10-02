@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module ProgrammingHaskell.Chapter08.Examples where
 
 ------------------
