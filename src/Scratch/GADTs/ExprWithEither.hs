@@ -1,32 +1,35 @@
 -- See https://en.wikibooks.org/wiki/Haskell/GADT
-
-module Scratch.GADTExamples where
+module Scratch.GADTs.ExprWithEither where
 
 import Test.Hspec
 
 data Expr
-    = I Int             -- integer constants
-    | B Bool            -- boolean constants
-    | Add Expr Expr     -- add two expressions
-    | Mul Expr Expr     -- multiple two expressions
+    = I Int -- integer constants
+    | B Bool -- boolean constants
+    | Add Expr
+          Expr -- add two expressions
+    | Mul Expr
+          Expr -- multiple two expressions
     deriving (Show)
 
 eval :: Expr -> Maybe (Either Int Bool)
-eval (I n)                     = Just $ Left n
-eval (B b)                     = Just $ Right b
-eval (Add e1 e2) = case (eval e1, eval e2) of
-                        (Just (Left n1), Just (Left n2)) -> Just $ Left (n1 + n2)
-                        _ -> Nothing
-eval (Mul e1 e2) = case (eval e1, eval e2) of
-                        (Just (Left n1), Just (Left n2)) -> Just $ Left (n1 * n2)
-                        _ -> Nothing
+eval (I n) = Just $ Left n
+eval (B b) = Just $ Right b
+eval (Add e1 e2) =
+    case (eval e1, eval e2) of
+        (Just (Left n1), Just (Left n2)) -> Just $ Left (n1 + n2)
+        _ -> Nothing
+eval (Mul e1 e2) =
+    case (eval e1, eval e2) of
+        (Just (Left n1), Just (Left n2)) -> Just $ Left (n1 * n2)
+        _ -> Nothing
 
 test :: IO ()
-test = hspec $
+test =
+    hspec $
     describe "eval Tests" $ do
         context "Simple Add" $ do
-            it "Adds integers" $
-                eval (I 1 `Add` I 2) `shouldBe` Just (Left 3)
+            it "Adds integers" $ eval (I 1 `Add` I 2) `shouldBe` Just (Left 3)
             it "Returns `Nothing` when adding `Bool`s" $
                 eval (B False `Add` B True) `shouldBe` Nothing
             it "Returns `Nothing` when adding incompatible types" $ do
@@ -49,4 +52,5 @@ test = hspec $
                 eval ((I 2 `Add` B False) `Add` I 4) `shouldBe` Nothing
                 eval ((I 2 `Add` I 3) `Add` B True) `shouldBe` Nothing
                 eval ((I 2 `Add` B False) `Mul` I 4) `shouldBe` Nothing
-                eval ((I 2 `Mul` B True) `Mul` (I 4 `Add` B True)) `shouldBe` Nothing
+                eval ((I 2 `Mul` B True) `Mul` (I 4 `Add` B True)) `shouldBe`
+                    Nothing
