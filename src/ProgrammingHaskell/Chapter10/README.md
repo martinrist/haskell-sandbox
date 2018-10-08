@@ -84,7 +84,7 @@
 
 - Folding occurs in two stages:
     - _Traversal_ - where the fold recurses over the spine.
-    - _Folding_ - evaluation or reduction of the folding funciton applied to the values.
+    - _Folding_ - evaluation or reduction of the folding function applied to the values.
 
 - The difference between left and right folds is in the association of the folding functions, and therefore the direction in which folding or reduction proceeds.
 
