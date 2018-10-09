@@ -1,11 +1,11 @@
-module ProgrammingHaskell.Chapter11.Cipher where
+module ProgrammingHaskell.Chapter11.Exercises.Cipher where
 
 import Data.Char
 
-caesar :: Int -> [Char] -> [Char]
+caesar :: Int -> String -> String
 caesar n = map (shift n)
 
-uncaesar :: Int -> [Char] -> [Char]
+uncaesar :: Int -> String -> String
 uncaesar = caesar . negate
 
 shift :: Int -> Char -> Char
@@ -15,16 +15,16 @@ shift n c
     | otherwise = c
   where
     shiftFrom base n' =
-        chr . (+ ord base) . (`mod` 26) . (+ n') . (subtract (ord base)) . ord
+        chr . (+ ord base) . (`mod` 26) . (+ n') . subtract (ord base) . ord
 
-vignere :: [Char] -> [Char] -> [Char]
+vignere :: String -> String -> String
 vignere ks = polyAlphaSubst (concat . repeat $ ks)
 
-polyAlphaSubst :: [Char] -> [Char] -> [Char]
+polyAlphaSubst :: String -> String -> String
 polyAlphaSubst _ [] = []
 polyAlphaSubst [] ps = ps
 polyAlphaSubst (k:ks) (p:ps)
     | p == ' ' = ' ' : polyAlphaSubst (k : ks) ps
-    | otherwise = (shift n p) : polyAlphaSubst ks ps
+    | otherwise = shift n p : polyAlphaSubst ks ps
   where
     n = ord (toUpper k) - ord 'A'

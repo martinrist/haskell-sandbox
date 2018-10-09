@@ -160,7 +160,7 @@
 
 - A `newtype` has various advantages over a basic `data` declaration:
     - No runtime overhead, since it reuses the representation of the type it contains.
-    - Can define a typelcass instance for `newtype`s that differ from the instances for their underlying type.
+    - Can define a typeclass instance for `newtype`s that differ from the instances for their underlying type.
 
 
 ## 11.10 - Sum types
