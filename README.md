@@ -11,7 +11,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - ✅ [Chapter 9 - Lists](src/ProgrammingHaskell/Chapter09/README.md)
 - ✅ [Chapter 10 - Folding Lists](src/ProgrammingHaskell/Chapter10/README.md)
 - ✅ [Chapter 11 - Algebraic Datatypes](src/ProgrammingHaskell/Chapter11/README.md)
-- [Chapter 12 - Signalling Adversity](src/ProgrammingHaskell/Chapter12/README.md)
+- ✅ [Chapter 12 - Signalling Adversity](src/ProgrammingHaskell/Chapter12/README.md)
 - [Chapter 13 - Building Projects](src/ProgrammingHaskell/Chapter13/README.md)
 - [Chapter 14 - Testing](src/ProgrammingHaskell/Chapter14/README.md)
 - [Chapter 15 - Monoid, Semigroup](src/ProgrammingHaskell/Chapter15/README.md)
