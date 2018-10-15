@@ -54,6 +54,21 @@ stack install hlint stylish-haskell hindent hdevtools hoogle hasktags hspec-disc
 hoogle generate
 ```
 
+# Installing `fzf`
+
+```bash
+brew install fzf
+/usr/local/opt/fzf/install
+```
+
+# Installing `haskell-ide-engine`
+
+```bash
+git clone https://github.com/haskell/haskell-ide-engine.git --recursive
+cd haskell-ide-engine
+stack install
+```
+
 
 # FAQs
 
