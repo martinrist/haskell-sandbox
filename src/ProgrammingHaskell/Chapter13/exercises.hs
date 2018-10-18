@@ -1,3 +1,5 @@
+module ProgrammingHaskell.Chapter13.Exercises where
+
 -----------------------
 -- Chapter Exercises --
 -----------------------
@@ -10,11 +12,9 @@ import Data.Char (toLower)
 palindrome :: IO ()
 palindrome = forever $ do
     line1 <- getLine
-    case isPalindrome line1 of
-        True  -> putStrLn "It's a palindrome!"
-        False -> do
-            putStrLn "Nope!"
-            exitSuccess
+    if isPalindrome line1 then putStrLn "It's a palindrome!" else do
+        putStrLn "Nope!"
+        exitSuccess
 
 invalidChars :: [Char]
 invalidChars = " '"
@@ -64,4 +64,3 @@ gimmePerson = do
 outputPerson :: Either PersonInvalid Person -> IO ()
 outputPerson (Right p) = putStrLn $ "Yay! Successfully got a person: " ++ show p
 outputPerson (Left i)  = putStrLn $ "Error: " ++ show i
-
