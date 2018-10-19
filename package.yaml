@@ -84,6 +84,20 @@ executables:
       - base
       - haskell-sandbox
 
+  encrypt:
+    main:           Main.hs
+    source-dirs:    app/programmingHaskell/encrypt
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+      - -Wall
+      - -Wno-type-defaults
+    dependencies:
+      - base
+      - haskell-sandbox
+      - optparse-applicative
+
 tests:
   haskell-sandbox-test:
     main: Spec.hs
