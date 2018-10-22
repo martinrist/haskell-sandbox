@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-module Addition where
+module ProgrammingHaskell.Chapter14.Examples where
 
 import Test.Hspec
 import Test.QuickCheck
