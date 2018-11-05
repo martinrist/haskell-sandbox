@@ -32,6 +32,13 @@ library:
     - network
     - sqlite-simple
     - safe
+    - wai
+    - warp
+    - aeson
+    - servant
+    - servant-server
+    - servant-client
+    - servant-docs
 
 executables:
   optparse-applicative-exe:
