@@ -211,7 +211,7 @@
 - The third variety of monoid for `Maybe a` combines the 'inner' a's (assuming they are monoids themselves:
 
     ```haskell
-    instance Monoid a => Monoid (Maybbe a) where
+    instance Monoid a => Monoid (Maybe a) where
     mempty = Nada
     mappend Nothing  x        = x
     mappend x        Nothing  = x
