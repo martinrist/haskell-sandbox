@@ -18,4 +18,4 @@ instance Monoid (First' a) where
 
 instance Arbitrary a => Arbitrary (First' a) where
     arbitrary = frequency [(1, return (First' Nada)),
-                           (3, liftM (First' . Only) arbitrary)]
+                           (3, First' . Only <$> arbitrary)]
