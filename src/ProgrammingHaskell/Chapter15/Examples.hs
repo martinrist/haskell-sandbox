@@ -2,6 +2,7 @@ module ProgrammingHaskell.Chapter15.Examples where
 
 import Data.Monoid
 import Test.QuickCheck
+import ProgrammingHaskell.Chapter15.MonoidLaws
 
 --------------------------------------------------
 -- 15.12 - Using QuickCheck to test monoid laws --
@@ -10,17 +11,6 @@ import Test.QuickCheck
 -- Shortcuts
 type S = String
 type B = Bool
-
--- Associativity
-monoidAssoc :: (Eq m, Monoid m) => m -> m -> m -> Bool
-monoidAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
-
--- Identity
-monoidLeftIdentity :: (Eq m, Monoid m) => m -> Bool
-monoidLeftIdentity a = (mempty <> a) == a
-
-monoidRightIdentity :: (Eq m, Monoid m) => m -> Bool
-monoidRightIdentity a = (a <> mempty) == a
 
 
 -- Example of a broken Monoid instance which shows we can't
@@ -34,9 +24,11 @@ instance Arbitrary Bull where
     arbitrary = frequency [ (1, return Fools)
                           , (1, return Twoo)]
 
+instance Semigroup Bull where
+    _ <> _ = Fools
+
 instance Monoid Bull where
     mempty = Fools
-    mappend _ _ = Fools
 
 type BullMappend = Bull -> Bull -> Bull -> Bool
 
