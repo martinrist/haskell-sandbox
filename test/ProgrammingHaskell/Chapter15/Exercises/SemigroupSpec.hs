@@ -41,6 +41,16 @@ testFour = context "Four" $ it "Obeys Semigroup associative law" $ property
       -> Bool
     )
 
+testBoolConj :: Spec
+testBoolConj = context "BoolConj" $
+    it "Obeys Semigroup associative law" $
+        property (semigroupAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
+
+testBoolDisj :: Spec
+testBoolDisj = context "BoolDisj" $
+    it "Obeys Semigroup associative law" $
+        property (semigroupAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
+
 spec :: Spec
 spec = do
     testTrivial
@@ -48,3 +58,5 @@ spec = do
     testTwo
     testThree
     testFour
+    testBoolConj
+    testBoolDisj

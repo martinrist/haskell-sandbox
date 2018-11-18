@@ -1,7 +1,7 @@
 module ProgrammingHaskell.Chapter15.Exercises.Semigroup where
 
-import Test.QuickCheck
-import Control.Applicative
+import           Test.QuickCheck
+import           Control.Applicative
 
 -- Question 1 - Trivial
 
@@ -54,3 +54,23 @@ instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four
 
 instance (Semigroup a, Semigroup b, Semigroup c, Semigroup d) => Semigroup (Four a b c d) where
     (Four a b c d) <> (Four a' b' c' d') = Four (a <> a') (b <> b') (c <> c') (d <> d')
+
+-- Question 6 - BoolConj
+
+newtype BoolConj = BoolConj Bool deriving (Eq, Show)
+
+instance Arbitrary BoolConj where
+    arbitrary = BoolConj <$> elements [True, False]
+
+instance Semigroup BoolConj where
+    (BoolConj a) <> (BoolConj b) = BoolConj (a && b)
+
+-- Question 7 - BoolDisj
+
+newtype BoolDisj = BoolDisj Bool deriving (Eq, Show)
+
+instance Arbitrary BoolDisj where
+    arbitrary = BoolDisj <$> elements [True, False]
+
+instance Semigroup BoolDisj where
+    (BoolDisj a) <> (BoolDisj b) = BoolDisj (a || b)
