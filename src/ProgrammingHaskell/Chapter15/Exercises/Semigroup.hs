@@ -29,8 +29,8 @@ newtype Identity a = Identity a
 instance Arbitrary a => Arbitrary (Identity a) where
     arbitrary = Identity <$> arbitrary
 
-instance Semigroup (Identity a) where
-    Identity a <> Identity b = Identity a
+instance Semigroup a => Semigroup (Identity a) where
+    Identity a <> Identity b = Identity (a <> b)
 
 
 -- Question 3  - Two

@@ -14,7 +14,7 @@ This repository contains various samples, experiments and notes relating to Hask
 - ✅ [Chapter 12 - Signalling Adversity](src/ProgrammingHaskell/Chapter12/README.md)
 - ✅ [Chapter 13 - Building Projects](src/ProgrammingHaskell/Chapter13/README.md)
 - ✅ [Chapter 14 - Testing](src/ProgrammingHaskell/Chapter14/README.md)
-- [Chapter 15 - Monoid, Semigroup](src/ProgrammingHaskell/Chapter15/README.md)
+- ✅ [Chapter 15 - Monoid, Semigroup](src/ProgrammingHaskell/Chapter15/README.md)
 - [Chapter 16 - Functor](src/ProgrammingHaskell/Chapter16/README.md)
 - [Chapter 17 - Applicative](src/ProgrammingHaskell/Chapter17/README.md)
 - [Chapter 18 - Monad](src/ProgrammingHaskell/Chapter18/README.md)

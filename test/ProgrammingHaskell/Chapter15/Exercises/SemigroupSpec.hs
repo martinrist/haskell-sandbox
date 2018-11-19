@@ -22,7 +22,7 @@ testTrivial =
 testIdentity :: Spec
 testIdentity =
     context "Identity" $ it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: Identity Int -> Identity Int -> Identity Int -> Bool)
+        (semigroupAssoc :: Identity String -> Identity String -> Identity String -> Bool)
 
 
 -- Question 3 - Two

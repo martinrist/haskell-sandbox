@@ -13,193 +13,123 @@ import           Data.Semigroup
 -- Question 1 - Trivial
 
 testTrivial :: Spec
-testTrivial = do
-    context "Trivial" $ it "Obeys Monoid left identity law" $
+testTrivial = context "Trivial" $ do
+    it "Obeys Monoid left identity law" $
         property (monoidLeftIdentity :: Trivial -> Bool)
-    context "Trivial" $ it "Obeys Monoid right identity law" $
+    it "Obeys Monoid right identity law" $
         property (monoidRightIdentity :: Trivial -> Bool)
 
 
 
 -- -- Question 2 - Identity
 
--- testIdentity :: Spec
--- testIdentity =
---     context "Identity" $ it "Obeys Semigroup associative law" $ property
---         (semigroupAssoc :: Identity Int -> Identity Int -> Identity Int -> Bool)
+testIdentity :: Spec
+testIdentity = context "Identity" $ do
+    it "Obeys Monoid left identity law" $
+        property (monoidLeftIdentity :: Identity String -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (monoidRightIdentity :: Identity String -> Bool)
 
 
--- -- Question 3 - Two
+-- Question 3 - Two
 
--- testTwo :: Spec
--- testTwo = context "Two" $ it "Obeys Semigroup associative law" $ property
---     (semigroupAssoc :: Two String String
---       -> Two String String
---       -> Two String String
---       -> Bool
---     )
-
-
--- -- Question 4 - Three
-
--- testThree :: Spec
--- testThree = context "Three" $ it "Obeys Semigroup associative law" $ property
---     (semigroupAssoc :: Three String String String
---       -> Three String String String
---       -> Three String String String
---       -> Bool
---     )
+testTwo :: Spec
+testTwo = context "Two" $ do
+    it "Obeys Monoid left identity law" $
+        property (monoidLeftIdentity :: Two String String -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (monoidRightIdentity :: Two String String -> Bool)
 
 
--- -- Question 5 - Four
+-- Question 4 - BoolConj
 
--- testFour :: Spec
--- testFour = context "Four" $ it "Obeys Semigroup associative law" $ property
---     (semigroupAssoc :: Four String String String String
---       -> Four String String String String
---       -> Four String String String String
---       -> Bool
---     )
-
-
--- -- Question 6 - BoolConj
-
--- testBoolConj :: Spec
--- testBoolConj = context "BoolConj" $ do
---     it "Obeys Semigroup associative law" $ property
---         (semigroupAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
---     it "Behaves like conjunction for two `True`s"
---         $          BoolConj True
---         <>         BoolConj True
---         `shouldBe` BoolConj True
---     it "Behaves like conjunction for `True` and `False`"
---         $          BoolConj True
---         <>         BoolConj False
---         `shouldBe` BoolConj False
+testBoolConj :: Spec
+testBoolConj = context "BoolConj" $ do
+    it "Obeys Monoid left identity law" $
+        property (monoidLeftIdentity :: BoolConj -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (monoidRightIdentity :: BoolConj -> Bool)
 
 
--- -- Question 7 - BoolDisj
+-- Question 5 - BoolDisj
 
--- testBoolDisj :: Spec
--- testBoolDisj = context "BoolDisj" $ do
---     it "Obeys Semigroup associative law" $ property
---         (semigroupAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
---     it "Behaves like disjunction for two `True`s"
---         $          BoolDisj True
---         <>         BoolDisj True
---         `shouldBe` BoolDisj True
---     it "Behaves like disjunction for `True` and `False`"
---         $          BoolDisj True
---         <>         BoolDisj False
---         `shouldBe` BoolDisj True
+testBoolDisj :: Spec
+testBoolDisj = context "BoolDisj" $ do
+    it "Obeys Monoid left identity law" $
+        property (monoidLeftIdentity :: BoolDisj -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (monoidRightIdentity :: BoolDisj -> Bool)
 
 
--- -- Question 8 - Or
+-- Question 6 - Combine
 
--- testOr :: Spec
--- testOr = context "Or" $ do
---     it "Obeys Semigroup associative law" $ property
---         (semigroupAssoc :: Or Int String
---           -> Or Int String
---           -> Or Int String
---           -> Bool
---         )
---     it "Discards `Fst` when followed by `Snd`" $ Fst 1 <> Snd 2 `shouldBe` Snd 2
---     it "Discards `Fst` when followed by `Fst`"
---         $          Fst 1
---         <>         Fst 2
---         `shouldBe` (Fst 2 :: Or Int Int)
---     it "Keeps `Snd` when followed by `Fst`" $ Snd 1 <> Fst 2 `shouldBe` Snd 1
---     it "Keeps `Snd` when followed by `Snd`"
---         $          Snd 1
---         <>         Snd 2
---         `shouldBe` (Snd 1 :: Or Int Int)
+combineLeftIdentity :: (Eq b, Monoid b) => a -> Combine a b -> Bool
+combineLeftIdentity v a = unCombine (mempty <> a) v == unCombine a v
+
+combineRightIdentity :: (Eq b, Monoid b) => a -> Combine a b -> Bool
+combineRightIdentity v a = unCombine (a <> mempty) v == unCombine a v
+
+testCombine :: Spec
+testCombine = context "Combine" $ do
+    it "Obeys Monoid left identity law" $
+        property (combineLeftIdentity :: Int -> Combine Int String -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (combineRightIdentity :: Int -> Combine Int String -> Bool)
 
 
--- -- Question 9 - Combine
+-- Question 7 - Comp
 
--- f :: Combine Int (Sum Int)
--- f = Combine $ \n -> Sum (n + 1)
+compLeftIdentity :: Eq a => a -> Comp a -> Bool
+compLeftIdentity v a = unComp (mempty <> a) v == unComp a v
 
--- g :: Combine Int (Sum Int)
--- g = Combine $ \n -> Sum (n - 1)
+compRightIdentity :: Eq a => a -> Comp a -> Bool
+compRightIdentity v a = unComp (a <> mempty) v == unComp a v
 
--- combineAssoc
---     :: (Eq b, Semigroup b)
---     => a
---     -> Combine a b
---     -> Combine a b
---     -> Combine a b
---     -> Bool
--- combineAssoc v a b c =
---     unCombine (a <> (b <> c)) v == unCombine ((a <> b) <> c) v
-
--- testCombine :: Spec
--- testCombine = context "Combine" $ do
---     it "Obeys Semigroup associative law" $ property
---         (combineAssoc :: Int
---           -> Combine Int String
---           -> Combine Int String
---           -> Combine Int String
---           -> Bool
---         )
---     it "`unCombine (f <> g) 0` returns 0" $ unCombine (f <> g) 0 `shouldBe` Sum
---         0
---     it "`unCombine (f <> g) 1` returns 2" $ unCombine (f <> g) 1 `shouldBe` Sum
---         2
---     it "`unCombine (f <> f) 1` returns 4" $ unCombine (f <> f) 1 `shouldBe` Sum
---         4
---     it "`unCombine (g <> f) 1` returns 2" $ unCombine (g <> f) 1 `shouldBe` Sum
---         2
+testComp :: Spec
+testComp = context "Comp" $ do
+    it "Obeys Monoid left identity law" $
+        property (compLeftIdentity :: Int -> Comp Int -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (compRightIdentity :: Int -> Comp Int -> Bool)
 
 
--- -- Question 10 - Comp
+-- Question 8 - Mem
 
--- inc :: Comp Int
--- inc = Comp $ \n -> n + 1
-
--- double :: Comp Int
--- double = Comp $ \n -> n * 2
-
--- compAssoc :: Eq a => a -> Comp a -> Comp a -> Comp a -> Bool
--- compAssoc v a b c = unComp (a <> (b <> c)) v == unComp ((a <> b) <> c) v
-
--- testComp :: Spec
--- testComp = context "Comp" $ do
---     it "Obeys Semigroup associative law" $ property
---         (compAssoc :: Int -> Comp Int -> Comp Int -> Comp Int -> Bool)
---     it "`unComp (double <> inc) 3` should return 8`"
---         $          unComp (double <> inc) 3
---         `shouldBe` 8
+f' = Mem $ \s -> ("hi", s + 1)
 
 
--- -- Question 11 - Valdiation
+memAssoc :: (Eq s, Eq a, Semigroup a, Monoid a) => s -> Mem s a -> Mem s a -> Mem s a -> Bool
+memAssoc v a b c =     runMem (a <> (b <> c)) v
+                    == runMem ((a <> b) <> c) v
 
--- testValidation :: Spec
--- testValidation = context "Validation" $ do
---     it "Obeys Semigroup associative law" $ property
---         (semigroupAssoc :: Validation String String
---           -> Validation String String
---           -> Validation String String
---           -> Bool
---         )
---     it "Retains initial `Success` followed by `Failure`"
---         $          Success 1
---         <>         Failure "blah"
---         `shouldBe` Success 1
---     it "Mappends multiple `Failure`s"
---         $          Failure "woot"
---         <>         Failure "blah"
---         `shouldBe` (Failure "wootblah" :: Validation String String)
---     it "Retains first `Success` followed by another `Success`"
---         $          Success 1
---         <>         Success 2
---         `shouldBe` (Success 1 :: Validation String Int)
---     it "Skips first `Failure` followed by `Success`"
---         $          Failure "woot"
---         <>         Success 2
---         `shouldBe` Success 2
+memLeftIdentity :: (Eq s, Eq a, Semigroup a, Monoid a) => s -> Mem s a -> Bool
+memLeftIdentity v m = runMem (mempty <> m) v == runMem m v
+
+memRightIdentity :: (Eq s, Eq a, Semigroup a, Monoid a) => s -> Mem s a -> Bool
+memRightIdentity v m = runMem (m <> mempty) v == runMem m v
+
+testMem :: Spec
+testMem = context "Mem" $ do
+    it "Obeys Semigroup associative law" $
+        property (memAssoc :: Int -> Mem Int String -> Mem Int String -> Mem Int String -> Bool)
+    it "Obeys Monoid left identity law" $
+        property (memLeftIdentity :: Int -> Mem Int String -> Bool)
+    it "Obeys Monoid right identity law" $
+        property (memRightIdentity :: Int -> Mem Int String -> Bool)
+    it "`runMem empty 0` returns `('', 0)`" $
+        runMem mempty 0 `shouldBe` ( ("", 0) :: (String, Int) )
+    it "`runMem (f' <> mempty) 0` returns `('hi', 1)`" $
+        runMem (f' <> mempty) 0 `shouldBe` ("hi", 1)
+    it "`runMem (mempty <> f') 0` returns `('hi', 1)`" $
+        runMem (mempty <> f') 0 `shouldBe` ("hi", 1)
 
 spec :: Spec
 spec = do
     testTrivial
+    testIdentity
+    testTwo
+    testBoolConj
+    testBoolDisj
+    testCombine
+    testComp
+    testMem
