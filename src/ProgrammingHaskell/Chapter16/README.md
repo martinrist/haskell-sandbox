@@ -241,7 +241,7 @@
     ```
 
 
-## 16.11 - Ignoreing possibilities
+## 16.11 - Ignoring possibilities
 
 - The `Functor` instances for `Maybe` and `Either` are handy for when you intend to ignore the 'left' cases, which are typically the error or failure cases.
 
