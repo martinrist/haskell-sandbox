@@ -1,5 +1,6 @@
-{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE RankNTypes #-}
+
+module ProgrammingHaskell.Chapter16.Examples where
 
 ---------------------------
 -- Chapter 16 - Examples --
@@ -54,7 +55,7 @@ data Two a b =
 instance Functor (Two a) where
     fmap f (Two a b) = Two a (f b)
 
-data Or a b = 
+data Or a b =
     First a
   | Second b
   deriving (Eq, Show)
@@ -76,7 +77,7 @@ functorCompose :: (Eq (f c), Functor f) =>
                           -> (b -> c)
                           -> f a
                           -> Bool
-functorCompose f g x = (fmap g (fmap f x)) == (fmap (g . f) x)
+functorCompose f g x = fmap g (fmap f x) == fmap (g . f) x
 
 
 ------------------------------------
@@ -94,10 +95,10 @@ showIfJust Nothing = Nothing
 
 -- The above are equivalent to
 incMaybe :: Num a => Maybe a -> Maybe a
-incMaybe m = fmap (+1) m
+incMaybe = fmap (+1)
 
 showMaybe :: Show a => Maybe a -> Maybe String
-showMaybe s = fmap show s
+showMaybe = fmap show
 
 -- The fully-generic versions, which work for any Functor
 liftedInc :: (Functor f, Num a) => f a -> f a

@@ -104,7 +104,7 @@
     False
     ```
 
-- Example of breaking composition, because we mess with part of the structure (by incrementing the `n`:
+- Example of breaking composition, because we mess with part of the structure (by incrementing the `n`):
 
     ```haskell
     data CountingBad a =
