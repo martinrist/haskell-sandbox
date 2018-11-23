@@ -14,7 +14,7 @@ import           Data.Semigroup
 testTrivial :: Spec
 testTrivial =
     context "Trivial" $ it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: Trivial -> Trivial -> Trivial -> Bool)
+        (semigroupAssoc :: SemigroupAssoc Trivial)
 
 
 -- Question 2 - Identity
@@ -22,40 +22,28 @@ testTrivial =
 testIdentity :: Spec
 testIdentity =
     context "Identity" $ it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: Identity String -> Identity String -> Identity String -> Bool)
+        (semigroupAssoc :: SemigroupAssoc (Identity String))
 
 
 -- Question 3 - Two
 
 testTwo :: Spec
 testTwo = context "Two" $ it "Obeys Semigroup associative law" $ property
-    (semigroupAssoc :: Two String String
-      -> Two String String
-      -> Two String String
-      -> Bool
-    )
+    (semigroupAssoc :: SemigroupAssoc (Two String String))
 
 
 -- Question 4 - Three
 
 testThree :: Spec
 testThree = context "Three" $ it "Obeys Semigroup associative law" $ property
-    (semigroupAssoc :: Three String String String
-      -> Three String String String
-      -> Three String String String
-      -> Bool
-    )
+    (semigroupAssoc :: SemigroupAssoc (Three String String String))
 
 
 -- Question 5 - Four
 
 testFour :: Spec
 testFour = context "Four" $ it "Obeys Semigroup associative law" $ property
-    (semigroupAssoc :: Four String String String String
-      -> Four String String String String
-      -> Four String String String String
-      -> Bool
-    )
+    (semigroupAssoc :: SemigroupAssoc (Four String String String String))
 
 
 -- Question 6 - BoolConj
@@ -63,7 +51,7 @@ testFour = context "Four" $ it "Obeys Semigroup associative law" $ property
 testBoolConj :: Spec
 testBoolConj = context "BoolConj" $ do
     it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
+        (semigroupAssoc :: SemigroupAssoc BoolConj)
     it "Behaves like conjunction for two `True`s"
         $          BoolConj True
         <>         BoolConj True
@@ -79,7 +67,7 @@ testBoolConj = context "BoolConj" $ do
 testBoolDisj :: Spec
 testBoolDisj = context "BoolDisj" $ do
     it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
+        (semigroupAssoc :: SemigroupAssoc BoolDisj)
     it "Behaves like disjunction for two `True`s"
         $          BoolDisj True
         <>         BoolDisj True
@@ -95,11 +83,7 @@ testBoolDisj = context "BoolDisj" $ do
 testOr :: Spec
 testOr = context "Or" $ do
     it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: Or Int String
-          -> Or Int String
-          -> Or Int String
-          -> Bool
-        )
+        (semigroupAssoc :: SemigroupAssoc (Or Int String))
     it "Discards `Fst` when followed by `Snd`" $ Fst 1 <> Snd 2 `shouldBe` Snd 2
     it "Discards `Fst` when followed by `Fst`"
         $          Fst 1
@@ -174,11 +158,7 @@ testComp = context "Comp" $ do
 testValidation :: Spec
 testValidation = context "Validation" $ do
     it "Obeys Semigroup associative law" $ property
-        (semigroupAssoc :: Validation String String
-          -> Validation String String
-          -> Validation String String
-          -> Bool
-        )
+        (semigroupAssoc :: SemigroupAssoc (Validation String String))
     it "Retains initial `Success` followed by `Failure`"
         $          Success 1
         <>         Failure "blah"
