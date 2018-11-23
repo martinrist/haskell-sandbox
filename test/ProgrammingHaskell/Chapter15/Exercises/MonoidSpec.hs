@@ -63,59 +63,36 @@ testBoolDisj = context "BoolDisj" $ do
 
 -- Question 6 - Combine
 
-combineLeftIdentity :: (Eq b, Monoid b) => a -> Combine a b -> Bool
-combineLeftIdentity v a = unCombine (mempty <> a) v == unCombine a v
-
-combineRightIdentity :: (Eq b, Monoid b) => a -> Combine a b -> Bool
-combineRightIdentity v a = unCombine (a <> mempty) v == unCombine a v
-
 testCombine :: Spec
 testCombine = context "Combine" $ do
     it "Obeys Monoid left identity law" $
-        property (combineLeftIdentity :: Int -> Combine Int String -> Bool)
+        property (wrappedFnLeftIdentity unCombine :: Int -> IdentityProp (Combine Int String))
     it "Obeys Monoid right identity law" $
-        property (combineRightIdentity :: Int -> Combine Int String -> Bool)
+        property (wrappedFnRightIdentity unCombine :: Int -> IdentityProp (Combine Int String))
 
 
 -- Question 7 - Comp
 
-compLeftIdentity :: Eq a => a -> Comp a -> Bool
-compLeftIdentity v a = unComp (mempty <> a) v == unComp a v
-
-compRightIdentity :: Eq a => a -> Comp a -> Bool
-compRightIdentity v a = unComp (a <> mempty) v == unComp a v
-
 testComp :: Spec
 testComp = context "Comp" $ do
     it "Obeys Monoid left identity law" $
-        property (compLeftIdentity :: Int -> Comp Int -> Bool)
+        property (wrappedFnLeftIdentity unComp :: Int -> IdentityProp (Comp Int))
     it "Obeys Monoid right identity law" $
-        property (compRightIdentity :: Int -> Comp Int -> Bool)
+        property (wrappedFnRightIdentity unComp :: Int -> IdentityProp (Comp Int))
 
 
 -- Question 8 - Mem
 
 f' = Mem $ \s -> ("hi", s + 1)
 
-
-memAssoc :: (Eq s, Eq a, Semigroup a, Monoid a) => s -> Mem s a -> Mem s a -> Mem s a -> Bool
-memAssoc v a b c =     runMem (a <> (b <> c)) v
-                    == runMem ((a <> b) <> c) v
-
-memLeftIdentity :: (Eq s, Eq a, Semigroup a, Monoid a) => s -> Mem s a -> Bool
-memLeftIdentity v m = runMem (mempty <> m) v == runMem m v
-
-memRightIdentity :: (Eq s, Eq a, Semigroup a, Monoid a) => s -> Mem s a -> Bool
-memRightIdentity v m = runMem (m <> mempty) v == runMem m v
-
 testMem :: Spec
 testMem = context "Mem" $ do
     it "Obeys Semigroup associative law" $
-        property (memAssoc :: Int -> Mem Int String -> Mem Int String -> Mem Int String -> Bool)
+        property (wrappedFnAssoc runMem :: Int -> AssociativityProp (Mem Int String))
     it "Obeys Monoid left identity law" $
-        property (memLeftIdentity :: Int -> Mem Int String -> Bool)
+        property (wrappedFnLeftIdentity runMem :: Int -> IdentityProp (Mem Int String))
     it "Obeys Monoid right identity law" $
-        property (memRightIdentity :: Int -> Mem Int String -> Bool)
+        property (wrappedFnRightIdentity runMem :: Int -> IdentityProp (Mem Int String))
     it "`runMem empty 0` returns `('', 0)`" $
         runMem mempty 0 `shouldBe` ( ("", 0) :: (String, Int) )
     it "`runMem (f' <> mempty) 0` returns `('hi', 1)`" $
