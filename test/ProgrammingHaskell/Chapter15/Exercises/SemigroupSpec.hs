@@ -104,16 +104,10 @@ f = Combine $ \n -> Sum (n + 1)
 g :: Combine Int (Sum Int)
 g = Combine $ \n -> Sum (n - 1)
 
-combineAssoc
-    :: (Eq b, Semigroup b)
-    => a -> AssociativityProp (Combine a b)
-combineAssoc v a b c =
-    unCombine (a <> (b <> c)) v == unCombine ((a <> b) <> c) v
-
 testCombine :: Spec
 testCombine = context "Combine" $ do
     it "Obeys Semigroup associative law" $ property
-        (combineAssoc :: Int -> AssociativityProp (Combine Int String))
+        (wrappedFnAssoc unCombine :: Int -> AssociativityProp (Combine Int String))
     it "`unCombine (f <> g) 0` returns 0" $ unCombine (f <> g) 0 `shouldBe` Sum
         0
     it "`unCombine (f <> g) 1` returns 2" $ unCombine (f <> g) 1 `shouldBe` Sum
@@ -132,13 +126,10 @@ inc = Comp $ \n -> n + 1
 double :: Comp Int
 double = Comp $ \n -> n * 2
 
-compAssoc :: Eq a => a -> AssociativityProp (Comp a)
-compAssoc v a b c = unComp (a <> (b <> c)) v == unComp ((a <> b) <> c) v
-
 testComp :: Spec
 testComp = context "Comp" $ do
     it "Obeys Semigroup associative law" $ property
-        (compAssoc :: Int -> AssociativityProp (Comp Int))
+        (wrappedFnAssoc unComp :: Int -> AssociativityProp (Comp Int))
     it "`unComp (double <> inc) 3` should return 8`"
         $          unComp (double <> inc) 3
         `shouldBe` 8
