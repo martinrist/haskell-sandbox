@@ -11,10 +11,10 @@ testPossibly :: Spec
 testPossibly = context "Possibly" $ do
     it "Obeys Functor Possibly law" $
         property (functorIdentity :: Possibly Int -> Bool)
-    it "Obeys Functor composition law" $ do
+    it "Obeys Functor composition law" $
         property (functorCompose :: Possibly Int -> Fun Int String -> Fun String Int -> Bool)
 
 
 spec :: Spec
-spec = do
+spec =
     testPossibly
