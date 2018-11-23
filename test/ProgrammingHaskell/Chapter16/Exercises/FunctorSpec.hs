@@ -16,13 +16,9 @@ import           Data.Semigroup
 testIdentity :: Spec
 testIdentity = context "Identity" $ do
     it "Obeys Functor identity law"
-        $ property (functorIdentity :: Identity Int -> Bool)
+        $ property (functorIdentity :: FunctorIdentity Identity Int)
     it "Obeys Functor composition law" $ property
-        (functorCompose :: Identity Int
-          -> Fun Int String
-          -> Fun String Int
-          -> Bool
-        )
+        (functorCompose :: FunctorCompose Identity Int String Int)
 
 
 -- Question 2 - Pair
@@ -30,14 +26,9 @@ testIdentity = context "Identity" $ do
 testPair :: Spec
 testPair = context "Pair" $ do
     it "Obeys Functor identity law"
-        $ property (functorIdentity :: Pair Int -> Bool)
-    it "Obeys Functor composition law" $
-        property
-        (functorCompose :: Pair Int
-          -> Fun Int String
-          -> Fun String Int
-          -> Bool
-        )
+        $ property (functorIdentity :: FunctorIdentity Pair Int)
+    it "Obeys Functor composition law"
+        $ property (functorCompose :: FunctorCompose Pair Int String Int)
 
 
 -- Question 3 - Two
@@ -45,29 +36,25 @@ testPair = context "Pair" $ do
 testTwo :: Spec
 testTwo = context "Two" $ do
     it "Obeys Functor identity law"
-        $ property (functorIdentity :: Two String Int -> Bool)
-    it "Obeys Functor composition law" $
-        property
-        (functorCompose :: Two String Int
-          -> Fun Int String
-          -> Fun String Int
-          -> Bool
-        )
+        $ property (functorIdentity :: FunctorIdentity (Two String) Int)
+    it "Obeys Functor composition law" $ property
+        (functorCompose :: FunctorCompose (Two String) Int String Int)
 
 
 -- Question 4 - Three
 
 testThree :: Spec
 testThree = context "Three" $ do
-    it "Obeys Functor identity law"
-        $ property (functorIdentity :: Three String String Int -> Bool)
-    it "Obeys Functor composition law" $
-        property
-            (functorCompose :: Three String String Int
-              -> Fun Int String
-              -> Fun String Int
-              -> Bool
-            )
+    it "Obeys Functor identity law" $ property
+        (functorIdentity :: FunctorIdentity (Three String String) Int)
+    it "Obeys Functor composition law"
+        $ property
+              (functorCompose :: FunctorCompose
+                    (Three String String)
+                    Int
+                    String
+                    Int
+              )
 
 
 -- Question 5 - Three'
@@ -75,14 +62,9 @@ testThree = context "Three" $ do
 testThree' :: Spec
 testThree' = context "Three'" $ do
     it "Obeys Functor identity law"
-        $ property (functorIdentity :: Three' String Int -> Bool)
-    it "Obeys Functor composition law" $
-        property
-        (functorCompose :: Three' String Int
-          -> Fun Int String
-          -> Fun String Int
-          -> Bool
-        )
+        $ property (functorIdentity :: FunctorIdentity (Three' String) Int)
+    it "Obeys Functor composition law" $ property
+        (functorCompose :: FunctorCompose (Three' String) Int String Int)
 
 
 -- Question 6 - Four
@@ -90,13 +72,13 @@ testThree' = context "Three'" $ do
 testFour :: Spec
 testFour = context "Four" $ do
     it "Obeys Functor identity law" $ property
-        (functorIdentity :: Four String String String Int -> Bool)
-    it "Obeys Functor composition law" $
-        property
-        (functorCompose :: Four String String String Int
-          -> Fun Int String
-          -> Fun String Int
-          -> Bool
+        (functorIdentity :: FunctorIdentity (Four String String String) Int)
+    it "Obeys Functor composition law" $ property
+        (functorCompose :: FunctorCompose
+              (Four String String String)
+              Int
+              String
+              Int
         )
 
 
@@ -105,15 +87,9 @@ testFour = context "Four" $ do
 testFour' :: Spec
 testFour' = context "Four'" $ do
     it "Obeys Functor identity law"
-        $ property (functorIdentity :: Four' String Int -> Bool)
-    it "Obeys Functor composition law" $
-        property
-        (functorCompose :: Four' String Int
-          -> Fun Int String
-          -> Fun String Int
-          -> Bool
-        )
-
+        $ property (functorIdentity :: FunctorIdentity (Four' String) Int)
+    it "Obeys Functor composition law" $ property
+        (functorCompose :: FunctorCompose (Four' String) Int String Int)
 
 spec :: Spec
 spec = do
