@@ -166,12 +166,21 @@ getInt = fmap read getLine
 --nat :: (f -> g) -> f a -> g a
 --nat = undefined
 
--- If we use `RankNTypes` we can write the following type to represent a natural transformation
+-- If we use `RankNTypes` we can write the following type to represent a natural transformation from `f` to `g`:
 type Nat f g = forall a. f a -> g a
 
 maybeToList :: Nat Maybe []
 maybeToList Nothing = []
 maybeToList (Just a) = [a]
 
--- This won't work, because we're changing `a`
+-- This won't work, because we're changing `a` - to do so, we'd need another instance (e.g. `Num`)
 --maybeToList (Just a) = [a + 1]
+
+
+-- Including the `a` as a type parameter will allow us to mess with the content
+-- As a result, it's not a natural transformation
+type Nat' f g a = f a -> g a
+
+degenerateMtl :: Num a => Nat' Maybe [] a
+degenerateMtl Nothing = []
+degenerateMtl (Just a) = [a + 1]

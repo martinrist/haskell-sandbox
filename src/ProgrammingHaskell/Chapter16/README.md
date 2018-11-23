@@ -122,7 +122,7 @@
     Heisenberg 1 "Uncle lol Jesse"
 
     > fmap f . fmap g $ u
-    Heisenberg 2 "Uncle lol Jesse" 
+    Heisenberg 2 "Uncle lol Jesse"
     ```
 
 ## 16.7 - Commonly used functors
@@ -463,6 +463,18 @@
     maybeToList :: Nat Maybe []
     maybeToList Nothing = []
     maybeToList (Just a) = [a+1]
+    ```
+
+- The only way to change the contents is to include the `a` as a type variable.  But then it's no longer a natural transformation:
+
+    ```haskell
+    -- Since we're including `a` as a type variable, we don't need `RankNTypes` or `forall a`
+    type Nat' f g a = f a -> g a
+
+    -- But this means that we can place extra constraints on `a` which we can use to change it:
+    degenerateMtl :: Num a => Nat Maybe [] a
+    degenerateMtl Nothing = []
+    denegerateMtl (Just a) = [a + 1]
     ```
 
 
