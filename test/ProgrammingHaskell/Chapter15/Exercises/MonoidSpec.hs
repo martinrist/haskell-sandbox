@@ -15,9 +15,9 @@ import           Data.Semigroup
 testTrivial :: Spec
 testTrivial = context "Trivial" $ do
     it "Obeys Monoid left identity law" $
-        property (monoidLeftIdentity :: Trivial -> Bool)
+        property (monoidLeftIdentity :: IdentityProp Trivial)
     it "Obeys Monoid right identity law" $
-        property (monoidRightIdentity :: Trivial -> Bool)
+        property (monoidRightIdentity :: IdentityProp Trivial)
 
 
 
@@ -26,9 +26,9 @@ testTrivial = context "Trivial" $ do
 testIdentity :: Spec
 testIdentity = context "Identity" $ do
     it "Obeys Monoid left identity law" $
-        property (monoidLeftIdentity :: Identity String -> Bool)
+        property (monoidLeftIdentity :: IdentityProp String)
     it "Obeys Monoid right identity law" $
-        property (monoidRightIdentity :: Identity String -> Bool)
+        property (monoidRightIdentity :: IdentityProp String)
 
 
 -- Question 3 - Two
@@ -36,9 +36,9 @@ testIdentity = context "Identity" $ do
 testTwo :: Spec
 testTwo = context "Two" $ do
     it "Obeys Monoid left identity law" $
-        property (monoidLeftIdentity :: Two String String -> Bool)
+        property (monoidLeftIdentity :: IdentityProp (Two String String))
     it "Obeys Monoid right identity law" $
-        property (monoidRightIdentity :: Two String String -> Bool)
+        property (monoidRightIdentity :: IdentityProp (Two String String))
 
 
 -- Question 4 - BoolConj
@@ -46,9 +46,9 @@ testTwo = context "Two" $ do
 testBoolConj :: Spec
 testBoolConj = context "BoolConj" $ do
     it "Obeys Monoid left identity law" $
-        property (monoidLeftIdentity :: BoolConj -> Bool)
+        property (monoidLeftIdentity :: IdentityProp BoolConj)
     it "Obeys Monoid right identity law" $
-        property (monoidRightIdentity :: BoolConj -> Bool)
+        property (monoidRightIdentity :: IdentityProp BoolConj)
 
 
 -- Question 5 - BoolDisj
@@ -56,9 +56,9 @@ testBoolConj = context "BoolConj" $ do
 testBoolDisj :: Spec
 testBoolDisj = context "BoolDisj" $ do
     it "Obeys Monoid left identity law" $
-        property (monoidLeftIdentity :: BoolDisj -> Bool)
+        property (monoidLeftIdentity :: IdentityProp BoolDisj)
     it "Obeys Monoid right identity law" $
-        property (monoidRightIdentity :: BoolDisj -> Bool)
+        property (monoidRightIdentity :: IdentityProp BoolDisj)
 
 
 -- Question 6 - Combine

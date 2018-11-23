@@ -1,7 +1,7 @@
 module ProgrammingHaskell.Chapter15.SemigroupLaws where
 
 -- Associativity
-type SemigroupAssoc m = m -> m -> m -> Bool
+type AssociativityProp m = m -> m -> m -> Bool
 
-semigroupAssoc :: (Eq m, Semigroup m) => SemigroupAssoc m
+semigroupAssoc :: (Eq m, Semigroup m) => AssociativityProp m
 semigroupAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
