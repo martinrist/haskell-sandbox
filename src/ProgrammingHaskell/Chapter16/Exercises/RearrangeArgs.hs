@@ -29,7 +29,7 @@ data Company a c b =
 instance (Arbitrary a, Arbitrary b, Arbitrary c) =>
     Arbitrary (Company a b c) where
       arbitrary = oneof [liftA2 DeepBlue arbitrary arbitrary,
-                         liftA Something arbitrary]
+                         fmap Something arbitrary]
 
 instance Functor (Company e e') where
     fmap f (Something b) = Something (f b)
