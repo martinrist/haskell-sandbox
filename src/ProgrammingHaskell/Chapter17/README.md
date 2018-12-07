@@ -43,6 +43,15 @@
     (<*>) :: Applicative f => f (a -> b) -> f a -> f b
     ```
 
+- We can also import `Control.Applicative` to give us access to some convenient functions that lift plain functions over applicative structure:
+
+    ```haskell
+    -- Note that `liftA` is just `fmap` over `Applicative`
+    liftA  :: Applicative f => (a -> b)           -> f a -> f b
+    liftA2 :: Applicative f => (a -> b -> c)      -> f a -> f b -> f c
+    liftA3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+    ````
+
 
 ## 17.3 - `Functor` vs `Applicative`
 
