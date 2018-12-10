@@ -133,3 +133,5 @@ tests:
       - hspec-discover
       - haskell-sandbox
       - QuickCheck
+      - checkers
+      - hspec-checkers
