@@ -1,3 +1,5 @@
+module ProgrammingHaskell.Chapter17.Examples where
+
 import Control.Applicative
 import Data.Monoid
 import Test.QuickCheck
@@ -101,9 +103,11 @@ instance Arbitrary Bull where
         frequency [ (1, return Fools)
                   , (1, return Twoo) ]
 
+instance Semigroup Bull where
+    _ <> _ = Fools
+
 instance Monoid Bull where
     mempty = Fools
-    mappend _ _ = Fools
 
 instance EqProp Bull where (=-=) = eq
 
@@ -113,15 +117,17 @@ main = quickBatch (monoid Twoo)
 
 -- 17.9 - ZipList Monoid
 
+instance Semigroup a => Semigroup (ZipList a) where
+    (<>) = liftA2 (<>)
+
 instance Monoid a => Monoid (ZipList a) where
     mempty = ZipList []
-    mappend = liftA2 mappend
 
-instance Arbitrary a => Arbitrary (ZipList a) where
-    arbitrary = ZipList <$> arbitrary
+-- `ZipList` and `Sum` already have these instances
+-- instance Arbitrary a => Arbitrary (ZipList a) where
+--     arbitrary = ZipList <$> arbitrary
 
-instance Arbitrary a => Arbitrary (Sum a) where
-    arbitrary = Sum <$> arbitrary
+-- instance Arbitrary a => Arbitrary (Sum a) where
+--     arbitrary = Sum <$> arbitrary
 
 instance Eq a => EqProp (ZipList a) where (=-=) = eq
-
