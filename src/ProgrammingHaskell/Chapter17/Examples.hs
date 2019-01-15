@@ -25,7 +25,7 @@ newtype Constant a b =
 
 validateLength :: Int -> String -> Maybe String
 validateLength maxLen s =
-    if (length s) > maxLen
+    if length s > maxLen
        then Nothing
        else Just s
 
@@ -35,10 +35,10 @@ newtype Address = Address String deriving (Eq, Show)
 -- Smart constructors for Name and Address include validation
 
 mkName :: String -> Maybe Name
-mkName s = fmap Name $ validateLength 25 s
+mkName s = Name <$> validateLength 25 s
 
 mkAddress :: String -> Maybe Address
-mkAddress s = fmap Address $ validateLength 100 s
+mkAddress s = Address <$> validateLength 100 s
 
 -- How do we create a smart constructor for Person?
 
