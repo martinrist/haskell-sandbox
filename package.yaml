@@ -66,19 +66,6 @@ executables:
     dependencies:
       - base
 
-  vocab-builder:
-    main:           Main.hs
-    source-dirs:    app/inDepth/vocab-builder
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-      - -Wall
-      - -Wno-type-defaults
-    dependencies:
-      - base
-      - haskell-sandbox
-
   hangman:
     main:           Main.hs
     source-dirs:    app/programmingHaskell/hangman
