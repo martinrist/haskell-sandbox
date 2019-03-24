@@ -40,37 +40,28 @@ sudo apt install haskell-stack
 # On OS X, install Homebrew, then:
 brew install stack
 
-# Install exuberant ctags for tagbar
+# Install exuberant ctags and hasktags for tagbar
 brew install ctags
-
-# Set up stack (outside project)
-cd
-stack setup
-
-# Install dev tools (from ~)
-stack install hlint stylish-haskell hindent hdevtools hoogle hasktags hspec-discover ghcid
-
-# Generate hoogle database
-hoogle generate
-```
+stack install hasktags
 
 # Installing `fzf`
-
-```bash
 brew install fzf
 /usr/local/opt/fzf/install
-```
 
 # Installing `haskell-ide-engine`
-
-```bash
-git clone https://github.com/haskell/haskell-ide-engine.git --recursive
+git clone https://github.com/haskell/haskell-ide-engine.git --recurse-submodules
 cd haskell-ide-engine
-stack install
+stack ./install.hs help.             # To force GHC installation and see options
+stack ./install.hs hie-8.6.4         # Update based on GHC version
+stack ./install.hs build-doc-8.6.4   # Update based on GHC version
 ```
 
 
 # FAQs
+
+## Error building GHC 8.6.2 - dependency on libgmp
+
+Need to `brew install gmp` first
 
 ## Compiler warnings with GHC 8.0.2 when first running `stack build`
 
@@ -79,8 +70,12 @@ Need to apply [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/dev
 The source files can be found in `$(stack path
 --programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
 
-## Running tests with ghcid
+## Test workflow
+```
+stack test --fast --file-watch
+```
 
+## Running tests with `ghcid`
 ```
 ghcid -c="stack ghci test/Spec.hs" -T=main
 ```
