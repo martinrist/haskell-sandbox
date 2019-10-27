@@ -60,6 +60,14 @@ or, add the following to [`.ghcid`](.ghcid), to set default options and allow ru
 --test "Main.main"
 ```
 
+## Build `haddock` docs for dependencies
+Need to do this for projects so that we get documentation for external dependencies in VS Code / `haskell-ide-engine`:
+```
+cd haskell-sandbox
+stack haddock --keep-going
+```
+
+
 ## Updating `haddock` docs for local code
 Need to do this for VS Code / `haskell-ide-engine` to start showing up updated documentation on hover:
 ```
