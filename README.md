@@ -70,15 +70,3 @@ Need to do this for VS Code / `haskell-ide-engine` to start showing up updated d
 cd haskell-sandbox
 stack haddock --haddock-internal --file-watch
 ```
-
-
-# TODO
-
-- Get `hasktags` to regenerate tags files automatically on save (including extra
-  metadata) - command to run is `hasktags -cx .` from project root.
-
-- Investigate setting up more Vim shortcuts
-
-- Work out how to install dev tools using `stack build --copy-compiler-tool ghc-mod ...` - how do we set up the `stack` environment (including `$PATH`) before using Vim?
-
-- Other things suggested in [this page](https://lexi-lambda.github.io/blog/2018/02/10/an-opinionated-guide-to-haskell-in-2018/)
