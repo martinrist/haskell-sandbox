@@ -2,6 +2,8 @@
 
 This repository contains various samples, experiments and notes relating to Haskell.
 
+
+
 # Environment Setup Notes
 
 ```bash
@@ -19,6 +21,10 @@ stack install hasktags
 brew install fzf
 /usr/local/opt/fzf/install
 
+# Install `hspec-discover` for discovering spec files 
+cd haskell-sandbox
+stack install hspec-discover
+
 # Installing `haskell-ide-engine`
 git clone https://github.com/haskell/haskell-ide-engine.git --recurse-submodules
 cd haskell-ide-engine
@@ -28,20 +34,10 @@ stack ./install.hs build-data        # To generate Hoogle DB
 ```
 
 
-# FAQs
 
-## Error building GHC 8.6.2 - dependency on libgmp
+# Common Commands
 
-Need to `brew install gmp` first
-
-## Compiler warnings with GHC 8.0.2 when first running `stack build`
-
-Need to apply [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/compilers/ghc/ghc-8.0.2-no-cpp-warnings.patch) to the GHC 8.0.2 source.
-
-The source files can be found in `$(stack path
---programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
-
-## Test workflow
+## Running tests with `stack`
 ```
 stack test --fast --file-watch
 ```
@@ -70,3 +66,19 @@ Need to do this for VS Code / `haskell-ide-engine` to start showing up updated d
 cd haskell-sandbox
 stack haddock --haddock-internal --file-watch
 ```
+Note: `--file-watch` allows docs to be regenerated when the source changes.
+
+
+
+# Troubleshooting Notes
+
+## Error building GHC 8.6.2 - dependency on libgmp
+
+Need to `brew install gmp` first
+
+## Compiler warnings with GHC 8.0.2 when first running `stack build`
+
+Need to apply [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/compilers/ghc/ghc-8.0.2-no-cpp-warnings.patch) to the GHC 8.0.2 source.
+
+The source files can be found in `$(stack path
+--programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
