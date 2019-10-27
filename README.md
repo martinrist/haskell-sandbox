@@ -22,9 +22,9 @@ brew install fzf
 # Installing `haskell-ide-engine`
 git clone https://github.com/haskell/haskell-ide-engine.git --recurse-submodules
 cd haskell-ide-engine
-stack ./install.hs help            # To force GHC installation and see options
+stack ./install.hs help              # To force GHC installation and see options
 stack ./install.hs hie-8.6.4         # Update based on GHC version
-stack ./install.hs build-doc-8.6.4   # Update based on GHC version
+stack ./install.hs build-data        # Update based on GHC version
 ```
 
 
@@ -47,8 +47,21 @@ stack test --fast --file-watch
 ```
 
 ## Running tests with `ghcid`
+Firstly, install `ghcid`:
 ```
-ghcid -c="stack ghci test/Spec.hs" -T=main
+stack install ghcid
+```
+
+To run:
+```
+ghcid --command "stack ghci haskell-sandbox:lib haskell-sandbox:test:haskell-sandbox-test" \
+      --test "Main.main"
+```
+
+or, add the following to [`.ghcid`](.ghcid), to set default options and allow running with just `ghcid`:
+```
+--command "stack ghci haskell-sandbox:lib haskell-sandbox:test:haskell-sandbox-test" \
+--test "Main.main"
 ```
 
 # TODO
