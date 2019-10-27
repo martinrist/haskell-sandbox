@@ -2,3 +2,4 @@
 haskell-sandbox.cabal
 tags
 out
+stack.yaml.lock
