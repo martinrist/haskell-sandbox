@@ -1,8 +1,6 @@
 -- See https://en.wikibooks.org/wiki/Haskell/GADT
 module Scratch.GADTs.ExprWithPhantomType where
 
-import Test.Hspec
-
 data Expr a
     = I Int -- integer constants
     | B Bool -- boolean constants

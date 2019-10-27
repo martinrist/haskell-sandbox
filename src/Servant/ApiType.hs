@@ -4,12 +4,10 @@
 
 module Servant.ApiType where
 
-import           Data.Text
 import           Servant
 import           GHC.Generics
 import           Data.Aeson.Types
 import           Data.Time.Calendar
-import           Network.Wai
 import           Network.Wai.Handler.Warp
 
 type UserAPI = "users" :> Get '[JSON] [User]
