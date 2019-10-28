@@ -33,12 +33,14 @@ library:
     - sqlite-simple
     - safe
     - wai
+    - wai-extra
     - warp
     - aeson
     - servant
     - servant-server
     - servant-client
     - servant-docs
+    - http-types
 
 executables:
   optparse-applicative-exe:
