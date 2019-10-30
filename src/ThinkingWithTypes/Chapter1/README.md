@@ -1,6 +1,8 @@
 # Chapter 1 - The Algebra Behind Types
 
+## Page Contents
 - [Chapter 1 - The Algebra Behind Types](#chapter-1---the-algebra-behind-types)
+  - [Page Contents](#page-contents)
   - [See Also](#see-also)
   - [Isomorphisms & Cardinalities](#isomorphisms--cardinalities)
   - [Sum, Product & Exponential Types](#sum-product--exponential-types)
@@ -11,7 +13,7 @@
 
 ## See Also
 
-- [Example - Source Code](Examples.hs)
+- [Examples - Source Code](Examples.hs)
 - [Exercises - Text](Exercises.md)
 - [Exercsies - Source Code](Exercises.hs)
 
