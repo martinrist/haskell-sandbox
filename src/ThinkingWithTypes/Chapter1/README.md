@@ -7,7 +7,7 @@
   - [Isomorphisms & Cardinalities](#isomorphisms--cardinalities)
   - [Sum, Product & Exponential Types](#sum-product--exponential-types)
   - [Example: Tic-Tac-Toe](#example-tic-tac-toe)
-  - [The Curry-Howard Isomorphism](#the-curry-howard-isomorphism)
+  - [The Curry-Howard-Lambek Isomorphism](#the-curry-howard-lambek-isomorphism)
   - [Canonical Representations](#canonical-representations)
 
 
@@ -162,7 +162,7 @@ For example, consider a naively-implemented Tic-Tac-Toe board:
     ```
 
 
-## The Curry-Howard Isomorphism
+## The Curry-Howard-Lambek Isomorphism
 
 - We can summarise our previous discussions about algebraic relationships
 between types and cardinalities in the following table:
@@ -177,7 +177,7 @@ between types and cardinalities in the following table:
     |`1`    |`⊤`     |`()`         |
 
 - This table represents a more general isomorphism between algebra, logic and
-types - the _Curry-Howard isomorphism_.
+types - the [_Curry-Howard-Lambek isomorphism_](https://wiki.haskell.org/Curry-Howard-Lambek_correspondence).
 
 
 ## Canonical Representations
