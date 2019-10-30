@@ -65,7 +65,7 @@ of a sum type is `Either a b`:
 
     ```haskell
     |Either a b| = |a| + |b|
-    |Maybe a| = 1 + a            -- Maybe = Nothing | Just a
+    |Maybe a| = 1 + |a|          -- Maybe = Nothing | Just a
     ```
 
 - _Product types_ are the dual of sum types and correspond to multiplication
