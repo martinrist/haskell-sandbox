@@ -6,7 +6,7 @@ This repository contains various samples, experiments and notes relating to Hask
 
 Some notes and exercises for the book ['Thinking with Types'](https://thinkingwithtypes.com):
 
-- [Chapter 1](src/)
+- [Chapter 1 - The Algebra Behind Types](src/ThinkingWithTypes/Chapter1/README.md)
 
 # Environment Setup Notes
 
