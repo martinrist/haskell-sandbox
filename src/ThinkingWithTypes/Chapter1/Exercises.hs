@@ -1,3 +1,3 @@
-module ThinkingInTypes.Chapter1.Exercises where
+module ThinkingWithTypes.Chapter1.Exercises where
 
 
