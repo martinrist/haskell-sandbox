@@ -2,7 +2,11 @@
 
 This repository contains various samples, experiments and notes relating to Haskell.
 
+# 'Thinking with Types' Notes
 
+Some notes and exercises for the book ['Thinking with Types'](https://thinkingwithtypes.com):
+
+- [Chapter 1](src/)
 
 # Environment Setup Notes
 
@@ -21,7 +25,7 @@ stack install hasktags
 brew install fzf
 /usr/local/opt/fzf/install
 
-# Install `hspec-discover` for discovering spec files 
+# Install `hspec-discover` for discovering spec files
 cd haskell-sandbox
 stack install hspec-discover
 
