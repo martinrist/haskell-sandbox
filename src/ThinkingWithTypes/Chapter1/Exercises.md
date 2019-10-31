@@ -24,18 +24,33 @@ function of type `(b -> c -> a) -> (b, c) -> a`, and one of
 `to . from = id` and `from . to = id`.  Do these functions remind you of
 anything from Prelude?_
 
-See [Exercises.hs](Exercises.hs)
+See [Exercises.hs](Exercises.hs) for implementations.  These functions are
+basically `Prelude`'s [`curry`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:curry) and [`uncurry`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:uncurry).
 
 
 ## Exercsie 1.4-ii
 
 _Give a proof of the exponent law that `a^b x a^c = a ^ (b + c)`_
 
-See [Exercises.hs](Exercises.hs)
+This is equivalent to implementing the following functions:
+
+```haskell
+from :: (b -> a, c -> a) -> Either b c -> a
+to   :: (Either b c -> a) -> (b -> a, c -> a)
+```
+
+See [Exercises.hs](Exercises.hs) for implementations.
 
 
 ## Exercise 1.4-iii
 
 _Prove `(a x b) ^ c = a^c x b^c`_
 
-See [Exercises.hs](Exercises.hs)
+This is equivalent to implementing the following functions:
+
+```haskell
+from :: (c -> (a, b)) -> (c -> a, c -> b)
+to   :: (c -> a, c -> b) -> c -> (a, b)
+```
+
+See [Exercises.hs](Exercises.hs) for implementations.

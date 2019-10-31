@@ -182,4 +182,28 @@ types - the [_Curry-Howard-Lambek isomorphism_](https://wiki.haskell.org/Curry-H
 
 ## Canonical Representations
 
-**TODO: Complete content**
+- There are multiple isomoprhic ways to represent any given type, which are all
+'as good' as each other.  However, when working with types generically, it's
+useful to have a _canonical representation_, known as a _sum of products_.
+
+- This refers to any type `t` of the form $t = \sum_{m}\prod_{n} t_{m,n}$ - i.e.
+sums (`Either`s) on the outside, products (`(,)`s) on the inside.
+
+- Example canonical representations:
+
+    ```haskell
+    ()
+    Either a b
+    Either (a, b) (c, d)
+    Either a (Either b (c, d))
+    a -> b
+    (a, b)
+    (a, Int)            -- We don't attempt to represent these as sums
+    ```
+
+- These aren't in canonical representation:
+
+    ```haskell
+    (a, Bool)
+    (a, Either b c)
+    ```
