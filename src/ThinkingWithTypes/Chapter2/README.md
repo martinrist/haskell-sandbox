@@ -89,10 +89,48 @@ types.  For example, the type signature of `show` is:
     Show :: * -> Constraint    -- Takes a type and returns a constraint
     ```
 
-
-
+- So far, this is all we get with 'vanilla' Haskell 2010.
 
 ## Data Kinds
+
+- Enabling the [`-XDataKinds`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#datatype-promotion) extensions allows us to start talking about kinds other than `*`, `Constraint` and their arrow-derivatives.
+
+- `-XDataKinds` automatically lifts data constructors into _type constructors_
+and types into _kinds_:
+
+    ```haskell
+    > :set -XDataKinds
+    > data Answer = Yes | No
+    ```
+
+- In vanilla Haskell 2010, the above definiton introduces the following into
+scope:
+  - A type constructor `Answer` of kind `*`
+  - Data constructors `Yes` and `No` of type `Answer`
+
+    ```haskell
+    > :k Answer
+    Answer :: *         -- Type constructor
+    > :t Yes
+    Yes :: Answer       -- Data constructor
+    > :t No
+    No :: Answer        -- Data constructor
+    ```
+
+- With `-XDataKinds` enabled we also get:
+  - A new kind, `Answer`
+  - Promoted data constructors `'Yes'` and `'No` of kind `Answer`:
+
+    ```haskell
+    > :k 'Yes
+    'Yes :: Answer
+    > :k 'No
+    'No :: Answer
+    ```
+
+- Note the ticks in the promoted data constructors `'Yes` and `'No`', which are
+used to distinguish promoted data constructors from regular type constructors
+(since they all exist in the same namespace).
 
 
 ## Promotion of Built-in Types
