@@ -8,6 +8,7 @@ Some notes and exercises for the book ['Thinking with Types'](https://thinkingwi
 
 - [Chapter 1 - The Algebra Behind Types](src/ThinkingWithTypes/Chapter1/README.md)
 - [Chapter 2 - Terms, Types & Kinds](src/ThinkingWithTypes/Chapter2/README.md)
+- [Chapter 3 - Variance](src/ThinkingWithTypes/Chapter3/README.md)
 
 # Environment Setup Notes
 
