@@ -46,6 +46,7 @@ library:
     - servant-client
     - servant-docs
     - http-types
+    - hspec-checkers
 
 executables:
   optparse-applicative-exe:
