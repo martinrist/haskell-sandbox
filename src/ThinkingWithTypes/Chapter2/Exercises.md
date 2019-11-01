@@ -60,3 +60,19 @@ So the kind of `MonadTrans` is `((* -> *) -> * -> *) -> Constraint`:
   > :k MonadTrans
   MonadTrans :: ((* -> *) -> * -> *) -> Constraint
   ```
+
+
+## Exercise 2.4-i
+
+_Write a closed type family to compute `Not`_
+
+See [Exercises.hs](Exercises.hs).  With this defined, we can do:
+
+  ```haskell
+  > :kind Not
+  Not :: Bool -> Bool
+
+  > :kind! Not 'True
+  Not 'True :: Bool
+  = 'False
+  ```

@@ -36,7 +36,9 @@ _kinds_:
 - **Note:** Whilst the word 'type' can be used to refer to things that exist at
 the type level, we can also refer to `Type`, which is the _kind_  of
 inhabited types (i.e. types that have at least one value).   `Type` is
-typically shown as `*` in current versions of GHCi:
+typically shown as `*` in current versions of GHCi.
+
+- In GHCi, we can use the `:kind` or `:k` command to show the kind of a type:
 
     ```haskell
     > :k Int
@@ -248,3 +250,99 @@ need to also enable [`-XTypeOperators`](https://downloads.haskell.org/~ghc/lates
 
 
 ## Type-Level Functions
+
+- Earlier we saw some functions like `CmpSymbol` that are like _functions at
+the type level_ - these are called _closed type families_ and can be enabled
+with [`-XTypeFamilies`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#type-families).
+
+- Consider the regular, term-level function `or`:
+
+    ```haskell
+    or :: Bool -> Bool -> Bool
+    or True _  = True
+    or False y = y
+    ```
+
+- Using `-XTypeFamilies` we can write a 'promoted' version - i.e. a type
+family `Or`:
+
+    ```haskell
+    {-# LANGUAGE TypeFamilies #-}
+    {-# LANGUAGE DataKinds #-}
+
+    -- Note the 'kind signature' specifying the kinds of the arguments
+    -- and the result type
+    type family Or (x :: Bool) (y :: Bool) :: Bool where
+        Or 'True  y = 'True
+        Or 'False y = y
+    ```
+
+- We can use `Or` just like we used `CmpSymbol` et al:
+
+    ```haskell
+    > :kind Or
+    Or :: Bool -> Bool -> Bool
+
+    > :kind! Or 'False 'True
+    Or 'False 'True :: Bool
+    = 'True
+    ```
+
+- As an alternative to using `:kind!` here, we can also use [`Data.Proxy.Proxy t`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Proxy.html#t:Proxy)
+to query the type of `undefined :: Proxy t`:
+
+    ```haskell
+    > import Data.Proxy
+    > :t undefined :: Proxy (Or 'False 'True)
+    -- See how `Or` has been 'evaluated' here
+    undefined :: Proxy (Or 'False 'True) :: Proxy 'True
+    ```
+
+- Note that type families aren't _exactly_ the same as functions on
+types.  For example, they must be _fully saturated_ - i.e. all of a type
+family's parameters must be specified at the same time, and we can't
+curry them.
+
+- For example, consider the `Map` type family:
+
+    ```haskell
+    {-# LANGUAGE TypeFamilies #-}
+    {-# LANGUAGE DataKinds #-}
+    {-# LANGUAGE TypeOperators #-}
+    -- PolyKinds allows 'kind' variables in kind signatures
+    {-# LANGUAGE PolyKinds #-}
+
+    type family Map (x :: a -> b) (i :: [a]) :: [b] where
+        Map f '[]       = '[]
+        Map f (x ': xs) = f x ': Map f xs
+    ```
+
+- We can't use `Map` here when it's partially-applied (i.e. where `Or 'True`
+hasn't specified both type parameters for `Or`:
+
+    ```haskell
+    > import Data.Proxy
+    > :t undefined :: Proxy (Map (Or 'True) '[ 'False, 'True ])
+
+    <interactive>:1:14: error:
+    • The type family Or should have 2 arguments, but has been given 1
+    • In an expression type signature:
+        Proxy (Map (Or 'True) '[ 'False,  'True])
+      In the expression: undefined :: Proxy (Map (Or 'True) '[ 'False, 'True ])
+    ```
+
+- Note that, in the kind signature for `Or`, the kind written after the
+final `::` is the kind of the _type returned by the type family_, **not** the
+kind of the type family itself:
+
+    ```haskell
+    -- `Foo` takes two types of kind `Bool` and returns a type of kind `Bool`
+    > type family Foo (x :: Bool) (y :: Bool) :: Bool
+    > :k Foo
+    Foo :: Bool -> Bool -> Bool
+
+    -- `Bar` takes two types of kind `*` and returns a type of kind `Bool -> Bool -> Bool`
+    > type family Bar x y :: Bool -> Bool -> Bool
+    > :k Bar
+    Bar :: * -> * -> Bool -> Bool -> Bool
+    ```
