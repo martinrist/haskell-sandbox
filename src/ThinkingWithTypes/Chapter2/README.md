@@ -7,6 +7,10 @@
   - [The Kind System](#the-kind-system)
   - [Data Kinds](#data-kinds)
   - [Promotion of Built-in Types](#promotion-of-built-in-types)
+    - [Strings](#strings)
+    - [Natural Numbers](#natural-numbers)
+    - [Lists](#lists)
+    - [Tuples](#tuples)
   - [Type-Level Functions](#type-level-functions)
 
 
@@ -91,6 +95,7 @@ types.  For example, the type signature of `show` is:
 
 - So far, this is all we get with 'vanilla' Haskell 2010.
 
+
 ## Data Kinds
 
 - Enabling the [`-XDataKinds`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#datatype-promotion) extensions allows us to start talking about kinds other than `*`, `Constraint` and their arrow-derivatives.
@@ -134,6 +139,112 @@ used to distinguish promoted data constructors from regular type constructors
 
 
 ## Promotion of Built-in Types
+
+- When `-XDataKinds` is enabled, most types automatically promote to kinds.
+Importing `GHC.TypeLits` helps get unqualified access to these kinds, and
+also includes some type families to help work with them.
+
+
+### Strings
+
+- The promoted version of `String` is `Symbol`:
+
+    ```haskell
+    > :set -XDataKinds
+    > import GHC.TypeLits
+    > :k "Hello"
+    "Hello" :: Symbol
+    ```
+
+- We can concatenate and compare `Symbol`s using primitives provided in
+`GHC.TypeLits`:
+
+    ```haskell
+    > :set -XDataKinds
+    > import GHC.TypeLits
+
+    > :k AppendSymbol
+    AppendSymbol :: Symbol -> Symbol -> Symbol
+
+    -- :kind! also prints out the normalised type
+    > :kind! AppendSymbol "Hello " "world"
+    AppendSymbol "Hello " "world" :: Symbol
+    = "Hello world"
+
+    > :k CmpSymbol
+    CmpSymbol :: Symbol -> Symbol -> Ordering
+
+    -- Note that the returned kind is 'EQ - i.e. the promoted
+    > :kind! CmpSymbol "Hello" "Hello"
+    CmpSymbol "Hello" "Hello" :: Ordering
+    = 'EQ
+    ```
+
+
+### Natural Numbers
+
+- Natural numbers (0, 1, 2...) are promoted to kind `Nat`:
+
+    ```haskell
+    > :k 42
+    42 :: Nat
+    ```
+
+- `GHC.TypeLits` contains primitives for doing arithmetic on `Nat`s, but we
+need to also enable [`-XTypeOperators`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#type-operators) for this to work:
+
+    ```haskell
+    > :set -XTypeOperators
+    > :kind! 42 + 1
+    42 + 1 :: Nat
+    = 43
+
+    > :kind! (128 `Div` 8) ^ 2
+    (128 `Div` 8) ^ 2 :: Nat
+    = 256
+    ```
+
+
+### Lists
+
+- For lists, we get the following:
+  -  A promoted data constructor `'[]` of kind `[A]`
+  -  `'(:)` of kind `A -> [A] -> [A]`, which can be used as `x ': xs`
+
+
+    ```haskell
+    -- A 'plain' list of a plain type is just a type
+    > :k [Bool]
+    [Bool] :: *
+
+    -- A promoted list of a
+    > :k '[True]
+    '[True] :: [Bool]
+
+    -- A promoted list of a plain type
+    > :k '[Bool]
+    '[Bool] :: [*]
+
+    -- A promoted list of a promoted data constructor
+    -- Note the space after the opening brace to keep the lexer happy
+    > :k '[ 'True]
+    '[ 'True] :: [Bool]
+
+    -- This seems to work with both : and ':, although I'm not sure why
+    > :kind! 'False : '[ 'True ]
+    'False : '[ 'True ] :: [Bool]
+    = '[ 'False, 'True ]
+    ```
+
+
+### Tuples
+
+- Tuples promote via the `'(,)` constructor:
+
+    ```haskell
+    > :k '(2, "tuple")
+    '(2, "tuple") :: (Nat, Symbol)
+    ```
 
 
 ## Type-Level Functions
