@@ -7,7 +7,15 @@ import           Test.Hspec.Checkers
 
 testT1FunctorInstance :: Spec
 testT1FunctorInstance =
-    testBatch $ functor (undefined :: T1 (Int, Int, Int))
+    describe "Exercise 3-i - `T1 a` Tests" $
+        testBatch $ functor (undefined :: T1 (Int, Int, Int))
+
+testT5FunctorInstance :: Spec
+testT5FunctorInstance =
+    describe "Exercise 3-i - `T5 a` Tests" $
+        testBatch $ functor (undefined :: T5 (Int, Int, Int))
 
 spec :: Spec
-spec = testT1FunctorInstance
+spec = do
+    testT1FunctorInstance
+    testT5FunctorInstance
