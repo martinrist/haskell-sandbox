@@ -1,6 +1,6 @@
-module ThinkingWithTypes.Chapter3.ExercisesSpec where
+module ThinkingWithTypes.Chapter03.ExercisesSpec where
 
-import           ThinkingWithTypes.Chapter3.Exercises
+import           ThinkingWithTypes.Chapter03.Exercises
 import           Test.Hspec
 import           Test.QuickCheck.Classes
 import           Test.Hspec.Checkers

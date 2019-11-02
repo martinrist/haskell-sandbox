@@ -1,6 +1,6 @@
 {-# LANGUAGE InstanceSigs #-}
 
-module ThinkingWithTypes.Chapter3.Exercises where
+module ThinkingWithTypes.Chapter03.Exercises where
 
 import           Test.QuickCheck
 import           Test.QuickCheck.Checkers

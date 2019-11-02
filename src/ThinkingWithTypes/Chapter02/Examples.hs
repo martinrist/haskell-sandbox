@@ -3,7 +3,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeOperators #-}
 
-module ThinkingWithTypes.Chapter2.Examples where
+module ThinkingWithTypes.Chapter02.Examples where
 
 
 type family Or (x :: Bool) (y :: Bool) :: Bool where

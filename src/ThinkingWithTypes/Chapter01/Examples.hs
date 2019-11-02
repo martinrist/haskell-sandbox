@@ -1,4 +1,4 @@
-module ThinkingWithTypes.Chapter1.Examples where
+module ThinkingWithTypes.Chapter01.Examples where
 
 import           Data.Void
 

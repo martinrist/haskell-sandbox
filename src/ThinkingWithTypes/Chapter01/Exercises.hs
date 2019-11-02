@@ -1,4 +1,4 @@
-module ThinkingWithTypes.Chapter1.Exercises where
+module ThinkingWithTypes.Chapter01.Exercises where
 
 -- Exercise 1.4-i
 -- Proof that `(a^b)^c = a^(b×c)`

@@ -6,9 +6,9 @@ This repository contains various samples, experiments and notes relating to Hask
 
 Some notes and exercises for the book ['Thinking with Types'](https://thinkingwithtypes.com):
 
-- [Chapter 1 - The Algebra Behind Types](src/ThinkingWithTypes/Chapter1/README.md)
-- [Chapter 2 - Terms, Types & Kinds](src/ThinkingWithTypes/Chapter2/README.md)
-- [Chapter 3 - Variance](src/ThinkingWithTypes/Chapter3/README.md)
+- [Chapter 1 - The Algebra Behind Types](src/ThinkingWithTypes/Chapter01/README.md)
+- [Chapter 2 - Terms, Types & Kinds](src/ThinkingWithTypes/Chapter02/README.md)
+- [Chapter 3 - Variance](src/ThinkingWithTypes/Chapter03/README.md)
 
 # Environment Setup Notes
 
