@@ -8,7 +8,8 @@
 
 ## See Also
 
-- [Exercises - Text](Exercises.md)
 - [Examples - Source Code](Examples.hs)
+- [Exercises - Text](Exercises.md)
 - [Exercsies - Source Code](Exercises.hs)
+- [Exercises - Tests](../../../test/ThinkingWithTypes/Chapter03/ExercisesSpec.hs)
 
