@@ -17,5 +17,5 @@ _Which of the following types are `Functor`s?  Give instances for the ones that 
   ```
 
 Only `T1` and `T5` have `Functor` instances.  See [Exercises.hs](Exercises.hs)
-for implementations, and see [ExercisesSpec.hs](../../../test/ThinkingWithTypes/Chapter3/ExercisesSpec.hs)
+for implementations, and see [ExercisesSpec.hs](../../../test/ThinkingWithTypes/Chapter03/ExercisesSpec.hs)
 for QuickCheck tests confirming that they are valid `Functor` instances.
