@@ -4,40 +4,29 @@ import           ThinkingWithTypes.Chapter01.Exercises
 import           Test.Hspec
 import           Test.QuickCheck
 import           Text.Show.Functions
+import           Test.QuickCheck.Checkers
 
 -- Exercise 1.4-i - `(a^b)^c = a^(b×c)`
 
-prop_expOfExpIsomorphism :: Eq a => ((b, c) -> a) -> b -> c -> Bool
-prop_expOfExpIsomorphism fbca b c =
-    fbca (b, c) == (fromExpOfExp . toExpOfExp) fbca (b, c)
+type ISD = (Int, String) -> Double
 
 testExpOfExpIsomorphism :: Spec
 testExpOfExpIsomorphism =
-    context "Exercise 1.4-i - `(a^b)^c = a^(b×c)`"
-        $ it "`to` and `from` define an isomorphism"
-        $ property
-              (prop_expOfExpIsomorphism :: ((Int, String) -> Double)
-                -> Int
-                -> String
-                -> Bool
-              )
+    context "Exercise 1.4-i - `(a^b)^c = a^(b×c)`" $
+        it "`to` and `from` define an isomorphism" $
+            (fromExpOfExp . toExpOfExp :: ISD -> ISD) =-= id
+
 
 
 -- Exercise 1.4-ii - `a^b x a^c = a ^ (b + c)`
 
-prop_prodOfExpIsomorphism :: Eq a => (Either b c -> a) -> Either b c -> Bool
-prop_prodOfExpIsomorphism fbca ebc =
-    fbca ebc == (fromProdOfExp . toProdOfExp) fbca ebc
+type EISD = Either Int String -> Double
 
 testProdOfExpIsomorphism :: Spec
 testProdOfExpIsomorphism =
-    context "Exercise 1.4-ii - `a^b x a^c = a ^ (b + c)`"
-        $ it "`to` and `from` define an isomorphism"
-        $ property
-              (prop_prodOfExpIsomorphism :: (Either Int String -> Double)
-                -> Either Int String
-                -> Bool
-              )
+    context "Exercise 1.4-ii - `a^b x a^c = a ^ (b + c)`" $
+        it "`to` and `from` define an isomorphism" $
+            (fromProdOfExp . toProdOfExp :: EISD -> EISD) =-= id
 
 
 
@@ -48,16 +37,13 @@ prop_expOfProdIsomorphism (ca, cb) c =
     let (ca', cb') = (fromExpOfProd . toExpOfProd) (ca, cb)
     in  (ca c, cb c) == (ca' c, cb' c)
 
+type ISID = (Int -> String, Int -> Double)
 
 testExpOfProdIsomorphism :: Spec
 testExpOfProdIsomorphism =
-    context "Exercise 1.4-iii - `(a x b) ^ c = a^c x b^c`"
-        $ it "`to` and `from` define an isomorphism"
-        $ property
-              (prop_expOfProdIsomorphism :: (Int -> String, Int -> Double)
-                -> Int
-                -> Bool
-              )
+    context "Exercise 1.4-iii - `(a x b) ^ c = a^c x b^c`" $
+        it "`to` and `from` define an isomorphism" $
+            (fromExpOfProd . toExpOfProd :: ISID -> ISID) =-= id
 
 
 spec :: Spec
