@@ -24,8 +24,9 @@ function of type `(b -> c -> a) -> (b, c) -> a`, and one of
 `to . from = id` and `from . to = id`.  Do these functions remind you of
 anything from Prelude?_
 
-See [Exercises.hs](Exercises.hs) for implementations.  These functions are
-basically `Prelude`'s [`curry`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:curry) and [`uncurry`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:uncurry).
+See [Exercises.hs](Exercises.hs) for implementations and [ExercisesSpec.hs](../../../test/ThinkingWithTypes/Chapter01/ExercisesSpec.hs) for tests.
+
+These functions are basically `Prelude`'s [`curry`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:curry) and [`uncurry`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:uncurry).
 
 
 ## Exercsie 1.4-ii
@@ -39,7 +40,7 @@ from :: (b -> a, c -> a) -> Either b c -> a
 to   :: (Either b c -> a) -> (b -> a, c -> a)
 ```
 
-See [Exercises.hs](Exercises.hs) for implementations.
+See [Exercises.hs](Exercises.hs) for implementations and [ExercisesSpec.hs](../../../test/ThinkingWithTypes/Chapter01/ExercisesSpec.hs) for tests.
 
 
 ## Exercise 1.4-iii
@@ -53,4 +54,4 @@ from :: (c -> (a, b)) -> (c -> a, c -> b)
 to   :: (c -> a, c -> b) -> c -> (a, b)
 ```
 
-See [Exercises.hs](Exercises.hs) for implementations.
+See [Exercises.hs](Exercises.hs) for implementations and [ExercisesSpec.hs](../../../test/ThinkingWithTypes/Chapter01/ExercisesSpec.hs) for tests.

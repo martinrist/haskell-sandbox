@@ -22,6 +22,7 @@ toProdOfExp f = (f . Left, f . Right)
 
 
 -- Exercise 1.4-iii
+-- Proof that `(a x b) ^ c = a^c x b^c`
 
 fromExpOfProd :: (c -> (a, b)) -> (c -> a, c -> b)
 fromExpOfProd f = (fst . f, snd . f)
