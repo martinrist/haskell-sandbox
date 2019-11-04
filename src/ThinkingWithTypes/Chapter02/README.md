@@ -18,7 +18,7 @@
 
 - [Examples - Source Code](Examples.hs)
 - [Exercises - Text](Exercises.md)
-- [Exercsies - Source Code](Exercises.hs)
+- [Exercises - Source Code](Exercises.hs)
 
 
 ## The Kind System
