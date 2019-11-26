@@ -12,9 +12,6 @@
 ## See Also
 
 - [Examples - Source Code](Examples.hs)
-- [Exercises - Text](Exercises.md)
-- [Exercises - Source Code](Exercises.hs)
-- [Exercises - Tests](../../../test/ThinkingWithTypes/Chapter04/ExercisesSpec.hs)
 
 
 ## Type Scoping
