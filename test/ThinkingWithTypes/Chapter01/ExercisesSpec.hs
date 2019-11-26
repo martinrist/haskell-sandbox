@@ -2,8 +2,8 @@ module ThinkingWithTypes.Chapter01.ExercisesSpec where
 
 import           ThinkingWithTypes.Chapter01.Exercises
 import           Test.Hspec
-import           Test.QuickCheck
-import           Text.Show.Functions
+import           Test.QuickCheck()
+import           Text.Show.Functions()
 import           Test.QuickCheck.Checkers
 
 -- Exercise 1.4-i - `(a^b)^c = a^(b×c)`

@@ -4,7 +4,7 @@ module ThinkingWithTypes.Chapter03.Exercises where
 
 import           Test.QuickCheck
 import           Test.QuickCheck.Checkers
-import           Text.Show.Functions
+import           Text.Show.Functions()
 
 -- Exercise 3-i - Functor instances
 

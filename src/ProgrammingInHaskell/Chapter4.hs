@@ -30,7 +30,8 @@ thirdUsingListIndexing xs = xs !! 2
 
 -- | Return the third element in the list, using pattern matching
 thirdUsingPatternMatching :: [a] -> a
-thirdUsingPatternMatching (_ : _ : x : xs) = x
+thirdUsingPatternMatching (_ : _ : x : _) = x
+thirdUsingPatternMatching _ = undefined
 
 
 -- Exercise 4.3 - `safetail`
@@ -47,7 +48,7 @@ safetailUsingGuards xs | null xs   = []
 -- | Return the tail of the list, or [] if empty, using pattern matching
 safetailUsingPatternMatching :: [a] -> [a]
 safetailUsingPatternMatching []       = []
-safetailUsingPatternMatching (x : xs) = xs
+safetailUsingPatternMatching (_ : xs) = xs
 
 
 -- Exercise 4.4 - Disjunction using pattern matching

@@ -4,7 +4,7 @@ import           ProgrammingInHaskell.Chapter4
 import           Test.Hspec
 
 testHalve :: SpecWith ()
-testHalve = 
+testHalve =
     describe "Exercise 4.1 - `halve`" $ do
         it "Correctly halves an empty list" $
             halve ([] :: [Int]) `shouldBe` ([], [])
@@ -23,7 +23,7 @@ testThird =
         it "Works with implementation using list indexing" $
             thirdUsingListIndexing [1, 2, 3] `shouldBe` 3
         it "Works with implementation using pattern matching" $
-            thirdUsingPatternMatching [1, 2, 3] `shouldBe` 3
+            thirdUsingPatternMatching ([1, 2, 3] :: [Int]) `shouldBe` 3
 
 testSafetail :: SpecWith ()
 testSafetail =
@@ -49,7 +49,7 @@ testDisjunction =
             False ProgrammingInHaskell.Chapter4.|| True `shouldBe` True
             True ProgrammingInHaskell.Chapter4.|| False `shouldBe` True
             True ProgrammingInHaskell.Chapter4.|| True `shouldBe` True
-            
+
 spec :: Spec
 spec = do
     testHalve
