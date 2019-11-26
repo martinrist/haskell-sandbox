@@ -10,6 +10,7 @@ Some notes and exercises for the book ['Thinking with Types'](https://thinkingwi
 - [Chapter 2 - Terms, Types & Kinds](src/ThinkingWithTypes/Chapter02/README.md)
 - [Chapter 3 - Variance](src/ThinkingWithTypes/Chapter03/README.md)
 - [Chapter 4 - Working with Types](src/ThinkingWithTypes/Chapter04/README.md)
+- [Chapter 5 - Constraints and GADTs](src/ThinkingWithTypes/Chapter05/README.md)
 
 # Environment Setup Notes
 
