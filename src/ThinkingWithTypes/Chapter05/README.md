@@ -7,15 +7,19 @@
   - [Introduction](#introduction)
   - [GADTs](#gadts)
   - [Heterogeneous Lists](#heterogeneous-lists)
+    - [Using a GADT to implement the list](#using-a-gadt-to-implement-the-list)
+    - [Deriving common instances](#deriving-common-instances)
+    - [An alternative way of implementing instances](#an-alternative-way-of-implementing-instances)
 
 
 ## See Also
 
-- [Examples - Source Code](Examples.hs)
-- [Exercises - Text](Exercises.md)
-- [Exercises - Source Code](Exercises.hs)
-- [Exercises - Tests](../../../test/ThinkingWithTypes/Chapter05/ExercisesSpec.hs)
-
+- [Examples (Part 1) - Source Code](Examples1.hs)
+- [Examples (Part 2) - Source Code](Examples2.hs)
+- [Exercises (Part 1) - Source Code](Exercises1.hs)
+- [Exercises (Part 1) - Tests](../../../test/ThinkingWithTypes/Chapter05/Exercises1Spec.hs)
+- [Exercises (Part 2) - Source Code](Exercises2.hs)
+- [Exercises (Part 2) - Tests](../../../test/ThinkingWithTypes/Chapter05/Exercises2Spec.hs)
 
 ## Introduction
 
@@ -137,6 +141,8 @@ matching on `LitInt`, but a `Bool` when matching on `LitBool`.
 
 ## Heterogeneous Lists
 
+### Using a GADT to implement the list
+
 - Here's an example of using GADTs to define heterogeneous lists, which can
 contain values of different types.  We can use these like this:
 
@@ -158,3 +164,119 @@ contain values of different types.  We can use these like this:
 - Firstly, `HNil` is analogous to the regular list constructor `[]`, and
 `(:#)` is analogous to the cons operator `(:)`:
 
+    ```haskell
+    {-# LANGUAGE DataKinds #-}
+    {-# LANGUAGE KindSignatures #-}
+    {-# LANGUAGE TypeOperators #-}
+
+    import Data.Kind (Type)
+
+    -- Here, `ts` has an explicit kind signature.  Adding this is a good idea if
+    -- it's anything other than `*`.  This needs `DataKinds` and `KindSignatures`.
+    data HList (ts :: [Type]) where
+      HNil :: HList '[]
+      -- This needs `TypeOperators` in order to use the `':` type cons operator
+      -- Symbolically-named data constructors must start with a `:`
+      (:#) :: t -> HList ts -> HList (t ': ts)
+
+    infixr 5 :#
+    ```
+
+- We can now pattern match over this to implement various functions:
+
+    ```haskell
+    hLength :: HList ts -> Int
+    hLength HNil      = 0
+    hLength (_ :# ts) = 1 + hLength ts
+
+    hHead :: HList (t ': ts) -> t
+    hHead (t :# _) = t
+
+    showBool :: HList '[_1, Bool, _2] -> String
+    showBool (_ :# b :# _ :# HNil) = show b
+    ```
+
+
+### Deriving common instances
+
+- GHC's stock instance deriving machinery doesn't work well with GADTs, so we
+need to write our own instances for `Eq` etc:
+
+    ```haskell
+    {-# LANGUAGE FlexibleInstances #-}
+    {-# LANGUAGE FlexibleContexts #-}
+
+    instance Eq (HList '[]) where
+      HNil == HNil = True
+
+    instance (Eq t, Eq (HList ts)) => Eq (HList (t ': ts)) where
+      (a :# as) == (b :# bs) = a == b && as == bs
+    ```
+
+- These instances need the [`FlexibleInstances`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-FlexibleInstances)
+extension to enable arbitrarily nested types in the first line of the instance
+definition (the 'instance head').
+
+- The second case (the inductive case) also needs the [`FlexibleContexts`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-FlexibleContexts) extension
+to use more complex constraints in the context.
+
+
+### An alternative way of implementing instances
+
+- We had to write two instances for `Eq` above, one for the base case and one
+for the inductive case.  This was partly because we needed to assert that each
+type in the list had an `Eq` instance.
+
+- As an alternative, we can use a _closed type family_ to create the constraint
+programatically, by folding over all the `ts`:
+
+    ```haskell
+    {-# LANGUAGE TypeFamilies #-}
+    -- ... and various other extensions
+
+    import Data.Kind (Type, Constraint)
+
+    type family AllEq (ts :: [Type]) :: Constraint where
+      -- If empty, just return the 'unit' (empty) `Constraint`
+      AllEq '[]       = ()
+
+      -- If not, construct a `Constraint` tuple
+      AllEq (t ': ts) = (Eq t, AllEq ts)
+    ```
+
+- Testing this out in GHCi:
+
+    ```haskell
+    > :set -XDataKinds
+    > :kind! AllEq '[Int, Bool]
+
+    AllEq '[Int, Bool] :: Constraint
+    = (Eq Int, (Eq Bool, () :: Constraint))
+    ```
+
+- This can be generalised to any constraint:
+
+    ```haskell
+    {-# LANGUAGE TypeFamilies #-}
+    {-# LANGUAGE UndecidableInstances #-}
+
+    import Data.Kind (Type, Constraint)
+
+    -- This is just a generalisation of `AllEq` above
+    type family All (c :: Type -> Constraint)
+                    (ts :: [Type]) :: Constraint where
+      All c '[]       = ()
+      All c (t ': ts) = (c t, All c ts)
+
+    -- This now uses `All` to define the `Eq` instance for `HList`
+    -- This needs `UndecidableInstances to support the nested
+    -- constraint `All Eq ts`:
+    instance All Eq ts => Eq (HList ts) where
+      HNil      == HNil      = True
+      (a :# as) == (b :# bs) = a == b && as == bs
+    ```
+
+
+
+
+-
