@@ -100,9 +100,9 @@ types.  For example, the type signature of `show` is:
 
 ## Data Kinds
 
-- Enabling the [`-XDataKinds`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#datatype-promotion) extensions allows us to start talking about kinds other than `*`, `Constraint` and their arrow-derivatives.
+- Enabling the [`DataKinds`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#datatype-promotion) extensions allows us to start talking about kinds other than `*`, `Constraint` and their arrow-derivatives.
 
-- `-XDataKinds` automatically lifts data constructors into _type constructors_
+- `DataKinds` automatically lifts data constructors into _type constructors_
 and types into _kinds_:
 
     ```haskell
@@ -124,7 +124,7 @@ scope:
     No :: Answer        -- Data constructor
     ```
 
-- With `-XDataKinds` enabled we also get:
+- With `DataKinds` enabled we also get:
   - A new kind, `Answer`
   - Promoted data constructors `'Yes'` and `'No` of kind `Answer`:
 
@@ -142,7 +142,7 @@ used to distinguish promoted data constructors from regular type constructors
 
 ## Promotion of Built-in Types
 
-- When `-XDataKinds` is enabled, most types automatically promote to kinds.
+- When `DataKinds` is enabled, most types automatically promote to kinds.
 Importing `GHC.TypeLits` helps get unqualified access to these kinds, and
 also includes some type families to help work with them.
 
@@ -193,7 +193,7 @@ also includes some type families to help work with them.
     ```
 
 - `GHC.TypeLits` contains primitives for doing arithmetic on `Nat`s, but we
-need to also enable [`-XTypeOperators`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#type-operators) for this to work:
+need to also enable [`TypeOperators`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#type-operators) for this to work:
 
     ```haskell
     > :set -XTypeOperators
@@ -253,7 +253,7 @@ need to also enable [`-XTypeOperators`](https://downloads.haskell.org/~ghc/lates
 
 - Earlier we saw some functions like `CmpSymbol` that are like _functions at
 the type level_ - these are called _closed type families_ and can be enabled
-with [`-XTypeFamilies`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#type-families).
+with [`TypeFamilies`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#type-families).
 
 - Consider the regular, term-level function `or`:
 
@@ -263,7 +263,7 @@ with [`-XTypeFamilies`](https://downloads.haskell.org/~ghc/latest/docs/html/user
     or False y = y
     ```
 
-- Using `-XTypeFamilies` we can write a 'promoted' version - i.e. a type
+- Using `TypeFamilies` we can write a 'promoted' version - i.e. a type
 family `Or`:
 
     ```haskell

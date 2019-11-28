@@ -35,7 +35,7 @@ context arrow (`=>`):
 
     ```
 
-- _Type equalities_ are enabled by the [`-XGADTs`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-GADTs) extension:
+- _Type equalities_ are enabled by the [`GADTs`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-GADTs) extension:
 
     ```haskell
     {-# LANGUAGE GADTs #-}
@@ -275,8 +275,3 @@ programatically, by folding over all the `ts`:
       HNil      == HNil      = True
       (a :# as) == (b :# bs) = a == b && as == bs
     ```
-
-
-
-
--

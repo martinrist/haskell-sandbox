@@ -41,7 +41,7 @@ compiler:
     ```
 
 - In other words, type variables aren't 'scoped', until we enable the
-[`-XScopedTypeVariables`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-ScopedTypeVariables) extension.
+[`ScopedTypeVariables`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-ScopedTypeVariables) extension.
 
 - When we do this, we can use the `forall a b.` quantifier to introduce a
 _type scope_.  Inside this, all references to the type variables `a` and `b`
@@ -85,7 +85,7 @@ parameter with a phantom type:
 
 ## Type Applications
 
-- The [`-XTypeApplications`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-TypeApplications) extension allows us to
+- The [`TypeApplications`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-TypeApplications) extension allows us to
 directly apply types to expressions:
 
     ```haskell
@@ -124,7 +124,7 @@ the first in order:
     fmap @_ @Int :: Functor w => (Int -> b) -> w Int -> w b
     ```
 
-- With `-XTypeApplications`, types become part of a public signature, since
+- With `TypeApplications`, types become part of a public signature, since
 changing the order of type variables can break downstream code.
 
 - Typically the hardest types to infer must come first in a signature.
@@ -132,7 +132,7 @@ changing the order of type variables can break downstream code.
 
 ## Ambiguous Types
 
-- Using `-XTypeApplications` we can try to write a function that gives us the
+- Using `TypeApplications` we can try to write a function that gives us the
 name of a type as a `String`:
 
     ```haskell
@@ -151,9 +151,9 @@ name of a type as a `String`:
   as an _ambiguous type_.
 
 - Code with ambiguous types will fail to compile unless we enable
-  [`-XAllowAmbiguousTypes`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-AllowAmbiguousTypes)
+  [`AllowAmbiguousTypes`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-AllowAmbiguousTypes)
 
-- We can then call this code by using `-XTypeApplications` to apply the function
+- We can then call this code by using `TypeApplications` to apply the function
   to a type.  For example, with `typeName`:
 
     ```haskell
@@ -196,6 +196,6 @@ name of a type as a `String`:
   other way of determining the otherwise ambiguous type:
   - Either by adding a `Proxy a` parameter whose only purpose is to drive
     inference.
-  - Or by enabling `-XAllowAmbiguousTypes` at the definition site, then using
-    `-XTypeApplications` at the call site to fill in the ambiguous parameter
+  - Or by enabling `AllowAmbiguousTypes` at the definition site, then using
+    `TypeApplications` at the call site to fill in the ambiguous parameter
     manually.
