@@ -66,7 +66,8 @@ parameter with a phantom type:
     data Proxy a = Proxy
     ```
 
-- Then the function [`Data.Typeable.typeRef`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Typeable.html#v:typeRep)
+- Then the function [`Data.Typeable.typeRef`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Typeable.html#v:typeRep) provides us with a concrete
+representation of that type:
 
     ```haskell
     > import Data.Typeable
