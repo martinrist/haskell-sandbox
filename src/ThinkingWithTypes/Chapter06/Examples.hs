@@ -13,3 +13,12 @@ module ThinkingWithTypes.Chapter06.Examples where
 -- makes it work:
 applyToFive :: (forall a. a -> a) -> Int
 applyToFive f = f 5
+
+
+cont :: a -> (forall r. (a -> r) -> r)
+cont a callback = callback a
+
+runCont :: (forall r. (a -> r) -> r) -> a
+runCont f =
+  let callback = id
+    in f callback
