@@ -10,3 +10,4 @@ Some notes and exercises for the book ['Thinking with Types'](https://thinkingwi
 - Part II - Lifting Restrictions
   - [Chapter 4 - Working with Types](Chapter04/README.md)
   - [Chapter 5 - Constraints and GADTs](Chapter05/README.md)
+  - [Chapter 6 - Rank-N Types](Chapter06/README.md)
