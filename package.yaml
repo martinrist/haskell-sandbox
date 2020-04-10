@@ -8,7 +8,9 @@ license:                BSD3
 github:                 martinrist/haskell-sandbox
 
 library:
-  source-dirs: src
+  source-dirs:
+    - src
+    - test
   ghc-options:
     - -threaded
     - -rtsopts

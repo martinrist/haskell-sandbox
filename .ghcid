@@ -1,2 +1,2 @@
---command "stack ghci haskell-sandbox:lib haskell-sandbox:test:haskell-sandbox-test"
---test "Main.main"
+--command "stack ghci haskell-sandbox:lib"
+--test "Spec.main"
