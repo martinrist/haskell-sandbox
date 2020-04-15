@@ -15,7 +15,6 @@
 - [Examples - Source Code](Examples.hs)
 - [Exercises - Text](Exercises.md)
 - [Exercises - Source Code](Exercises.hs)
-- [Exercises - Tests](../../../test/ThinkingWithTypes/Chapter06/ExercisesSpec.hs)
 
 
 ## Introduction
@@ -178,4 +177,42 @@ to attach the various instances to:
     newtype Cont a = Cont
       { unCont :: forall r. (a -> r) -> r
       }
+    ```
+
+- The `Cont` `Monad` allows us to flatten traditional 'pyramid of doom'
+structures associated with callbacks.  For example, consider the following
+functions which perform async `IO` in order to compute values, then call their
+given callbacks when completed:
+
+    ```haskell
+    withVersionNumber :: (Double -> r) -> r
+    withVersionNumber f = f 1.0
+
+    withTimestamp :: (Int -> r) -> r
+    withTimestamp f = f 1532083362
+
+    withOS :: (String -> r) -> r
+    withOS f = f "linux"
+    ```
+
+- If we wanted to combine all three values, we could do it like this:
+
+    ```haskell
+    releaseString :: String
+    releaseString =
+      withVersionNumber $ \version ->
+        withTimestamp $ \date ->
+          withOS $ \os ->
+            os ++ "-" ++ show version ++ "-" ++ show date
+    ```
+
+- Using `Cont` we can flatten this pyramid, thus:
+
+    ```haskell
+    releaseStringCont :: String
+    releaseStringCont = runCont $ unCont $ do
+      version <- Cont withVersionNumber
+      date <- Cont withTimestamp
+      os <- Cont withOS
+      pure $ os ++ "-" ++ show version ++ "-" ++ show date
     ```
