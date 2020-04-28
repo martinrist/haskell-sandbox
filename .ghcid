@@ -1,2 +1,3 @@
 --command "stack ghci haskell-sandbox:lib"
 --test "Spec.main"
+--lint
