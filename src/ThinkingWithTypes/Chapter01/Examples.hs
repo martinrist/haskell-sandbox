@@ -36,10 +36,11 @@ emptyBoard =
 
 data Three = One | Two | Three
 
+{-# HLINT ignore TicTacToe2 "Use newtype instead of data" #-}
 data TicTacToe2 a = TicTacToe2
     { board :: Three -> Three -> a
     }
 
 emptyBoard2 :: TicTacToe2 (Maybe Bool)
 emptyBoard2 =
-    TicTacToe2 $ const $ const $ Nothing
+    TicTacToe2 $ const $ const Nothing

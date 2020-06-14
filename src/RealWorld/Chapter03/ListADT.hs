@@ -6,6 +6,7 @@ data List a
     | Nil
     deriving (Show)
 
+{-# HLINT ignore fromList "Use foldr" #-}
 fromList :: [a] -> List a
 fromList (x:xs) = Cons x (fromList xs)
 fromList []     = Nil

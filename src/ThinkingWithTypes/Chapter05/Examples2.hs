@@ -7,6 +7,7 @@
 
 -- This allows us to give `ts` a kind signature in the definition of `HList`
 -- It's actually not needed here, because it's implied by `TypeFamilies`
+{-# HLINT ignore "Unused LANGUAGE pragma" #-}
 {-# LANGUAGE KindSignatures #-}
 
 -- This allows us to use `':` in the definition of `HList`

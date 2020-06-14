@@ -20,6 +20,7 @@ instance Ord Point where
         | x1 > x2 = GT
         | otherwise = EQ
 
+{-# HLINT ignore "Use <$>" #-}
 instance Arbitrary Point where
     arbitrary = do
         x <- arbitrary

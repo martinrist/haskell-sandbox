@@ -23,7 +23,7 @@ showLandingPage = do
 
 register :: ActionM ()
 register = do
-    emailAddress <- param "email" `rescue` (const next)
+    emailAddress <- param "email" `rescue` const next
     registered   <- liftIO (registerInterest emailAddress)
     case registered of
         Just errorMessage -> do

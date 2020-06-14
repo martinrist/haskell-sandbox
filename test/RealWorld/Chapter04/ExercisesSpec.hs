@@ -43,7 +43,7 @@ testSafeInit =
         it "works with three element list" $ safeInit "foo" `shouldBe` Just "fo"
 
 testExercise2 :: Spec
-testExercise2 = context "Exercise 2 Tests" $ testSplitWith
+testExercise2 = context "Exercise 2 Tests" testSplitWith
 
 testSplitWith :: Spec
 testSplitWith =
