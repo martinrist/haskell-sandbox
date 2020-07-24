@@ -333,3 +333,49 @@ Need to apply [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/dev
 
 The source files can be found in `$(stack path
 --programs)/ghc-8.0.2/lib/ghc-8.0.2/include`
+
+
+
+# IDE support
+
+*TODO*: Needs more work to create a table with common IDE functions and which
+ones I've got working on which IDEs, including:
+
+- `haskell-ide-engine`
+- `haskell-language-server` (0.2.2) + vim / coc
+- `haskell-language-server` + VSCode
+- IntelliJ-Haskell
+
+Features to include:
+
+- Hover docs
+    - Internal declarations in same module
+    - Internal declarations in different module
+    - External declarations in `base`
+    - External declarations in other 3rd party dependencies
+
+- Autocompletion
+    - List of functions / types etc
+    - Type signatures
+    - Documentation (subcategories as above)
+
+- Go to definition
+    - Within module
+    - Across modules
+    - `app` -> `lib`
+    - `test` -> `lib`
+    - To dependencies in `base`
+    - To dependencies in 3rd party libraries
+
+- HLint
+    - Showing warnings
+    - Disabling using HLINT pragmas
+    - Code action to automatically correct
+
+- Show type
+    - Single identifier
+    - Selection
+
+- Code actions
+    - Add import
+    - Correct typo
