@@ -1,0 +1,19 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "haskell-sandbox:lib"
+
+    - path: "./app/realWorldHaskell/interact-with/InteractWith.hs"
+      component: "haskell-sandbox:exe:interact-with-exe"
+
+    - path: "./app/realWorldHaskell/interact-with/Paths_haskell_sandbox.hs"
+      component: "haskell-sandbox:exe:interact-with-exe"
+
+    - path: "./app/optparse-applicative/Main.hs"
+      component: "haskell-sandbox:exe:optparse-applicative-exe"
+
+    - path: "./app/optparse-applicative/Paths_haskell_sandbox.hs"
+      component: "haskell-sandbox:exe:optparse-applicative-exe"
+
+    - path: "./test"
+      component: "haskell-sandbox:test:haskell-sandbox-test"
