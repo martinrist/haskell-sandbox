@@ -36,4 +36,5 @@ bar x = id x
 -- Hole filling
 
 fmapEither :: (a -> b) -> Either c a -> Either c b
-fmapEither fab eca = _
+-- Replace `undefined` with `_` to set up a hole
+fmapEither fab eca = undefined
