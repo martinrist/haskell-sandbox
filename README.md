@@ -1,5 +1,3 @@
-![CI](https://github.com/martinrist/haskell-sandbox/workflows/CI/badge.svg)
-
 This repository contains various samples, experiments and notes relating to Haskell.
 
 # 'Thinking with Types' Notes
