@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-unused-matches #-}
 {-# HLINT ignore "Unused LANGUAGE pragma" #-}
 {-# LANGUAGE TypeApplications #-}
 
