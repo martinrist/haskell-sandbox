@@ -45,7 +45,7 @@ stack install hspec-discover
 
 ## Step 2 - Testing with `hspec-discover`
 
-- Add function definition to `Lib.hs`:
+- Add function definition to `src/Lib.hs`:
     ```haskell
     add :: Int -> Int -> Int
     add x y = x + y
@@ -171,16 +171,6 @@ stack install hspec-discover
     stack ./install.hs help              # To force GHC installation and see options
     stack ./install.hs hls-x.y.z         # Update based on GHC version required
     stack ./install.hs data              # To generate Hoogle DB
-    ```
-
-- Install [`implicit-hie`](https://hackage.haskell.org/package/implicit-hie) (if
-  required) and use `gen-hie` to generate `hie.yaml` file for
-  `haskell-language-server`:
-    ```bash
-    # This might already have been done
-    stack install implicit-hie
-
-    gen-hie > hie.yaml
     ```
 
 - Run `haskell-language-server-wrapper` to check for no errors on startup:
