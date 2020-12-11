@@ -1,17 +1,5 @@
 This repository contains various samples, experiments and notes relating to Haskell.
 
-# 'Thinking with Types' Notes
-
-Some notes and exercises for the book ['Thinking with Types'](https://thinkingwithtypes.com):
-
-- [Chapter 1 - The Algebra Behind Types](src/ThinkingWithTypes/Chapter01/README.md)
-- [Chapter 2 - Terms, Types & Kinds](src/ThinkingWithTypes/Chapter02/README.md)
-- [Chapter 3 - Variance](src/ThinkingWithTypes/Chapter03/README.md)
-- [Chapter 4 - Working with Types](src/ThinkingWithTypes/Chapter04/README.md)
-- [Chapter 5 - Constraints and GADTs](src/ThinkingWithTypes/Chapter05/README.md)
-- [Chapter 6 - Rank-N Types](src/ThinkingWithTypes/Chapter06/README.md)
-
-
 # Environment Setup Notes
 
 ```bash
