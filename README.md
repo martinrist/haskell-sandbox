@@ -15,7 +15,7 @@ Some notes and exercises for the book ['Thinking with Types'](https://thinkingwi
 # Environment Setup Notes
 
 ```bash
-# Install base stack package
+# Install base stack package with `apt`
 sudo apt install haskell-stack
 
 # On OS X, install Homebrew, then:
@@ -32,14 +32,6 @@ brew install fzf
 # Install `hspec-discover` for discovering spec files
 cd haskell-sandbox
 stack install hspec-discover
-
-# Installing `haskell-ide-engine`
-git clone https://github.com/haskell/haskell-ide-engine.git --recurse-submodules
-cd haskell-ide-engine
-# Switch to tag for required stable version here
-stack ./install.hs help              # To force GHC installation and see options
-stack ./install.hs hie-8.8.3         # Update based on GHC version required
-stack ./install.hs data              # To generate Hoogle DB
 ```
 
 
@@ -172,43 +164,6 @@ stack ./install.hs data              # To generate Hoogle DB
 
 # IDE support
 
-## [`haskell-ide-engine`](https://github.com/haskell/haskell-ide-engine)
-
-- Install latest stable version of language server (see earlier)
-    - *TODO: Move from earlier*
-
-- Install [`implicit-hie`](https://hackage.haskell.org/package/implicit-hie) (if
-  required) and use `gen-hie` to generate `hie.yaml` file for
-  `haskell-language-server`:
-    ```bash
-    # This might already have been done
-    stack install implicit-hie
-
-    gen-hie > hie.yaml
-    ```
-
-- Install `hspec-discover`:
-    ```bash
-    cd
-    stack install hspec-discover
-    ```
-
-- Run `hie-wrapper` to check for no errors on startup:
-    ```bash
-    # We need to do this first, to avoid errors
-    rm Setup.hs
-    hie-wrapper
-    ...output ...
-    ```
-
-- Open `src/Lib.hs` in `vim` and check CoC works:
-    - Run `:CocConfig` and uncomment line to enable HIE language server
-    - Check 'K' gives docs on hover over `putStrLn`
-    - Delete `putStrLn` and check autocomplete works and produces type
-      signatures (*Note:* 
-    - Create type errors and check they are reported
-
-
 ## [`haskell-language-server`](https://github.com/haskell/haskell-language-server)
 
 - Install latest stable version of language server:
@@ -216,6 +171,19 @@ stack ./install.hs data              # To generate Hoogle DB
     - Extract binaries and move to `~/.local/bin`
     - Remove `macOS` from extracted binary filenames
     - `chmod a+x` on extracted binaries
+
+- Alternatively, build from source (workaround for
+  https://github.com/haskell/vscode-haskell/issues/323):
+
+    ```
+    git clone https://github.com/haskell/haskell-language-server.git --recurse-submodules
+    cd haskell-language-server
+    # Switch to tag for required stable version here
+
+    stack ./install.hs help              # To force GHC installation and see options
+    stack ./install.hs hls-x.y.z         # Update based on GHC version required
+    stack ./install.hs data              # To generate Hoogle DB
+    ```
 
 - Install [`implicit-hie`](https://hackage.haskell.org/package/implicit-hie) (if
   required) and use `gen-hie` to generate `hie.yaml` file for
@@ -339,8 +307,7 @@ The source files can be found in `$(stack path
 *TODO*: Needs more work to create a table with common IDE functions and which
 ones I've got working on which IDEs, including:
 
-- `haskell-ide-engine`
-- `haskell-language-server` (0.2.2) + vim / coc
+- `haskell-language-server` + nvim / coc
 - `haskell-language-server` + VSCode
 - IntelliJ-Haskell
 
