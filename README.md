@@ -11,10 +11,6 @@ sudo apt install haskell-stack
 # On OS X, install Homebrew, then:
 brew install stack
 
-# Install exuberant ctags and hasktags for tagbar
-brew install ctags
-stack install hasktags
-
 # Installing `fzf`
 brew install fzf
 /usr/local/opt/fzf/install
@@ -156,7 +152,18 @@ stack install hspec-discover
 
 ## [`haskell-language-server`](https://github.com/haskell/haskell-language-server)
 
-- Install latest stable version of language server:
+- Use `ghcup`
+
+    ```
+    # See latest instructions from https://www.haskell.org/ghcup/
+    curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+
+    # Option provided to install HLS as well as GHC
+
+    # Choose `NO` when prompted to add to path - this is done with dotfiles
+    ```
+
+- Alternatively, install latest stable version of language server:
     - Download binaries from Github
     - Extract binaries and move to `~/.local/bin`
     - Remove `macOS` from extracted binary filenames
