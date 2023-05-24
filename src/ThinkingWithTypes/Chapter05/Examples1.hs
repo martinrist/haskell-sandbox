@@ -19,8 +19,8 @@
 -- Extensions required to implement simple instances for `Eq`, `Show` etc:
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
-
-
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
+{-# LANGUAGE PartialTypeSignatures #-}
 
 module ThinkingWithTypes.Chapter05.Examples1 where
 
