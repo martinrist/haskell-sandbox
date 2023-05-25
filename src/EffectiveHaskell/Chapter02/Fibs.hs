@@ -10,7 +10,3 @@ fib n
 fibs = map fib [0..]
 
 smallFibs = takeWhile (< 100) fibs
-
-fibs firstFib secondFib =
-    let nextFib = firstFib + secondFib
-    in firstFib : fibs secondFib nextFib
